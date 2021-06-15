@@ -9,9 +9,31 @@
 #pragma once
 using namespace std;
 
+
 // C++ Standard Libraries
 #include <string>
 #include <iostream>
 #include <exception>
 #include <cmath>
 #include <ctime>
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <memory>
+#include <random>
+#include <condition_variable>
+#include <future>
+#include <functional>
+#include <stdexcept>
+#include <chrono>
+
+
+// The current state of a rug or a npc
+enum class ETradeState
+{
+    COW,
+    CHICKEN,
+    BREAD
+};
+
+

@@ -23,8 +23,9 @@ int main(int argc, char* args[])
     }
     else
     {
-        // Game is som
+        // Game
         Game game;
+        game.init(&sdl);
 
         // Game running flag
         bool quit = false;
@@ -58,13 +59,13 @@ int main(int argc, char* args[])
             dt = static_cast<float>(cTime - pTime) / 1000.f;
             pTime = cTime;
 
-            // update here
+            game.update(dt);
 
             // Draw the game world to the screen
             SDL_SetRenderDrawColor(sdl.getRenderer(), 0xD3, 0xD3, 0xD3, 0xFF);
             SDL_RenderClear(sdl.getRenderer());
  
-            // Render here
+            game.render();
 
             SDL_RenderPresent(sdl.getRenderer());
 
@@ -77,6 +78,8 @@ int main(int argc, char* args[])
                 SDL_Delay(frameDelay - fTime);
             }
         }
+
+        game.close();
     }
 
     return 0;

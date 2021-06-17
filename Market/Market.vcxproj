@@ -123,7 +123,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -140,7 +140,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -158,17 +158,22 @@
   <ItemGroup>
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\Main.cpp" />
+    <ClCompile Include="Source\NPC.cpp" />
     <ClCompile Include="Source\Rug.cpp" />
     <ClCompile Include="Source\SDLManager.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
+    <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="PCH.h" />
+    <ClInclude Include="Source\Entity.h" />
     <ClInclude Include="Source\Game.h" />
+    <ClInclude Include="Source\NPC.h" />
     <ClInclude Include="Source\Rug.h" />
     <ClInclude Include="Source\SDLManager.h" />
     <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\ThreadSafeRandom.h" />
+    <ClInclude Include="Source\World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

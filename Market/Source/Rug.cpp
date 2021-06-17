@@ -5,7 +5,7 @@
 *
 * This is a rug, it uses a mutex to share data between multiple threads
 */
-#include "pch.h"
+#include "PCH.h"
 #include "Rug.h"
 
 
@@ -55,4 +55,11 @@ void Rug::updateState(const ETradeState& aState)
     {
         mState = aState;
     }
+}
+
+
+// Returns the EEntityType of the rug
+EEntityType Rug::getType()
+{
+    return EEntityType::RUG;
 }

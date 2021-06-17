@@ -41,12 +41,18 @@
     <ClCompile Include="Source\Rug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\NPC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\SDLManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="pch.h">
+    <ClInclude Include="PCH.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game.h">
@@ -59,6 +65,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\ThreadSafeRandom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\NPC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

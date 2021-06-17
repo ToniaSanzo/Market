@@ -6,7 +6,7 @@
 * Game manages the game entities (npcs, rugs, etc.)
 */
 #pragma once
-#include "pch.h"
+#include "PCH.h"
 #include "SDLManager.h"
 #include "Rug.h"
 
@@ -28,9 +28,6 @@ public:
     // Initialize the game objects
     bool init(SDLManager*);
 
-    // Update the state of a random rug
-    static void randomRugUpdate(int i, vector<Rug*>& rugs);
-
     // Updates the game world
     void update(const float&);
 
@@ -39,4 +36,7 @@ public:
 
     // Free the resources
     void close();
+    
+    // Update the state of a random rug
+    static void randomRugUpdate(int i, vector<Rug*>& rugs);
 };

@@ -6,12 +6,13 @@
 * This is a rug, it uses a mutex to share data between multiple threads
 */
 #pragma once
-#include "pch.h"
+#include "PCH.h"
 #include "SDLManager.h"
+#include "Entity.h"
 
 
 // This class is a simple class that shares data with multiple threads
-class Rug
+class Rug : public Entity
 {
 private:
     // Represents the current state of the rug, the state of the rug will be accessed by multiple threads,
@@ -41,4 +42,7 @@ public:
 
     // Update the state of the rug
     void updateState(const ETradeState& aState);
+
+    // Returns the EEntityType of the rug
+    EEntityType getType();
 };

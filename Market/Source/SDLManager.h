@@ -7,7 +7,7 @@
 * SDL subsystem.
 */
 #pragma once
-#include "pch.h"
+#include "PCH.h"
 #include <SDL.h>
 #include <SDL_image.h>
 

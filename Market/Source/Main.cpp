@@ -6,11 +6,16 @@
 * Main.cpp contains the main entry point of the program, and manages the SDL
 * subsystem.
 */
-#include "pch.h"
+#include "PCH.h"
 #include "SDLManager.h"
 #include "Game.h"
 #include <SDL.h>
 #include <SDL_image.h>
+
+// #if SANDBOX // test 
+#include "Entity.h"
+#include "NPC.h"
+// #endif SANDBOX
 
 int main(int argc, char* args[])
 {

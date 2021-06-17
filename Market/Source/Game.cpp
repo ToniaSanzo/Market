@@ -5,7 +5,7 @@
 *
 * Game manages the game entities (npcs, rugs, etc.)
 */
-#include "pch.h"
+#include "PCH.h"
 #include "Game.h"
 #include <SDL.h>
 #include "ThreadSafeRandom.h"
@@ -43,12 +43,15 @@ bool Game::init(SDLManager* aSDL)
         rugs.push_back(new Rug());
     }
     
-    // Seed the thread safe random
-    Seed(333);
+    // Seed the thread safe random number with a random number
+    srand(static_cast<unsigned>(time(nullptr)));
+    Seed(rand() % 333);
 
     return true;
 }
 
+
+// Random rug update
 void Game::randomRugUpdate(int i, vector<Rug*>& rugs)
 {
     // Generate the target rug and the new state for the rug
@@ -57,6 +60,7 @@ void Game::randomRugUpdate(int i, vector<Rug*>& rugs)
 
     (*rugs[trgtRug]).updateState(newState);
 }
+
 
 // Update the game world
 void Game::update(const float& dt)

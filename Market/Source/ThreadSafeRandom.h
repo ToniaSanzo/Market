@@ -1,5 +1,12 @@
+/**
+* Title: Market
+* Author: Tonia Sanzo
+* Date: 6/15/21
+*
+* This is a thread safe random number generator tbz533 created
+*/
 #pragma once
-#include "pch.h"
+#include "PCH.h"
 
 // Thread Safe RNG
 std::mt19937_64 my_rng; // Defines an engine

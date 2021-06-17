@@ -6,7 +6,7 @@
 * SDLManager is an interface that abstracts away the management(initialization, destruction, etc.) of the
 * SDL subsystem.
 */
-#include "pch.h"
+#include "PCH.h"
 #include "SDLManager.h"
 
 

@@ -15,8 +15,12 @@ class Game
 private:
     // Pointer to the SDL system
     SDLManager* sdl;
+    // Mutex to prevent the renderer from being used by more than one thread at a time
+    mutex mTextureMutex;
 
-    // Collection of rugs
+    // Collection of rugs, and shared resources used by the rug
+    Texture mRugTexture;
+    SDL_Rect mRugFrames[RUG_FRAMES];
     vector<Rug*> rugs;
 
     // Our collection of threads

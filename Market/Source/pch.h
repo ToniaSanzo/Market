@@ -37,3 +37,9 @@ enum class ETradeState
 };
 
 
+// Preprocessor macros
+#define RUG_FRAMES 3
+#define RUG_FRAMES_WIDTH 64
+#define RUG_FRAMES_HEIGHT 64
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 760

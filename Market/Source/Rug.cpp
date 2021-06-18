@@ -22,19 +22,53 @@ Rug::Rug()
     // Initialize with a random state
     mState = static_cast<ETradeState>(rand() % 3);
     rugIdx = ++rugCount;
+
+    // Generate random location for the rug to spawn
+    x = rand() % WINDOW_WIDTH;
+    y = rand() % WINDOW_HEIGHT;
+
+    // Pointer to the rugs texture
+    mTexturePtr = nullptr;
 }
 
 
-// Deallocate resources used by the  rug
+// Deallocate resources used by the  rug, do not explicitly delete the references 
+// as they are shared between each rug instance and deallocated elsewhere
 Rug::~Rug()
-{}
+{
+    if (mTexturePtr)
+    {
+        mTexturePtr = nullptr;
+    }
+}
 
 
 // Properly initialize the rug 
-bool Rug::init(SDLManager* aSDL)
+bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[])
 {
     // Initialization success flag
     bool success = true;
+
+    if (!aTxtrPtr)
+    {
+        cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+        success = false;
+    }
+    else
+    {
+        mTexturePtr = aTxtrPtr;
+    }
+
+    if (!aTxtrFrames)
+    {
+        cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+        success = false;
+    }
+    else
+    {
+        mTextureFrames = aTxtrFrames;
+    }
+
     return success;
 }
 
@@ -43,7 +77,7 @@ bool Rug::init(SDLManager* aSDL)
 void Rug::render()
 {
     lock_guard<mutex> lock(mStateMtx);
-    cout << "Rug " << rugIdx << " current state: " << static_cast<int>(mState) << '\n';
+    mTexturePtr->render(x, y, &mTextureFrames[static_cast<int>(mState)]);
 }
 
 

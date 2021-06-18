@@ -7,10 +7,12 @@ Texture::Texture() {
     // Initialize
     mTexture     = nullptr;
     mRenderer    = nullptr;
+    mTextureMtx  = nullptr;
     mWidth       = 0;
     mHeight      = 0;
     mScale       = 1;
     mWindowScale = 1;
+
 }
 
 
@@ -27,12 +29,22 @@ Texture::~Texture() {
 
 
 // Load Texture from a file
-bool Texture::loadFromFile(std::string path) {
+bool Texture::loadFromFile(std::string path, mutex* mtx) {
     // Get rid of preexisting texture
     free();
 
     // Success flag
     bool success = true;
+
+    if (!mtx)
+    {
+        cout << "mutex* argument cannot be the nullptr!\n";
+        return false;
+    }
+    else
+    {
+        mTextureMtx = mtx;
+    }
 
     // Exit prematuraly if Texture has not been properly initialized
     if (!mRenderer) {
@@ -78,12 +90,19 @@ bool Texture::loadFromFile(std::string path) {
 // Deallocate the texture
 void Texture::free() {
     // Free texture if it exists
-    if (mTexture) {
+    if (mTexture) 
+    {
         SDL_DestroyTexture(mTexture);
         mTexture = nullptr;
         mWidth = 0;
         mHeight = 0;
         mScale = 0;
+    }
+
+    // Mutex is not explicitly deleted because it's managed in Game.cpp
+    if (mTextureMtx)
+    {
+        mTextureMtx = nullptr;
     }
 }
 
@@ -122,7 +141,7 @@ void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cent
     }
 
     // Render to screen
-    lock_guard<mutex> lock(gTextureMtx);
+    lock_guard<mutex> lock(*mTextureMtx);
     SDL_RenderCopyEx(mRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 

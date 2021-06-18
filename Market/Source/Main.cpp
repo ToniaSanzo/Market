@@ -12,10 +12,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-// #if SANDBOX // test 
-#include "Entity.h"
-#include "NPC.h"
-// #endif SANDBOX
 
 int main(int argc, char* args[])
 {

@@ -9,14 +9,15 @@
 #include "PCH.h"
 #include "SDLManager.h"
 #include "Entity.h"
+#include "Texture.h"
 
 
 // This class is a simple class that shares data with multiple threads
 class Rug : public Entity
 {
 private:
-    // Represents the current state of the rug, the state of the rug will be accessed by multiple threads,
-    // so we added a mutex lock
+    // Represents the current state of the rug, the state of the rug will be accessed by
+    //  multiple threads, so we added a mutex lock
     ETradeState mState;
     mutex mStateMtx;
 
@@ -25,6 +26,13 @@ private:
 
     // The index of this rug
     int rugIdx;
+
+    // Pointer to the rugs Texture, and SDL_Rect array
+    Texture* mTexturePtr;
+    SDL_Rect* mTextureFrames;
+
+    // The rugs coordinates
+    int x, y;
 
 public:
     // Default initialize the rug, the rug will not be properly initialized until it is
@@ -35,7 +43,7 @@ public:
     ~Rug();
 
     // Properly initialize the rug 
-    bool init(SDLManager* aSDL);
+    bool init(Texture* aTxtrPtr, SDL_Rect* aTxtrFrames);
 
     // Draw the rug to the screen
     void render();

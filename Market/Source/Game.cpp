@@ -37,10 +37,33 @@ bool Game::init(SDLManager* aSDL)
         success = false;
     }
 
+    // Load the rugs shared resources
+    mRugTexture.initTexture(sdl->getRenderer());
+    if (!mRugTexture.loadFromFile("assets/rug.png", &mTextureMutex))
+    {
+        cout << "Failed to load rug sprite sheet!\n";
+        success = false;
+    }
+    else
+    {
+        // Update the scale by 4
+        mRugTexture.updateScale(4);
+
+        // Set the rug's frames dimensions
+        for (int col = 0; col < RUG_FRAMES; ++col)
+        {
+            mRugFrames[col].x = col * RUG_FRAMES_WIDTH;
+            mRugFrames[col].y = 0;
+            mRugFrames[col].w = RUG_FRAMES_WIDTH;
+            mRugFrames[col].h = RUG_FRAMES_HEIGHT;
+        }
+    }
+
     // Create 5 unique rugs
     for (int i = 0; i < 5; ++i)
     {
         rugs.push_back(new Rug());
+        rugs[i]->init(&mRugTexture, mRugFrames);
     }
     
     // Seed the thread safe random number with a random number
@@ -81,18 +104,25 @@ void Game::update(const float& dt)
 // Render the game world
 void Game::render()
 {
+    // Render the rugs
     for (int i = 0; i < 5; ++i)
     {
-        (*rugs[i]).render();
-        SDL_Delay(5);
+        threads.push_back(thread(&Rug::render, rugs[i]));
     }
+
+    for (thread& thread : threads)
+    {
+        thread.join();
+    }
+    threads.clear();
 }
 
 
 // Deallocate the game world
 void Game::close()
 {
-    // Delete the rugs
+    // Delete rugs
+    mRugTexture.free();
     for (auto rug : rugs)
     {
         if (rug)

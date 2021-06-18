@@ -15,14 +15,14 @@
 class Texture {
 
 public:
-    // Initialize variables
+    // Initialize texture
     Texture();
 
     // Deallocate memory
     ~Texture();
 
     // Loads image at specified path
-    bool loadFromFile(std::string path);
+    bool loadFromFile(std::string path, mutex* mtx);
 
     // Creates image from font string
     bool loadFromRenderedText(std::string textureText, SDL_Color textColor);
@@ -60,13 +60,10 @@ private:
     // The actual hardware texture, and the games renderer
     SDL_Texture* mTexture;
     SDL_Renderer* mRenderer;
-
+    mutex* mTextureMtx;
 
     // Image dimensions
     int mWidth, mHeight;
     double mWindowScale;
     double mScale;
 };
-
-// Global mutex used to prevent multiple threads from attempting to use the renderer at the same time
-mutex gTextureMtx;

@@ -162,6 +162,7 @@
     <ClCompile Include="Source\Rug.cpp" />
     <ClCompile Include="Source\SDLManager.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
+    <ClCompile Include="Source\Timer.cpp" />
     <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +174,7 @@
     <ClInclude Include="Source\SDLManager.h" />
     <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\ThreadSafeRandom.h" />
+    <ClInclude Include="Source\Timer.h" />
     <ClInclude Include="Source\World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

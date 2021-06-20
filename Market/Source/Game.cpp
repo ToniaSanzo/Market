@@ -52,19 +52,51 @@ bool Game::init(SDLManager* aSDL)
         // Set the rug's frames dimensions
         for (int col = 0; col < RUG_FRAMES; ++col)
         {
-            mRugFrames[col].x = col * RUG_FRAMES_WIDTH;
+            mRugFrames[col].x = col * RUG_FRAME_WIDTH;
             mRugFrames[col].y = 0;
-            mRugFrames[col].w = RUG_FRAMES_WIDTH;
-            mRugFrames[col].h = RUG_FRAMES_HEIGHT;
+            mRugFrames[col].w = RUG_FRAME_WIDTH;
+            mRugFrames[col].h = RUG_FRAME_HEIGHT;
+        }
+
+        // Create 5 unique rugs
+        for (int i = 0; i < 5; ++i)
+        {
+            rugs.push_back(new Rug());
+            rugs[i]->init(&mRugTexture, mRugFrames);
         }
     }
 
-    // Create 5 unique rugs
-    for (int i = 0; i < 5; ++i)
+    // Load the NPCs shared resources
+    mNPCTexture.initTexture(sdl->getRenderer());
+    if (!mNPCTexture.loadFromFile("assets/npc.png", &mTextureMutex))
     {
-        rugs.push_back(new Rug());
-        rugs[i]->init(&mRugTexture, mRugFrames);
+        cout << "Failed to load rug sprite sheet!\n";
+        success = false;
     }
+    else
+    {
+        mNPCTexture.updateScale(4);
+
+        // Set the npc's frames dimensions
+        for (int row = 0; row < NPC_FRAMES_ROWS; ++row)
+        {
+            for (int col = 0; col < NPC_FRAMES_COLS; ++col)
+            {
+                mNPCFrames[(row * NPC_FRAMES_COLS) + col].x = col * NPC_FRAME_WIDTH;
+                mNPCFrames[(row * NPC_FRAMES_COLS) + col].y = row * NPC_FRAME_HEIGHT;
+                mNPCFrames[(row * NPC_FRAMES_COLS) + col].w = NPC_FRAME_WIDTH;
+                mNPCFrames[(row * NPC_FRAMES_COLS) + col].h = NPC_FRAME_HEIGHT;
+            }
+        }
+
+        // Create 5 unique NPCs
+        for (int i = 0; i < 5; ++i)
+        {
+            npcs.push_back(new NPC());
+            npcs[i]->init(&mNPCTexture, mNPCFrames);
+        }
+    }
+
     
     // Seed the thread safe random number with a random number
     srand(static_cast<unsigned>(time(nullptr)));
@@ -91,6 +123,7 @@ void Game::update(const float& dt)
     for (int i = 0; i < 5; ++i)
     {
         threads.push_back(thread(&randomRugUpdate, i, ref(rugs)));
+        threads.push_back(thread(&NPC::update, npcs[i], dt));
     }
 
     for (thread& thread : threads)
@@ -104,10 +137,11 @@ void Game::update(const float& dt)
 // Render the game world
 void Game::render()
 {
-    // Render the rugs
+    // Render the rugs and npcs
     for (int i = 0; i < 5; ++i)
     {
         threads.push_back(thread(&Rug::render, rugs[i]));
+        threads.push_back(thread(&NPC::render, npcs[i]));
     }
 
     for (thread& thread : threads)
@@ -133,7 +167,20 @@ void Game::close()
     }
     rugs.clear();
 
-    // If sdl is a valid pointer change it to a nullptr, no need to explicitly delete the sdl pointer because it's managed by the SDLManager
+    // Delete npcs
+    mNPCTexture.free();
+    for (auto npc : npcs)
+    {
+        if (npc)
+        {
+            delete npc;
+            npc = nullptr;
+        }
+    }
+    npcs.clear();
+
+    // If sdl is a valid pointer change it to a nullptr, no need to explicitly delete the sdl pointer because
+    // it's managed by the SDLManager
     if (sdl)
     {
         sdl = nullptr;

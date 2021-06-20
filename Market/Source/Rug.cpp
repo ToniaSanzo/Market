@@ -10,7 +10,7 @@
 
 
 // Number of rugs constructed
-int Rug::rugCount = 0;
+int Rug::sRugCount = 0;
 
 
 // Default initialize the rug, the rug will not be properly initialized until it is
@@ -18,27 +18,33 @@ int Rug::rugCount = 0;
 Rug::Rug()
 {
     lock_guard<mutex> lock(mStateMtx);
+    mRugIdx = ++sRugCount;
 
     // Initialize with a random state
     mState = static_cast<ETradeState>(rand() % 3);
-    rugIdx = ++rugCount;
 
-    // Generate random location for the rug to spawn
+    // Generate a random location for the rug to spawn
     x = rand() % WINDOW_WIDTH;
     y = rand() % WINDOW_HEIGHT;
 
-    // Pointer to the rugs texture
-    mTexturePtr = nullptr;
+    // References used to render the rug
+    mTexturePtr    = nullptr;
+    mTextureFrames = nullptr;
 }
 
 
-// Deallocate resources used by the  rug, do not explicitly delete the references 
+// Deallocate resources used by the rug, do not explicitly delete the references 
 // as they are shared between each rug instance and deallocated elsewhere
 Rug::~Rug()
 {
     if (mTexturePtr)
     {
         mTexturePtr = nullptr;
+    }
+
+    if (mTextureFrames)
+    {
+        mTextureFrames = nullptr;
     }
 }
 

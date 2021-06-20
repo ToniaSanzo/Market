@@ -22,10 +22,10 @@ private:
     mutex mStateMtx;
 
     // Number of rugs constructed
-    static int rugCount;
+    static int sRugCount;
 
     // The index of this rug
-    int rugIdx;
+    int mRugIdx;
 
     // Pointer to the rugs Texture, and SDL_Rect array
     Texture* mTexturePtr;
@@ -36,10 +36,10 @@ private:
 
 public:
     // Default initialize the rug, the rug will not be properly initialized until it is
-    // initialized with init
+    // initialized with init(..)
     Rug();
 
-    // Deallocate resources used by the  rug
+    // Deallocate resources used by the rug
     ~Rug();
 
     // Properly initialize the rug 

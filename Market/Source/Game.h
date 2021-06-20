@@ -9,6 +9,7 @@
 #include "PCH.h"
 #include "SDLManager.h"
 #include "Rug.h"
+#include "NPC.h"
 
 class Game
 {
@@ -22,6 +23,11 @@ private:
     Texture mRugTexture;
     SDL_Rect mRugFrames[RUG_FRAMES];
     vector<Rug*> rugs;
+
+    // Collection of NPCs, and shared resources used by the rug
+    Texture mNPCTexture;
+    SDL_Rect mNPCFrames[NPC_FRAMES_COLS * NPC_FRAMES_ROWS];
+    vector<NPC*> npcs;
 
     // Our collection of threads
     vector<thread> threads;

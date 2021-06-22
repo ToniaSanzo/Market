@@ -46,8 +46,7 @@ bool Game::init(SDLManager* aSDL)
     }
     else
     {
-        // Update the scale by 4
-        mRugTexture.updateScale(4);
+        mRugTexture.updateScale(3);
 
         // Set the rug's frames dimensions
         for (int col = 0; col < RUG_FRAMES; ++col)
@@ -75,7 +74,7 @@ bool Game::init(SDLManager* aSDL)
     }
     else
     {
-        mNPCTexture.updateScale(4);
+        mNPCTexture.updateScale(3);
 
         // Set the npc's frames dimensions
         for (int row = 0; row < NPC_FRAMES_ROWS; ++row)

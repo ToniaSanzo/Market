@@ -54,8 +54,14 @@ private:
     float mAnimationSpeed;
     float mCurrAnimTime;
 
-    // The NPC coordinates
-    int x, y;
+    // The location the NPC want's to walk to, 
+    // and whether we need to generate a new location to walk
+    // to.
+    int mTargetX, mTargetY;
+    bool bNewWalkLocation;
+
+    // The NPC's coordinates
+    int mCurrX, mCurrY;
 
 public:
     // Default initialize the NPC, the NPC will not be properly initialized until it is

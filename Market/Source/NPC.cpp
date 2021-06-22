@@ -21,13 +21,18 @@ NPC::NPC()
     mCurrFrame += mCurrStep;
 
     // Generate a random location for the NPC to spawn
-    x = rand() % WINDOW_WIDTH;
-    y = rand() % WINDOW_HEIGHT;
+    mCurrX = rand() % WINDOW_WIDTH;
+    mCurrY = rand() % WINDOW_HEIGHT;
+
+    // Generate a random location to walk too
+    mTargetX = rand() % WINDOW_WIDTH;
+    mTargetY = rand() % WINDOW_HEIGHT;
+    bNewWalkLocation = false;
 
     // Set random movement speed of the NPC
     mSpeed = (rand() % static_cast<int>(MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
-    mAnimationSpeed = (MAX_ANIMATION_SPEED + MAX_SPEED) - mSpeed;
-    cout << "NPC[" << mNPCIdx << "]: mSpeed is [" << mSpeed << "]pxl/sec and mAnimationSpeed is [" << mAnimationSpeed << "]\n";
+    mAnimationSpeed = ((((MAX_ANIMATION_SPEED + MAX_SPEED) - mSpeed) * .01f) * 3.5f) + .15f;
+    cout << "NPC[" << mNPCIdx << "]: mSpeed is [" << mSpeed << "]pxl/sec and mAnimationSpeed is [" << mAnimationSpeed << "]\n" << "Current location {x: " << mCurrX << ", y: " << mCurrY << "} Target Location {x: " << mTargetX << ", y: " << mTargetY << "}\n\n" ; 
     mCurrAnimTime = 0;
 
     mTexturePtr = nullptr;
@@ -86,6 +91,12 @@ void NPC::update(const float& dt)
     // Whether the trade state changed and we need to update the current frame
     bool bUpdateFrame = false;
     
+    //
+    if (bNewWalkLocation)
+    {
+
+    }
+
     // Update and change trade state before setting the current frame
 
     // Set the current frame
@@ -93,14 +104,16 @@ void NPC::update(const float& dt)
     if (mCurrAnimTime > mAnimationSpeed)
     {
         mCurrStep = ++mCurrStep % NPC_TRADE_FRAMES;
+        mCurrAnimTime = 0;
         bUpdateFrame = true;
     }
     
-    else if (bUpdateFrame)
+    if (bUpdateFrame)
     {
         mCurrFrame = static_cast<int>(mNPCColor) * NPC_FRAMES_COLS;
         mCurrFrame += static_cast<int>(mState) * NPC_TRADE_FRAMES;
         mCurrFrame += mCurrStep;
+        bUpdateFrame = false;
     }
 }
 
@@ -108,7 +121,7 @@ void NPC::update(const float& dt)
 // Display NPC to user
 void NPC::render()
 {
-    mTexturePtr->render(x, y, &mTextureFrames[static_cast<int>(mCurrFrame)]);
+    mTexturePtr->render(mCurrX, mCurrY, &mTextureFrames[static_cast<int>(mCurrFrame)]);
 }
 
 

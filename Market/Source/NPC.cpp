@@ -86,15 +86,35 @@ bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[])
 
 
 // NPC's have different speeds
-void NPC::update(const float& dt)
+void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
 {
     // Whether the trade state changed and we need to update the current frame
     bool bUpdateFrame = false;
     
-    //
+    // Generate a new target location to walk to based on if the target location was reached
     if (bNewWalkLocation)
     {
+        mTargetX = aRandomX * WINDOW_WIDTH;
+        mTargetY = aRandomY * WINDOW_HEIGHT;
+        bNewWalkLocation = false;
+    }
+    // Otherwise, continue walking towards the target location
+    else
+    {
+        float changeInX = mTargetX - mCurrX;
+        float changeInY = mTargetY - mCurrY;
 
+        // If NPC is in range of new location set the bNewWalkLocation flag
+        if ((changeInX * changeInX) + (changeInY * changeInY) < (NPC_TARGET_LOCATION_RANGE * NPC_TARGET_LOCATION_RANGE))
+        {
+            bNewWalkLocation = true;
+        }
+        // Otherwise, move closer to the target location
+        else
+        {
+            mCurrX += changeInX * (dt * mSpeed);
+            mCurrY += changeInY * (dt * mSpeed);
+        }
     }
 
     // Update and change trade state before setting the current frame

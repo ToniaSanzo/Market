@@ -7,7 +7,7 @@
 * to increase compilation speed.
 */
 #pragma once
-using namespace std;
+using namespace std;    // This set's the namespace for the entire project
 
 
 // C++ Standard Libraries
@@ -27,8 +27,7 @@ using namespace std;
 #include <stdexcept>
 #include <chrono>
 
-
-// The current state of a rug or a npc
+// The entities trade states
 enum class ETradeState
 {
     CHICKEN,
@@ -36,18 +35,27 @@ enum class ETradeState
     BREAD
 };
 
-
-// Preprocessor macros
+// Metadata about rug.png spritesheet
 #define RUG_FRAMES 3
 #define RUG_FRAME_WIDTH 64
 #define RUG_FRAME_HEIGHT 64
-#define WINDOW_WIDTH 1280
-#define WINDOW_HEIGHT 760
-#define MIN_SPEED 10.f
-#define MAX_SPEED 30.f
-#define MAX_ANIMATION_SPEED .2f
+
+// Metadata about npc.png spritesheet
 #define NPC_FRAMES_COLS 6
 #define NPC_FRAMES_ROWS 3
 #define NPC_FRAME_WIDTH 96
 #define NPC_FRAME_HEIGHT 32
 #define NPC_TRADE_FRAMES 2
+
+// Metadata about the beahavior of the NPC
+#define MIN_SPEED 10.f
+#define MAX_SPEED 30.f
+#define MAX_ANIMATION_SPEED .2f
+#define NPC_TARGET_LOCATION_RANGE 8
+
+// Metadata about the window
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 760
+
+// Absolute value function
+#define ABS(N) ((N < 0) ? (-N) : (N))

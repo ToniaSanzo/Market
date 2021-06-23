@@ -173,7 +173,7 @@
     <ClInclude Include="Source\Rug.h" />
     <ClInclude Include="Source\SDLManager.h" />
     <ClInclude Include="Source\Texture.h" />
-    <ClInclude Include="Source\ThreadSafeRandom.h" />
+    <ClInclude Include="Source\ThreadSafeRNG.h" />
     <ClInclude Include="Source\Timer.h" />
     <ClInclude Include="Source\World.h" />
   </ItemGroup>

@@ -78,7 +78,7 @@ public:
     void render();
 
     // Update the NPC
-    void update(const float& dt);
+    void update(const float& dt, const float& aRandomX, const float& aRandomY);
     
     // Returns the EEntityType of the NPC
     EEntityType getType();

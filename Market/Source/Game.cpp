@@ -8,7 +8,7 @@
 #include "PCH.h"
 #include "Game.h"
 #include <SDL.h>
-#include "ThreadSafeRandom.h"
+#include "ThreadSafeRNG.h"
 
 
 // Initialize game entities
@@ -122,7 +122,7 @@ void Game::update(const float& dt)
     for (int i = 0; i < 5; ++i)
     {
         threads.push_back(thread(&randomRugUpdate, i, ref(rugs)));
-        threads.push_back(thread(&NPC::update, npcs[i], dt));
+        threads.push_back(thread(&NPC::update, npcs[i], dt, RANDOM(), RANDOM()));
     }
 
     for (thread& thread : threads)

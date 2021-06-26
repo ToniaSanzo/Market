@@ -7,6 +7,7 @@
 */
 #include "PCH.h"
 #include "Rug.h"
+#include "SDLManager.h"
 
 
 // Number of rugs constructed
@@ -24,8 +25,8 @@ Rug::Rug()
     mState = static_cast<ETradeState>(rand() % 3);
 
     // Generate a random location for the rug to spawn
-    x = rand() % WINDOW_WIDTH;
-    y = rand() % WINDOW_HEIGHT;
+    x = rand() % SDLManager::mWindowWidth;
+    y = rand() % SDLManager::mWindowHeight;
 
     // References used to render the rug
     mTexturePtr    = nullptr;

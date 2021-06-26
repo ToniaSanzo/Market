@@ -57,11 +57,11 @@ private:
     // The location the NPC want's to walk to, 
     // and whether we need to generate a new location to walk
     // to.
-    int mTargetX, mTargetY;
+    float mTargetX, mTargetY;
     bool bNewWalkLocation;
 
     // The NPC's coordinates
-    int mCurrX, mCurrY;
+    float mCurrX, mCurrY;
 
 public:
     // Default initialize the NPC, the NPC will not be properly initialized until it is
@@ -72,7 +72,7 @@ public:
     ~NPC();
 
     // Properly initialize the NPC
-    bool init(Texture* aTxtrPtr, SDL_Rect* aTxtrFrames);
+    bool init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[]);
 
     // Display NPC to user
     void render();

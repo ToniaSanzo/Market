@@ -25,7 +25,7 @@ bool Game::init(SDLManager* aSDL)
     srand(static_cast<unsigned>(time(0)));
 
     // Initialize success flag
-    bool success = true;
+     bool success = true;
 
     // Set the renderer and window
     sdl = aSDL;
@@ -57,8 +57,8 @@ bool Game::init(SDLManager* aSDL)
             mRugFrames[col].h = RUG_FRAME_HEIGHT;
         }
 
-        // Create 5 unique rugs
-        for (int i = 0; i < 5; ++i)
+        // Create 1 unique rugs
+        for (int i = 0; i < 1; ++i)
         {
             rugs.push_back(new Rug());
             rugs[i]->init(&mRugTexture, mRugFrames);
@@ -88,8 +88,8 @@ bool Game::init(SDLManager* aSDL)
             }
         }
 
-        // Create 5 unique NPCs
-        for (int i = 0; i < 5; ++i)
+        // Create 1 unique NPCs
+        for (int i = 0; i < 1; ++i)
         {
             npcs.push_back(new NPC());
             npcs[i]->init(&mNPCTexture, mNPCFrames);
@@ -101,33 +101,21 @@ bool Game::init(SDLManager* aSDL)
     srand(static_cast<unsigned>(time(nullptr)));
     Seed(rand() % 333);
 
-    return true;
-}
-
-
-// Random rug update
-void Game::randomRugUpdate(int i, vector<Rug*>& rugs)
-{
-    // Generate the target rug and the new state for the rug
-    int trgtRug = static_cast<int>(RANDOM() * 5.f);
-    ETradeState newState = static_cast<ETradeState>(RANDOM() * 3.f);
-
-    (*rugs[trgtRug]).updateState(newState);
+    return success;
 }
 
 
 // Update the game world
 void Game::update(const float& dt)
 {
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 1; ++i)
     {
-        threads.push_back(thread(&randomRugUpdate, i, ref(rugs)));
         threads.push_back(thread(&NPC::update, npcs[i], dt, RANDOM(), RANDOM()));
     }
 
     for (thread& thread : threads)
     {
-        thread.join();
+            thread.join();
     }
     threads.clear();
 }
@@ -137,7 +125,7 @@ void Game::update(const float& dt)
 void Game::render()
 {
     // Render the rugs and npcs
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 1; ++i)
     {
         threads.push_back(thread(&Rug::render, rugs[i]));
         threads.push_back(thread(&NPC::render, npcs[i]));

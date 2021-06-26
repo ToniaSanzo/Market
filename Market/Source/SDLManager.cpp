@@ -10,6 +10,11 @@
 #include "SDLManager.h"
 
 
+// Static window dimensions
+int SDLManager::mWindowWidth  = 0;
+int SDLManager::mWindowHeight = 0;
+
+
 // Non-existant SDLManager
 SDLManager::SDLManager()
 {
@@ -17,6 +22,7 @@ SDLManager::SDLManager()
     mSDLWindow = nullptr;
     mRenderer = nullptr;
     mMouseFocus = mKeyboardFocus = mFullscreen = mMinimized = false;
+    mWindowHeight = mWindowWidth = 0;
 }
 
 
@@ -53,7 +59,7 @@ SDLManager::~SDLManager()
 // Initialize SDL subsystem and create a window, with the given name, dimensions, and path to the window icon
 //
 // Returns false on failure
-bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 1280.f*/, float aHeight /*= 760.f*/, string aIconPath /*= ""*/)
+bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 1280.f*/, float aHeight /*= 760.f*/, string aIconPath /*= ""*/, Uint32 aWindowFlags /*= SDL_WINDOW_MAXIMIZED*/)
 {
     // Initialization flag
     bool success = true;
@@ -67,7 +73,8 @@ bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 128
     else
     {
         // Create window
-        mSDLWindow = SDL_CreateWindow(aTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<int>(aWidth), static_cast<int>(aHeight), SDL_WINDOW_SHOWN);
+        mSDLWindow = SDL_CreateWindow(aTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<int>(aWidth), static_cast<int>(aHeight), aWindowFlags);
+        SDL_GetWindowSize(mSDLWindow, &mWindowWidth, &mWindowHeight);
 
         if (mSDLWindow != nullptr)
         {

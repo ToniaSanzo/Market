@@ -31,6 +31,7 @@ private:
 
     // Our collection of threads
     vector<thread> threads;
+
 public:
     // Initializes game entities
     Game();
@@ -46,7 +47,4 @@ public:
 
     // Free the resources
     void close();
-    
-    // Update the state of a random rug
-    static void randomRugUpdate(int i, vector<Rug*>& rugs);
 };

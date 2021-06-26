@@ -1,6 +1,7 @@
 #pragma once
 #include "PCH.h"
 #include "NPC.h"
+#include "Game.h"
 
 
 // Number of NPCs constructed
@@ -21,18 +22,17 @@ NPC::NPC()
     mCurrFrame += mCurrStep;
 
     // Generate a random location for the NPC to spawn
-    mCurrX = rand() % WINDOW_WIDTH;
-    mCurrY = rand() % WINDOW_HEIGHT;
+    mCurrX = rand() % SDLManager::mWindowWidth;
+    mCurrY = rand() % SDLManager::mWindowHeight;
 
     // Generate a random location to walk too
-    mTargetX = rand() % WINDOW_WIDTH;
-    mTargetY = rand() % WINDOW_HEIGHT;
+    mTargetX = rand() % SDLManager::mWindowWidth;
+    mTargetY = rand() % SDLManager::mWindowHeight;
     bNewWalkLocation = false;
 
     // Set random movement speed of the NPC
     mSpeed = (rand() % static_cast<int>(MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
     mAnimationSpeed = ((((MAX_ANIMATION_SPEED + MAX_SPEED) - mSpeed) * .01f) * 3.5f) + .15f;
-    cout << "NPC[" << mNPCIdx << "]: mSpeed is [" << mSpeed << "]pxl/sec and mAnimationSpeed is [" << mAnimationSpeed << "]\n" << "Current location {x: " << mCurrX << ", y: " << mCurrY << "} Target Location {x: " << mTargetX << ", y: " << mTargetY << "}\n\n" ; 
     mCurrAnimTime = 0;
 
     mTexturePtr = nullptr;
@@ -91,11 +91,13 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
     // Whether the trade state changed and we need to update the current frame
     bool bUpdateFrame = false;
     
+    cout << "mTargetLocation{x: " << mTargetX << ", y: " << mTargetY << "} mCurrentLocation{x: " << mCurrX << ", y: " << mCurrY << "}\n";
+
     // Generate a new target location to walk to based on if the target location was reached
     if (bNewWalkLocation)
     {
-        mTargetX = aRandomX * WINDOW_WIDTH;
-        mTargetY = aRandomY * WINDOW_HEIGHT;
+        mTargetX = aRandomX * SDLManager::mWindowWidth;
+        mTargetY = aRandomY * SDLManager::mWindowHeight;
         bNewWalkLocation = false;
     }
     // Otherwise, continue walking towards the target location

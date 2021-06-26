@@ -33,7 +33,6 @@ private:
 
     // The rugs coordinates
     int x, y;
-
 public:
     // Default initialize the rug, the rug will not be properly initialized until it is
     // initialized with init(..)
@@ -43,7 +42,7 @@ public:
     ~Rug();
 
     // Properly initialize the rug 
-    bool init(Texture* aTxtrPtr, SDL_Rect* aTxtrFrames);
+    bool init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[]);
 
     // Draw the rug to the screen
     void render();

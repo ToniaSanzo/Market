@@ -48,14 +48,10 @@ enum class ETradeState
 #define NPC_TRADE_FRAMES 2
 
 // Metadata about the beahavior of the NPC
-#define MIN_SPEED 10.f
-#define MAX_SPEED 30.f
+#define MIN_SPEED .3f
+#define MAX_SPEED 1.5f
 #define MAX_ANIMATION_SPEED .2f
 #define NPC_TARGET_LOCATION_RANGE 8
-
-// Metadata about the window
-#define WINDOW_WIDTH 1280
-#define WINDOW_HEIGHT 760
 
 // Absolute value function
 #define ABS(N) ((N < 0) ? (-N) : (N))

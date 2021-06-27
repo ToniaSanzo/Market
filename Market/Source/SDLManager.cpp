@@ -73,7 +73,7 @@ bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 128
     else
     {
         // Create window
-        mSDLWindow = SDL_CreateWindow(aTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<int>(aWidth), static_cast<int>(aHeight), aWindowFlags);
+        mSDLWindow = SDL_CreateWindow(aTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<uint16_t>(aWidth), static_cast<uint16_t>(aHeight), aWindowFlags);
         SDL_GetWindowSize(mSDLWindow, &mWindowWidth, &mWindowHeight);
 
         if (mSDLWindow != nullptr)
@@ -110,7 +110,7 @@ bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 128
             SDL_SetRenderDrawColor(mRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
             // Initialize PNG loading
-            int imgFlags = IMG_INIT_PNG;
+            uint16_t imgFlags = IMG_INIT_PNG;
             if (!(IMG_Init(imgFlags) & imgFlags))
             {
                 cout << "SDL_image could not initialzie! SDL_image Error: " << IMG_GetError() << "\n";

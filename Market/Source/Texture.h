@@ -22,10 +22,7 @@ public:
     ~Texture();
 
     // Loads image at specified path
-    bool loadFromFile(std::string path, mutex* mtx);
-
-    // Creates image from font string
-    bool loadFromRenderedText(std::string textureText, SDL_Color textColor);
+    bool loadFromFile(std::string path);
 
     // Deallocates texture
     void free();
@@ -40,17 +37,17 @@ public:
     void setAlpha(Uint8 alpha);
 
     // Renders texture at given point
-    void render(int x, int y, SDL_Rect* clip = nullptr, double angle = 0.0, SDL_Point* center = nullptr, SDL_RendererFlip = SDL_FLIP_NONE);
+    void render(uint16_t x, uint16_t y, SDL_Rect* clip = nullptr, double angle = 0.0, SDL_Point* center = nullptr, SDL_RendererFlip = SDL_FLIP_NONE);
 
     // Initialize UTexture
-    void initTexture(SDL_Renderer* rend);
+    bool initTexture(SDL_Renderer* rend);
 
     // update the window dimensions
     void updateWindowScale(double sc);
 
     // Gets image dimensions
-    int getHeight() { return mHeight; }
-    int getWidth() { return mWidth; }
+    uint16_t getHeight() { return mHeight; }
+    uint16_t getWidth() { return mWidth; }
     double getScale() { return mScale; }
     double getWindowScale() { return mWindowScale; }
 
@@ -58,12 +55,14 @@ public:
     void updateScale(double sc);
 private:
     // The actual hardware texture, and the games renderer
+    static mutex mRenderingMtx;
+    mutex mTextureMtx;
     SDL_Texture* mTexture;
     SDL_Renderer* mRenderer;
-    mutex* mTextureMtx;
 
     // Image dimensions
-    int mWidth, mHeight;
+    uint16_t mWidth;
+    uint16_t mHeight;
     double mWindowScale;
     double mScale;
 };

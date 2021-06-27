@@ -49,7 +49,7 @@ bool Game::init(SDLManager* aSDL)
         mRugTexture.updateScale(3);
 
         // Set the rug's frames dimensions
-        for (int col = 0; col < RUG_FRAMES; ++col)
+        for (uint16_t col = 0; col < RUG_FRAMES; ++col)
         {
             mRugFrames[col].x = col * RUG_FRAME_WIDTH;
             mRugFrames[col].y = 0;
@@ -58,7 +58,7 @@ bool Game::init(SDLManager* aSDL)
         }
 
         // Create 1 unique rugs
-        for (int i = 0; i < 1; ++i)
+        for (uint16_t i = 0; i < 1; ++i)
         {
             rugs.push_back(new Rug());
             rugs[i]->init(&mRugTexture, mRugFrames);
@@ -77,9 +77,9 @@ bool Game::init(SDLManager* aSDL)
         mNPCTexture.updateScale(3);
 
         // Set the npc's frames dimensions
-        for (int row = 0; row < NPC_FRAMES_ROWS; ++row)
+        for (uint16_t row = 0; row < NPC_FRAMES_ROWS; ++row)
         {
-            for (int col = 0; col < NPC_FRAMES_COLS; ++col)
+            for (uint16_t col = 0; col < NPC_FRAMES_COLS; ++col)
             {
                 mNPCFrames[(row * NPC_FRAMES_COLS) + col].x = col * NPC_FRAME_WIDTH;
                 mNPCFrames[(row * NPC_FRAMES_COLS) + col].y = row * NPC_FRAME_HEIGHT;
@@ -89,7 +89,7 @@ bool Game::init(SDLManager* aSDL)
         }
 
         // Create 1 unique NPCs
-        for (int i = 0; i < 1; ++i)
+        for (uint16_t i = 0; i < 1; ++i)
         {
             npcs.push_back(new NPC());
             npcs[i]->init(&mNPCTexture, mNPCFrames);
@@ -105,10 +105,60 @@ bool Game::init(SDLManager* aSDL)
 }
 
 
+// Handle's user events events
+bool Game::handleEvent(SDL_Event& e)
+{
+    if (e.type == SDL_QUIT)
+    {
+        return true;
+    }
+
+    // If someone pressed a key
+    if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+    {
+        switch (e.key.keysym.sym)
+        {
+        case SDLK_ESCAPE:
+            return true;
+            break;
+
+        case SDLK_1:
+            cout << "SLOW ALL NPCS!\n";
+            for (NPC* npc : npcs)
+            {
+                npc->setSpeed(0);
+            }
+            break;
+        case SDLK_2:
+            cout << "RANDOMIZE THE SPEED OF ALL NPCS!\n";
+            for (NPC* npc : npcs)
+            {
+                npc->setSpeed(static_cast<float>(rand()) / RAND_MAX);
+            }
+            break;
+
+        case SDLK_3:
+            cout << "SPEED UP ALL NPCS!\n";
+            for (NPC* npc : npcs)
+            {
+                npc->setSpeed(1);
+            }
+            break;
+
+        default:
+            cout << "Unhandled Key!";
+            break;
+        }
+    }
+
+    return false;
+}
+
+
 // Update the game world
 void Game::update(const float& dt)
 {
-    for (int i = 0; i < 1; ++i)
+    for (uint16_t i = 0; i < 1; ++i)
     {
         threads.push_back(thread(&NPC::update, npcs[i], dt, RANDOM(), RANDOM()));
     }
@@ -125,7 +175,7 @@ void Game::update(const float& dt)
 void Game::render()
 {
     // Render the rugs and npcs
-    for (int i = 0; i < 1; ++i)
+    for (uint16_t i = 0; i < 1; ++i)
     {
         threads.push_back(thread(&Rug::render, rugs[i]));
         threads.push_back(thread(&NPC::render, npcs[i]));

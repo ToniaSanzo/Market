@@ -11,7 +11,7 @@
 
 
 // Number of rugs constructed
-int Rug::sRugCount = 0;
+uint16_t Rug::sRugCount = 0;
 
 
 // Default initialize the rug, the rug will not be properly initialized until it is
@@ -84,7 +84,7 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[])
 void Rug::render()
 {
     lock_guard<mutex> lock(mStateMtx);
-    mTexturePtr->render(x, y, &mTextureFrames[static_cast<int>(mState)]);
+    mTexturePtr->render(x, y, &mTextureFrames[static_cast<uint16_t>(mState)]);
 }
 
 

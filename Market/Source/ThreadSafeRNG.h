@@ -26,7 +26,7 @@ double RANDOM() {
  * This function again locks the mutex for when a thread decides
  * to re-seed the RNG.
  */
-void Seed(int seed) {
+void Seed(uint16_t seed) {
     std::lock_guard<std::mutex> lock(my_rng_mutex);
     my_rng.seed(seed);
     // mutex is released when lock goes out of scope

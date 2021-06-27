@@ -30,10 +30,10 @@ private:
     ETradeState mState;
 
     // Number of NPCs constructed
-    static int sNPCCount;
+    static uint16_t sNPCCount;
 
     // The index of this NPC
-    int mNPCIdx;
+    uint16_t mNPCIdx;
 
     // Pointer to the NPCs texture, and SDL_Rect array
     Texture* mTexturePtr;
@@ -44,8 +44,8 @@ private:
 
     // The current step the NPC animation is making (left, or right),
     // and the index of the frame to render to the screen
-    int mCurrStep;
-    int mCurrFrame;
+    uint16_t mCurrStep;
+    uint16_t mCurrFrame;
 
     // The speed the NPC walks, time it takes to 
     // alternate animation speed, and time since the
@@ -54,14 +54,22 @@ private:
     float mAnimationSpeed;
     float mCurrAnimTime;
 
-    // The location the NPC want's to walk to, 
+    // The location the NPC want's to walk to, the direction
+    // the NPC has to walk to get there 
     // and whether we need to generate a new location to walk
     // to.
     float mTargetX, mTargetY;
+    Vector3 mDirection;
     bool bNewWalkLocation;
 
     // The NPC's coordinates
     float mCurrX, mCurrY;
+
+    // Generate new walk location of the NPC  
+    void setNewWalkLocation(const float& aRandomX, const float& aRandomY);
+
+    // Set NPC's direction
+    void setDirection();
 
 public:
     // Default initialize the NPC, the NPC will not be properly initialized until it is
@@ -82,4 +90,8 @@ public:
     
     // Returns the EEntityType of the NPC
     EEntityType getType();
+    
+    // Set NPC's speed, and animation speed giving a value between 0 and 1, clamped between 
+    // the (MIN_SPEED | MIN_ANIMATION_SPEED) and (MAX_SPEED | MAX_ANIMATION_SPEED)
+    void setSpeed(const float&);
 };

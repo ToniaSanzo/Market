@@ -39,6 +39,9 @@ public:
     // Initialize the game objects
     bool init(SDLManager*);
 
+    // Handle's user events events
+    bool handleEvent(SDL_Event&);
+
     // Updates the game world
     void update(const float&);
 

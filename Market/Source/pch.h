@@ -9,7 +9,6 @@
 #pragma once
 using namespace std;    // This set's the namespace for the entire project
 
-
 // C++ Standard Libraries
 #include <string>
 #include <iostream>
@@ -36,22 +35,36 @@ enum class ETradeState
 };
 
 // Metadata about rug.png spritesheet
-#define RUG_FRAMES 3
-#define RUG_FRAME_WIDTH 64
-#define RUG_FRAME_HEIGHT 64
+constexpr uint16_t RUG_FRAMES       = 3;
+constexpr uint16_t RUG_FRAME_WIDTH  = 64;
+constexpr uint16_t RUG_FRAME_HEIGHT = 64;
 
 // Metadata about npc.png spritesheet
-#define NPC_FRAMES_COLS 6
-#define NPC_FRAMES_ROWS 3
-#define NPC_FRAME_WIDTH 96
-#define NPC_FRAME_HEIGHT 32
-#define NPC_TRADE_FRAMES 2
+constexpr uint16_t NPC_FRAMES_COLS  = 6;
+constexpr uint16_t NPC_FRAMES_ROWS  = 3;
+constexpr uint16_t NPC_FRAME_WIDTH  = 96;
+constexpr uint16_t NPC_FRAME_HEIGHT = 32;
+constexpr uint16_t NPC_TRADE_FRAMES = 2;
 
 // Metadata about the beahavior of the NPC
-#define MIN_SPEED .3f
-#define MAX_SPEED 1.5f
-#define MAX_ANIMATION_SPEED .2f
-#define NPC_TARGET_LOCATION_RANGE 8
+constexpr float MIN_SPEED               = 125.f;
+constexpr float MAX_SPEED               = 330.f;
+constexpr float MAX_ANIMATION_SPEED     = .15f;
+constexpr float MIN_ANIMATION_SPEED     = .55f;
+constexpr uint16_t NPC_TARGET_LOCATION_RANGE = 8;
+
+// Number of NPCs and rugs to generate
+constexpr uint16_t NPC_COUNT = 5;
+constexpr uint16_t RUG_COUNT = 3;
 
 // Absolute value function
 #define ABS(N) ((N < 0) ? (-N) : (N))
+
+
+// 3D vector
+struct Vector3
+{
+    float x = 0;
+    float y = 0;
+    float z = 0;
+};

@@ -2,12 +2,14 @@
 #include "Texture.h"
 
 
+mutex Texture::mRenderingMtx;
+
+
 // Texture constructor
-Texture::Texture() {
-    // Initialize
+Texture::Texture() 
+{
     mTexture     = nullptr;
     mRenderer    = nullptr;
-    mTextureMtx  = nullptr;
     mWidth       = 0;
     mHeight      = 0;
     mScale       = 1;
@@ -17,7 +19,8 @@ Texture::Texture() {
 
 
 // Texture destructor
-Texture::~Texture() {
+Texture::~Texture() 
+{
     // Deallocate texture if the texture exists
     free();
 
@@ -29,22 +32,15 @@ Texture::~Texture() {
 
 
 // Load Texture from a file
-bool Texture::loadFromFile(std::string path, mutex* mtx) {
+bool Texture::loadFromFile(std::string path) 
+{
     // Get rid of preexisting texture
     free();
 
     // Success flag
     bool success = true;
+    lock_guard<mutex> lock(mTextureMtx);
 
-    if (!mtx)
-    {
-        cout << "mutex* argument cannot be the nullptr!\n";
-        return false;
-    }
-    else
-    {
-        mTextureMtx = mtx;
-    }
 
     // Exit prematuraly if Texture has not been properly initialized
     if (!mRenderer) {
@@ -66,6 +62,7 @@ bool Texture::loadFromFile(std::string path, mutex* mtx) {
         SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
 
         // Create texture from surface pixels
+        lock_guard<mutex> lock(mRenderingMtx);
         newTexture = SDL_CreateTextureFromSurface(mRenderer, loadedSurface);
         if (!newTexture) {
             cout << "Unable to create texture from " << path.c_str() << "! SDL Error: " << SDL_GetError() << "\n";
@@ -89,6 +86,8 @@ bool Texture::loadFromFile(std::string path, mutex* mtx) {
 
 // Deallocate the texture
 void Texture::free() {
+    lock_guard<mutex> lock(mTextureMtx);
+
     // Free texture if it exists
     if (mTexture) 
     {
@@ -98,38 +97,39 @@ void Texture::free() {
         mHeight = 0;
         mScale = 0;
     }
-
-    // Mutex is not explicitly deleted because it's managed in Game.cpp
-    if (mTextureMtx)
-    {
-        mTextureMtx = nullptr;
-    }
 }
 
 
 // Define whether this texture can blend
-void Texture::setColor(Uint8 r, Uint8 g, Uint8 b) {
+void Texture::setColor(Uint8 r, Uint8 g, Uint8 b) 
+{
+    lock_guard<mutex> lock(mTextureMtx);
+
     // Modulate texture
     SDL_SetTextureColorMod(mTexture, r, g, b);
 }
 
 
 // Define whether this texture can blend
-void Texture::setBlendMode(SDL_BlendMode blending) {
+void Texture::setBlendMode(SDL_BlendMode blending) 
+{
+    lock_guard<mutex> lock(mTextureMtx);
     // Set blending function
     SDL_SetTextureBlendMode(mTexture, blending);
 }
 
 
 // Define the texture's opacity
-void Texture::setAlpha(Uint8 alpha) {
+void Texture::setAlpha(Uint8 alpha) 
+{
+    lock_guard<mutex> lock(mTextureMtx);
     // Modulate texture alpha
     SDL_SetTextureAlphaMod(mTexture, alpha);
 }
 
 
 // Render texture
-void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
+void Texture::render(uint16_t x, uint16_t y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
     // Set Rendering space and render to screen
     SDL_Rect renderQuad = { x, y, mWidth * mWindowScale, mHeight * mWindowScale };
@@ -141,19 +141,24 @@ void Texture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cent
     }
 
     // Render to screen
-    lock_guard<mutex> lock(*mTextureMtx);
+    lock_guard<mutex> lock(mRenderingMtx);
     SDL_RenderCopyEx(mRenderer, mTexture, clip, &renderQuad, angle, center, flip);
 }
 
 
 // initialize Texture with a renderer
-void Texture::initTexture(SDL_Renderer* rend) {
+bool Texture::initTexture(SDL_Renderer* rend) 
+{
+    lock_guard<mutex> lock(mRenderingMtx);
     mRenderer = rend;
+    return mRenderer;
 }
 
 
 // Set image scale
-void Texture::updateScale(double sc) {
+void Texture::updateScale(double sc) 
+{
+    lock_guard<mutex> lock(mTextureMtx);
     mScale = sc;
     mWidth = static_cast<double>(mWidth) * sc;
     mHeight = static_cast<double>(mHeight) * sc;
@@ -163,5 +168,6 @@ void Texture::updateScale(double sc) {
 // Update window scale
 void Texture::updateWindowScale(double sc)
 {
+    lock_guard<mutex> lock(mTextureMtx);
     mWindowScale = sc;
 }

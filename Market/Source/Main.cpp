@@ -35,10 +35,10 @@ int main(int argc, char* args[])
         SDL_Event e;
         
         // Timing variables
-        const int FPS = 60;
-        const int frameDelay = 1000 / FPS;
+        const uint16_t FPS = 60;
+        const uint16_t frameDelay = 1000 / FPS;
         Uint32 fStart;
-        int fTime;
+        uint16_t fTime;
         Uint32 pTime = SDL_GetTicks();
         Uint32 cTime = pTime;
 
@@ -52,10 +52,7 @@ int main(int argc, char* args[])
             // Handle events
             while (SDL_PollEvent(&e) != 0)
             {
-                if (e.type == SDL_QUIT || (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE))
-                {
-                    quit = true; 
-                }
+                quit = game.handleEvent(e); 
             }
 
             // Determine the amount of time in seconds since the last time update was called

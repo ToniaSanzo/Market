@@ -25,8 +25,8 @@ Rug::Rug()
     mState = static_cast<ETradeState>(rand() % 3);
 
     // Generate a random location for the rug to spawn
-    x = rand() % SDLManager::mWindowWidth;
-    y = rand() % SDLManager::mWindowHeight;
+    mLocation.x = rand() % SDLManager::mWindowWidth;
+    mLocation.y = rand() % SDLManager::mWindowHeight;
 
     // References used to render the rug
     mTexturePtr    = nullptr;
@@ -84,7 +84,7 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[])
 void Rug::render()
 {
     lock_guard<mutex> lock(mStateMtx);
-    mTexturePtr->render(x, y, &mTextureFrames[static_cast<uint16_t>(mState)]);
+    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[static_cast<uint16_t>(mState)]);
 }
 
 

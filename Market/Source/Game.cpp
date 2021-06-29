@@ -39,14 +39,14 @@ bool Game::init(SDLManager* aSDL)
 
     // Load the rugs shared resources
     mRugTexture.initTexture(sdl->getRenderer());
-    if (!mRugTexture.loadFromFile("assets/rug.png", &mTextureMutex))
+    if (!mRugTexture.loadFromFile("assets/rug.png"))
     {
         cout << "Failed to load rug sprite sheet!\n";
         success = false;
     }
     else
     {
-        mRugTexture.updateScale(3);
+        mRugTexture.updateScale(RUG_SCALE);
 
         // Set the rug's frames dimensions
         for (uint16_t col = 0; col < RUG_FRAMES; ++col)
@@ -58,7 +58,7 @@ bool Game::init(SDLManager* aSDL)
         }
 
         // Create 1 unique rugs
-        for (uint16_t i = 0; i < 1; ++i)
+        for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
         {
             rugs.push_back(new Rug());
             rugs[i]->init(&mRugTexture, mRugFrames);
@@ -67,14 +67,14 @@ bool Game::init(SDLManager* aSDL)
 
     // Load the NPCs shared resources
     mNPCTexture.initTexture(sdl->getRenderer());
-    if (!mNPCTexture.loadFromFile("assets/npc.png", &mTextureMutex))
+    if (!mNPCTexture.loadFromFile("assets/npc.png"))
     {
         cout << "Failed to load rug sprite sheet!\n";
         success = false;
     }
     else
     {
-        mNPCTexture.updateScale(3);
+        mNPCTexture.updateScale(NPC_SCALE);
 
         // Set the npc's frames dimensions
         for (uint16_t row = 0; row < NPC_FRAMES_ROWS; ++row)
@@ -89,7 +89,7 @@ bool Game::init(SDLManager* aSDL)
         }
 
         // Create 1 unique NPCs
-        for (uint16_t i = 0; i < 1; ++i)
+        for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
         {
             npcs.push_back(new NPC());
             npcs[i]->init(&mNPCTexture, mNPCFrames);
@@ -145,8 +145,40 @@ bool Game::handleEvent(SDL_Event& e)
             }
             break;
 
+        case SDLK_i:
+            cout << "NPCS MOVE TO TOP LEFT!";
+            for (NPC* npc : npcs)
+            {
+                npc->setNewWalkLocation(0, 0);
+            }
+            break;
+
+        case SDLK_o:
+            cout << "NPCS MOVE TO TOP RIGHT!";
+            for (NPC* npc : npcs)
+            {
+                npc->setNewWalkLocation(SDLManager::mWindowWidth, 0);
+            }
+            break;
+
+        case SDLK_k:
+            cout << "NPCS MOVE TO BOTTOM LEFT!";
+            for (NPC* npc : npcs)
+            {
+                npc->setNewWalkLocation(0, SDLManager::mWindowHeight);
+            }
+            break;
+
+        case SDLK_l:
+            cout << "NPCS MOVE TO BOTTOM RIGHT!";
+            for (NPC* npc : npcs)
+            {
+                npc->setNewWalkLocation(SDLManager::mWindowWidth, SDLManager::mWindowHeight);
+            }
+            break;
+
         default:
-            cout << "Unhandled Key!";
+            cout << "Unhandled Key!\n";
             break;
         }
     }
@@ -158,7 +190,7 @@ bool Game::handleEvent(SDL_Event& e)
 // Update the game world
 void Game::update(const float& dt)
 {
-    for (uint16_t i = 0; i < 1; ++i)
+    for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
     {
         threads.push_back(thread(&NPC::update, npcs[i], dt, RANDOM(), RANDOM()));
     }
@@ -175,7 +207,7 @@ void Game::update(const float& dt)
 void Game::render()
 {
     // Render the rugs and npcs
-    for (uint16_t i = 0; i < 1; ++i)
+    for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
     {
         threads.push_back(thread(&Rug::render, rugs[i]));
         threads.push_back(thread(&NPC::render, npcs[i]));

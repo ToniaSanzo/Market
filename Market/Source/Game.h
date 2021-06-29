@@ -29,6 +29,9 @@ private:
     SDL_Rect mNPCFrames[NPC_FRAMES_COLS * NPC_FRAMES_ROWS];
     vector<NPC*> npcs;
 
+    // The background texture
+    Texture mBackgroundTexture;
+
     // Our collection of threads
     vector<thread> threads;
 

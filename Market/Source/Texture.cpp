@@ -129,15 +129,15 @@ void Texture::setAlpha(Uint8 alpha)
 
 
 // Render texture
-void Texture::render(uint16_t x, uint16_t y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
+void Texture::render(int16_t x, int16_t y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip)
 {
     // Set Rendering space and render to screen
-    SDL_Rect renderQuad = { x, y, mWidth * mWindowScale, mHeight * mWindowScale };
+    SDL_Rect renderQuad = { x, y, static_cast<int>(mWidth * mWindowScale), static_cast<int>(mHeight * mWindowScale) };
 
     // Set clip rendering dimensions
     if (clip != nullptr) {
-        renderQuad.w = clip->w * mScale * mWindowScale;
-        renderQuad.h = clip->h * mScale * mWindowScale;
+        renderQuad.w = static_cast<int>(clip->w * mScale * mWindowScale);
+        renderQuad.h = static_cast<int>(clip->h * mScale * mWindowScale);
     }
 
     // Render to screen
@@ -160,8 +160,8 @@ void Texture::updateScale(double sc)
 {
     lock_guard<mutex> lock(mTextureMtx);
     mScale = sc;
-    mWidth = static_cast<double>(mWidth) * sc;
-    mHeight = static_cast<double>(mHeight) * sc;
+    mWidth = static_cast<uint16_t>(static_cast<double>(mWidth) * sc);
+    mHeight = static_cast<uint16_t>(static_cast<double>(mHeight) * sc);
 }
 
 

@@ -22,11 +22,11 @@ NPC::NPC()
     mCurrFrame += mCurrStep;
 
     // Generate a random location for the NPC to spawn
-    mCurrX = rand() % SDLManager::mWindowWidth;
-    mCurrY = rand() % SDLManager::mWindowHeight;
+    mCurrLocation.x = static_cast<float>(rand() % SDLManager::mWindowWidth);
+    mCurrLocation.y = static_cast<float>(rand() % SDLManager::mWindowHeight);
 
     // Generate a random location to walk too
-    setNewWalkLocation(rand() % SDLManager::mWindowWidth, rand() % SDLManager::mWindowHeight);
+    setNewWalkLocation(static_cast<float>(rand() % SDLManager::mWindowWidth), static_cast<float>(rand() % SDLManager::mWindowHeight));
 
     // Set random movement speed of the NPC
     mSpeed = (rand() % static_cast<uint16_t>(MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
@@ -101,8 +101,8 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
     // Otherwise, continue walking towards the target location
     else
     {
-        float changeInX = mTargetX - mCurrX;
-        float changeInY = mTargetY - mCurrY;
+        float changeInX = mTargetLocation.x - mCurrLocation.x;
+        float changeInY = mTargetLocation.y - mCurrLocation.y;
 
         // If NPC is in range of new location set the bNewWalkLocation flag
         if ((changeInX * changeInX) + (changeInY * changeInY) < (NPC_TARGET_LOCATION_RANGE * NPC_TARGET_LOCATION_RANGE))
@@ -112,8 +112,13 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
         // Otherwise, move closer to the target location
         else
         {
-            mCurrX += mDirection.x * (dt * mSpeed);
-            mCurrY += mDirection.y * (dt * mSpeed);
+            mCurrLocation.x += mDirection.x * (dt * mSpeed);
+            mCurrLocation.y += mDirection.y * (dt * mSpeed);
+
+            if (mCurrLocation.x < 0 || mCurrLocation.x > SDLManager::mWindowWidth || mCurrLocation.y < 0 || mCurrLocation.y > SDLManager::mWindowHeight)
+            {
+                setDirection();
+            }
         }
     }
 
@@ -141,7 +146,15 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
 // Display NPC to user
 void NPC::render()
 {
-    mTexturePtr->render(mCurrX - (NPC_FRAME_WIDTH / 2), mCurrY - (NPC_FRAME_HEIGHT / 2), &mTextureFrames[static_cast<uint16_t>(mCurrFrame)]);
+    mTexturePtr->render
+    (
+        static_cast<int16_t>(mCurrLocation.x - ((NPC_FRAME_WIDTH * NPC_SCALE) / 2.f)),
+        static_cast<int16_t>(mCurrLocation.y - ((NPC_FRAME_HEIGHT * NPC_SCALE) / 2.f)),
+        &mTextureFrames[static_cast<uint16_t>(mCurrFrame)],
+        0,
+        nullptr,
+        (mDirection.x < 0)? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL
+    );
 }
 
 
@@ -155,9 +168,14 @@ EEntityType NPC::getType()
 // Generate new walk location of the NPC  
 void NPC::setNewWalkLocation(const float& aRandomX, const float& aRandomY)
 {
+    if (aRandomX > SDLManager::mWindowWidth || aRandomY > SDLManager::mWindowHeight || aRandomX < 0 || aRandomY < 0)
+    {
+        cout << "LOCATION SET OUT OF BOUNDS! {x: " << aRandomX << ", y: " << aRandomY << "}\n";
+    }
+
     // Set target location variables
-    mTargetX = aRandomX;
-    mTargetY = aRandomY;
+    mTargetLocation.x = aRandomX;
+    mTargetLocation.y = aRandomY;
 
     setDirection();
 
@@ -170,11 +188,11 @@ void NPC::setNewWalkLocation(const float& aRandomX, const float& aRandomY)
 void NPC::setDirection()
 {
     // The vector between current and target location
-    float deltaX = mTargetX - mCurrX;
-    float deltaY = mTargetY - mCurrY;
+    float deltaX = mTargetLocation.x - mCurrLocation.x;
+    float deltaY = mTargetLocation.y - mCurrLocation.y;
 
     // Normalize the vector
-    float hypotenuse = sqrt((pow(deltaX, 2) + pow(deltaY, 2)));
+    float hypotenuse = static_cast<float>(sqrt((pow(deltaX, 2) + pow(deltaY, 2))));
     mDirection.x = deltaX / hypotenuse;
     mDirection.y = deltaY / hypotenuse;
 }
@@ -192,5 +210,5 @@ void NPC::setSpeed(const float& ratio)
     mSpeed = (speedRange * ratio) + MIN_SPEED;
     mAnimationSpeed = (animSpeedRange * (1.f - ratio)) + MAX_ANIMATION_SPEED;
 
-    cout << "mSpeed: " << mSpeed << ", mAnimationSpeed: " << mAnimationSpeed;
+    cout << "mSpeed: " << mSpeed << ", mAnimationSpeed: " << mAnimationSpeed << "\n";
 }

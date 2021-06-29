@@ -82,5 +82,8 @@
     <ClInclude Include="Source\ThreadSafeRNG.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

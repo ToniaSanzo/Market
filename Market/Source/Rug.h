@@ -32,7 +32,7 @@ private:
     SDL_Rect* mTextureFrames;
 
     // The rugs coordinates
-    uint16_t x, y;
+    Vector3 mLocation;
 public:
     // Default initialize the rug, the rug will not be properly initialized until it is
     // initialized with init(..)

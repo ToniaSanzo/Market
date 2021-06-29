@@ -58,15 +58,13 @@ private:
     // the NPC has to walk to get there 
     // and whether we need to generate a new location to walk
     // to.
-    float mTargetX, mTargetY;
+    Vector3 mTargetLocation;
     Vector3 mDirection;
     bool bNewWalkLocation;
 
     // The NPC's coordinates
-    float mCurrX, mCurrY;
+    Vector3 mCurrLocation;
 
-    // Generate new walk location of the NPC  
-    void setNewWalkLocation(const float& aRandomX, const float& aRandomY);
 
     // Set NPC's direction
     void setDirection();
@@ -87,6 +85,9 @@ public:
 
     // Update the NPC
     void update(const float& dt, const float& aRandomX, const float& aRandomY);
+    
+    // Generate new walk location of the NPC  
+    void setNewWalkLocation(const float& aRandomX, const float& aRandomY);
     
     // Returns the EEntityType of the NPC
     EEntityType getType();

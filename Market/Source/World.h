@@ -8,9 +8,10 @@
 */
 #pragma once
 #include "PCH.h"
+#include "Entity.h"
 
 
 class World
 {
-    
+    vector<Entity*> mWorld;
 };

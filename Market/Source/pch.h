@@ -51,12 +51,16 @@ constexpr uint16_t NPC_FRAME_HEIGHT = 32;
 constexpr uint16_t NPC_TRADE_FRAMES = 2;
 constexpr uint16_t NPC_SCALE        = 3;
 
-// Metadata about the beahavior of the NPC
+// Metadata about the behavior of the NPC
 constexpr float MIN_SPEED                    = 125.f;
 constexpr float MAX_SPEED                    = 330.f;
 constexpr float MAX_ANIMATION_SPEED          = .15f;
 constexpr float MIN_ANIMATION_SPEED          = .55f;
 constexpr uint16_t NPC_TARGET_LOCATION_RANGE = 18;
+
+// Metadata about the dimensions of the background
+constexpr uint16_t BACKGROUND_WIDTH  = 640;
+constexpr uint16_t BACKGROUND_HEIGHT = 380;
 
 // Number of NPCs and rugs to generate
 constexpr uint16_t NPC_COUNT = 5;
@@ -65,7 +69,6 @@ constexpr uint16_t RUG_COUNT = 3;
 // Absolute value function
 #define ABS(N) ((N < 0) ? (-N) : (N))
 
-
 // 3D vector
 struct Vector3
 {
@@ -73,3 +76,27 @@ struct Vector3
     float y = 0;
     float z = 0;
 };
+
+
+//// Math function
+//namespace MATH
+//{
+//    // given to numbers determine the GCD of them using 
+//    // the Euclidean algorithm
+//    int16_t getGCD(int16_t a, int16_t b)
+//    {
+//        int r = a % b;
+//        if (!r)
+//        {
+//            return b;
+//        }
+//        getGCD(b, r);
+//    }
+//
+//    // Reduce a fraction to it's least common denominator
+//    Vector3 reduceFraction(int16_t aNumerator, int16_t aDenominator)
+//    {
+//        int gcd = getGCD(aNumerator, aDenominator);
+//        return Vector3{ static_cast<float>(aNumerator / gcd), static_cast<float>(aDenominator / gcd), 0 };
+//    }
+//}

@@ -168,7 +168,6 @@
   <ItemGroup>
     <ClInclude Include="Source\Entity.h" />
     <ClInclude Include="Source\Game.h" />
-    <ClInclude Include="Source\Math.h" />
     <ClInclude Include="Source\NPC.h" />
     <ClInclude Include="Source\PCH.h" />
     <ClInclude Include="Source\Rug.h" />

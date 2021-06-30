@@ -96,6 +96,26 @@ bool Game::init(SDLManager* aSDL)
         }
     }
 
+    // Load the background and scale it to fit the screen
+    mBackgroundTexture.initTexture(sdl->getRenderer());
+    if (!mBackgroundTexture.loadFromFile("assets/bckgrnd.png"))
+    {
+        cout << "Failed to load the background texture!\n";
+        success = false;
+    }
+    else
+    {
+        // Determine the scale of the background to fit the screen
+        float wRatio = static_cast<float>(SDLManager::mWindowWidth) / static_cast<float>(BACKGROUND_WIDTH);
+        float hRatio = static_cast<float>(SDLManager::mWindowHeight) / static_cast<float>(BACKGROUND_HEIGHT);
+
+        float backgroundScale = (wRatio > hRatio) ? (wRatio) : (hRatio);
+
+        cout << "Background Texture Scale is " << backgroundScale << "\n";
+        mBackgroundTexture.updateScale(backgroundScale);
+        
+    }
+
     
     // Seed the thread safe random number with a random number
     srand(static_cast<unsigned>(time(nullptr)));
@@ -206,6 +226,8 @@ void Game::update(const float& dt)
 // Render the game world
 void Game::render()
 {
+    mBackgroundTexture.render(0, 0);
+
     // Render the rugs and npcs
     for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
     {

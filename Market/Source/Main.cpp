@@ -4,7 +4,11 @@
 * Date: 6/7/21
 * 
 * Main.cpp contains the main entry point of the program, and manages the SDL
-* subsystem.
+* subsystem. 
+* 
+* WARNING!!! Uses floats and int16_t so these are small values and can result
+*            in unintended integer wrapping not intended to be a full game 
+*            engine!
 */
 #include "PCH.h"
 #include "SDLManager.h"

@@ -168,10 +168,6 @@ EEntityType NPC::getType()
 // Generate new walk location of the NPC  
 void NPC::setNewWalkLocation(const float& aRandomX, const float& aRandomY)
 {
-    if (aRandomX > SDLManager::mWindowWidth || aRandomY > SDLManager::mWindowHeight || aRandomX < 0 || aRandomY < 0)
-    {
-        cout << "LOCATION SET OUT OF BOUNDS! {x: " << aRandomX << ", y: " << aRandomY << "}\n";
-    }
 
     // Set target location variables
     mTargetLocation.x = aRandomX;
@@ -209,6 +205,4 @@ void NPC::setSpeed(const float& ratio)
     // using the ratio, set mSpeed and the mAnimationSpeed
     mSpeed = (speedRange * ratio) + MIN_SPEED;
     mAnimationSpeed = (animSpeedRange * (1.f - ratio)) + MAX_ANIMATION_SPEED;
-
-    cout << "mSpeed: " << mSpeed << ", mAnimationSpeed: " << mAnimationSpeed << "\n";
 }

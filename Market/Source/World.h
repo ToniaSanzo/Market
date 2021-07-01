@@ -13,5 +13,13 @@
 
 class World
 {
+private:
     vector<Entity*> mWorld;
+    
+public:
+    // Default constructor
+    World();
+
+    // Initialize the mWorld vector
+    bool init();
 };

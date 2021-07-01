@@ -7,8 +7,8 @@
 */
 #include "PCH.h"
 #include "Game.h"
-#include <SDL.h>
 #include "ThreadSafeRNG.h"
+
 
 
 // Initialize game entities
@@ -112,10 +112,14 @@ bool Game::init(SDLManager* aSDL)
         float backgroundScale = (wRatio > hRatio) ? (wRatio) : (hRatio);
 
         cout << "Background Texture Scale is " << backgroundScale << "\n";
-        mBackgroundTexture.updateScale(backgroundScale);
-        
+        mBackgroundTexture.updateScale(backgroundScale); 
     }
 
+    if (!mWorld.init())
+    {
+        cout << "World was not properly initialized!\n";
+        success = false;
+    }
     
     // Seed the thread safe random number with a random number
     srand(static_cast<unsigned>(time(nullptr)));

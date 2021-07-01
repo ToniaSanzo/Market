@@ -10,6 +10,8 @@
 #include "SDLManager.h"
 #include "Rug.h"
 #include "NPC.h"
+#include "World.h"
+
 
 class Game
 {
@@ -34,6 +36,9 @@ private:
 
     // Our collection of threads
     vector<thread> threads;
+
+    // 2D array with every elements current position and 
+    World mWorld;
 
 public:
     // Initializes game entities

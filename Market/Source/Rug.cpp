@@ -8,6 +8,7 @@
 #include "PCH.h"
 #include "Rug.h"
 #include "SDLManager.h"
+#include "World.h"
 
 
 // Number of rugs constructed
@@ -25,8 +26,8 @@ Rug::Rug()
     mState = static_cast<ETradeState>(rand() % 3);
 
     // Generate a random location for the rug to spawn
-    mLocation.x = rand() % SDLManager::mWindowWidth;
-    mLocation.y = rand() % SDLManager::mWindowHeight;
+    mLocation.x = 0;
+    mLocation.y = 0;
 
     // References used to render the rug
     mTexturePtr    = nullptr;
@@ -51,7 +52,7 @@ Rug::~Rug()
 
 
 // Properly initialize the rug 
-bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[])
+bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
 {
     // Initialization success flag
     bool success = true;
@@ -64,17 +65,24 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[])
     else
     {
         mTexturePtr = aTxtrPtr;
+        
+        if (!aTxtrFrames)
+        {
+            cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+            success = false;
+        }
+        else
+        {
+            mTextureFrames = aTxtrFrames;
+        
+            // Generate a random location for the rug to spawn
+            mLocation.x = rand() % SDLManager::mWindowWidth;
+            mLocation.y = rand() % SDLManager::mWindowHeight;
+
+            mWorld.addEntity()
+        }
     }
 
-    if (!aTxtrFrames)
-    {
-        cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
-        success = false;
-    }
-    else
-    {
-        mTextureFrames = aTxtrFrames;
-    }
 
     return success;
 }

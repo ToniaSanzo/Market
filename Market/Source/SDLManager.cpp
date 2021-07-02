@@ -11,8 +11,8 @@
 
 
 // Static window dimensions
-int SDLManager::mWindowWidth  = 0;
-int SDLManager::mWindowHeight = 0;
+uint32_t SDLManager::mWindowWidth  = 0;
+uint32_t SDLManager::mWindowHeight = 0;
 
 
 // Non-existant SDLManager

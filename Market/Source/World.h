@@ -11,15 +11,44 @@
 #include "Entity.h"
 
 
+// The world is partitioned into 3 equal partitions
+enum class EWorldPartition
+{
+    LEFT,
+    CENTER,
+    RIGHT
+};
+
+
 class World
 {
 private:
     vector<Entity*> mWorld;
+
+    uint32_t mWindowWidth;
+    uint32_t mWindowHeight;
+
+    mutex mLeftMtx;
+    mutex mCenterMtx;
+    mutex mRightMtx;
     
 public:
-    // Default constructor
+    /**
+    * Default Constructor, default iniatialize every member variable
+    */
     World();
 
-    // Initialize the mWorld vector
+    /**
+    * Properly initialize the world, this uses the SDLManager's window dimensions to
+    * create a vector that has an index for each pixel in the window.
+    */
     bool init();
+
+    /**
+    * Add an entity to the world at a certain location
+    * 
+    * @param Entity* - reference to the entity being added to the world
+    * @param mLocation - location to move the entity to
+    */
+    void addEntity(Entity* mEntity, const Vector3& mLocation);
 };

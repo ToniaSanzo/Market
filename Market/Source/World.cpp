@@ -34,7 +34,7 @@ bool World::init()
     else
     {
         // mWorld is a "1D" array that represents a "2D" world
-        mWorld.resize((mWindowWidth * mWindowHeight), nullptr);
+        mWorld.resize((static_cast<size_t>(mWindowWidth) * static_cast<size_t>(mWindowHeight)), nullptr);
         cout << "World size: " << mWorld.size() << "\n";
     }
 
@@ -47,26 +47,65 @@ bool World::init()
 * Add an entity to the world at a certain location
 *
 * @param Entity* - reference to the entity being added to the world
-* @param mLocation - location to move the entity to
+* @param mLocation - location to move the entity to.
 */
 void World::addEntity(Entity* mEntity, const Vector3& mLocation)
 {
     EWorldPartition partition;
 
-    // Determine which partition the entity is being added too,
-    // Lock that partition and add the element to it
+    // Determine which partition the entity is being added to,
+    // lock that partition and add the element to it.
     if (mLocation.x < mWindowWidth / 3)
     {
+        lock_guard<mutex> lk(mLeftMtx);
+        
+        // If the location is empty add the current entity to the location.
+        if ((mWorld[(mWindowWidth * mLocation.y) + mLocation.x]) == nullptr)
+        {
+            mWorld[(mWindowWidth * mLocation.y) + mLocation.x] = mEntity;
+        }
 
+        // Otherwise, grow the linked list of entities at that location, the current
+        // entity is the head of the chain.
+        else
+        {
+            mEntity->mNextEntity = mWorld[(mWindowWidth * mLocation.y) + mLocation.x];
+            mWorld[(mWindowWidth * mLocation.y) + mLocation.x] = mEntity;
+        }
     }
     else if (mLocation.x > (2 * mWindowWidth) / 3)
     {
-        
+        lock_guard<mutex> lk(mCenterMtx);
+
+        // If the location is empty add the current entity to the location.
+        if ((mWorld[(mWindowWidth * mLocation.y) + mLocation.x]) == nullptr)
+        {
+            mWorld[(mWindowWidth * mLocation.y) + mLocation.x] = mEntity;
+        }
+
+        // Otherwise, grow the linked list of entities at that location, the current
+        // entity is the head of the chain.
+        else
+        {
+            mEntity->mNextEntity = mWorld[(mWindowWidth * mLocation.y) + mLocation.x];
+        }
     }
     else
     {
-        YOU LEFT OFF HERE MAKE SURE TO LOCK THE PARTITION AND add the entityand add the entity at the location, if the location has another entityadd it to the front
-            oof the pixel linked list
+        lock_guard<mutex> lk(mRightMtx);
+
+        // If the location is empty add the current entity to the location.
+        if ((mWorld[(mWindowWidth * mLocation.y) + mLocation.x]) == nullptr)
+        {
+            mWorld[(mWindowWidth * mLocation.y) + mLocation.x] = mEntity;
+        }
+
+        // Otherwise, grow the linked list of entities at that location, the current
+        // entity is the head of the chain.
+        else
+        {
+            mEntity->mNextEntity = mWorld[(mWindowWidth * mLocation.y) + mLocation.x];
+        }
     }
 
 }

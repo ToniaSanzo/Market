@@ -11,8 +11,8 @@
 
 
 // Static window dimensions
-uint32_t SDLManager::mWindowWidth  = 0;
-uint32_t SDLManager::mWindowHeight = 0;
+int SDLManager::mWindowWidth  = 0;
+int SDLManager::mWindowHeight = 0;
 
 
 // Non-existant SDLManager
@@ -73,7 +73,8 @@ bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 128
     else
     {
         // Create window
-        mSDLWindow = SDL_CreateWindow(aTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<uint16_t>(aWidth), static_cast<uint16_t>(aHeight), aWindowFlags);
+        mSDLWindow = SDL_CreateWindow(aTitle.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, static_cast<int>(aWidth), static_cast<int>(aHeight), aWindowFlags);
+        
         SDL_GetWindowSize(mSDLWindow, &mWindowWidth, &mWindowHeight);
 
         if (mSDLWindow != nullptr)

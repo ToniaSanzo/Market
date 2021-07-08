@@ -72,6 +72,6 @@ public:
     }
 
     // Contains the windows width and height
-    static uint32_t mWindowWidth;
-    static uint32_t mWindowHeight;
+    static int mWindowWidth;
+    static int mWindowHeight;
 };

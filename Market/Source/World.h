@@ -45,10 +45,19 @@ public:
     bool init();
 
     /**
-    * Add an entity to the world at a certain location
+    * Add an Entity to the world at a certain location
     * 
-    * @param Entity* - reference to the entity being added to the world
-    * @param mLocation - location to move the entity to
+    * @param Entity* - reference to the Entity being added to the world
+    * @param mLocation - location to add the Entity to
     */
     void addEntity(Entity* mEntity, const Vector3& mLocation);
+
+
+    /**
+    * Remove an Entity from the world at a certain location
+    * 
+    * @param Entity* - reference to the Entity being removed from the world
+    * @param mLocation - location to move the entity to
+    */
+    void removeEntity(Entity* mEntity, const Vector3& mLocation);
 };

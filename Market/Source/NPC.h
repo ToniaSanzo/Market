@@ -12,6 +12,7 @@
 #include "Entity.h"
 #include "Texture.h"
 #include "Timer.h"
+#include "World.h"
 
 
 // The NPC's color
@@ -54,6 +55,9 @@ private:
     float mAnimationSpeed;
     float mCurrAnimTime;
 
+    // The amount of time since NPC's direction was set
+    float mTimeSinceDirectionReset;
+
     // The location the NPC want's to walk to, the direction
     // the NPC has to walk to get there 
     // and whether we need to generate a new location to walk
@@ -62,9 +66,11 @@ private:
     Vector3 mDirection;
     bool bNewWalkLocation;
 
+    // Reference to the world
+    World* mWorld;
+
     // The NPC's coordinates
     Vector3 mCurrLocation;
-
 
     // Set NPC's direction
     void setDirection();
@@ -78,7 +84,7 @@ public:
     ~NPC();
 
     // Properly initialize the NPC
-    bool init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[]);
+    bool init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld);
 
     // Display NPC to user
     void render();
@@ -92,7 +98,11 @@ public:
     // Returns the EEntityType of the NPC
     EEntityType getType();
     
-    // Set NPC's speed, and animation speed giving a value between 0 and 1, clamped between 
-    // the (MIN_SPEED | MIN_ANIMATION_SPEED) and (MAX_SPEED | MAX_ANIMATION_SPEED)
+    // Returns the NPC as an Entity pointer
+    Entity* getEntity();
+
+    // Set NPC's speed, and animation speed giving a value between 0 and 1, clamped
+    // between the (MIN_SPEED | MIN_ANIMATION_SPEED) and
+    // (MAX_SPEED | MAX_ANIMATION_SPEED)
     void setSpeed(const float&);
 };

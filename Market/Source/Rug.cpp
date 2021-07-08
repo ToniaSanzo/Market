@@ -79,7 +79,7 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
             mLocation.x = rand() % SDLManager::mWindowWidth;
             mLocation.y = rand() % SDLManager::mWindowHeight;
 
-            mWorld.addEntity()
+            mWorld.addEntity(this, mLocation);
         }
     }
 
@@ -111,4 +111,11 @@ void Rug::updateState(const ETradeState& aState)
 EEntityType Rug::getType()
 {
     return EEntityType::RUG;
+}
+
+
+// Get's this Rug as an Entity pointer
+Entity* Rug::getEntity()
+{
+    return static_cast<Entity*>(this);
 }

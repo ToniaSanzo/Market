@@ -36,94 +36,99 @@ bool Game::init(SDLManager* aSDL)
         cout << "Game::init(SDLManager*) was passed an invalid argument.\n";
         success = false;
     }
-
-    // Load the rugs shared resources
-    mRugTexture.initTexture(sdl->getRenderer());
-    if (!mRugTexture.loadFromFile("assets/rug.png"))
-    {
-        cout << "Failed to load rug sprite sheet!\n";
-        success = false;
-    }
     else
     {
-        mRugTexture.updateScale(RUG_SCALE);
 
-        // Set the rug's frames dimensions
-        for (uint16_t col = 0; col < RUG_FRAMES; ++col)
+        if (!mWorld.init())
         {
-            mRugFrames[col].x = col * RUG_FRAME_WIDTH;
-            mRugFrames[col].y = 0;
-            mRugFrames[col].w = RUG_FRAME_WIDTH;
-            mRugFrames[col].h = RUG_FRAME_HEIGHT;
+            cout << "Failed to initialize the World!\n";
+            success = false;
         }
-
-        // Create 1 unique rugs
-        for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
+        else
         {
-            rugs.push_back(new Rug());
-            rugs[i]->init(&mRugTexture, mRugFrames);
-        }
-    }
-
-    // Load the NPCs shared resources
-    mNPCTexture.initTexture(sdl->getRenderer());
-    if (!mNPCTexture.loadFromFile("assets/npc.png"))
-    {
-        cout << "Failed to load rug sprite sheet!\n";
-        success = false;
-    }
-    else
-    {
-        mNPCTexture.updateScale(NPC_SCALE);
-
-        // Set the npc's frames dimensions
-        for (uint16_t row = 0; row < NPC_FRAMES_ROWS; ++row)
-        {
-            for (uint16_t col = 0; col < NPC_FRAMES_COLS; ++col)
+            // Load the rugs shared resources
+            mRugTexture.initTexture(sdl->getRenderer());
+            if (!mRugTexture.loadFromFile("assets/rug.png"))
             {
-                mNPCFrames[(row * NPC_FRAMES_COLS) + col].x = col * NPC_FRAME_WIDTH;
-                mNPCFrames[(row * NPC_FRAMES_COLS) + col].y = row * NPC_FRAME_HEIGHT;
-                mNPCFrames[(row * NPC_FRAMES_COLS) + col].w = NPC_FRAME_WIDTH;
-                mNPCFrames[(row * NPC_FRAMES_COLS) + col].h = NPC_FRAME_HEIGHT;
+                cout << "Failed to load rug sprite sheet!\n";
+                success = false;
+            }
+            else
+            {
+                mRugTexture.updateScale(RUG_SCALE);
+
+                // Set the rug's frames dimensions
+                for (uint16_t col = 0; col < RUG_FRAMES; ++col)
+                {
+                    mRugFrames[col].x = col * RUG_FRAME_WIDTH;
+                    mRugFrames[col].y = 0;
+                    mRugFrames[col].w = RUG_FRAME_WIDTH;
+                    mRugFrames[col].h = RUG_FRAME_HEIGHT;
+                }
+
+                // Create 1 unique rugs
+                for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
+                {
+                    rugs.push_back(new Rug());
+                    rugs[i]->init(&mRugTexture, mRugFrames, mWorld);
+                }
+
+                // Load the NPCs shared resources
+                mNPCTexture.initTexture(sdl->getRenderer());
+                if (!mNPCTexture.loadFromFile("assets/npc.png"))
+                {
+                    cout << "Failed to load rug sprite sheet!\n";
+                    success = false;
+                }
+                else
+                {
+                    mNPCTexture.updateScale(NPC_SCALE);
+
+                    // Set the npc's frames dimensions
+                    for (uint16_t row = 0; row < NPC_FRAMES_ROWS; ++row)
+                    {
+                        for (uint16_t col = 0; col < NPC_FRAMES_COLS; ++col)
+                        {
+                            mNPCFrames[(row * NPC_FRAMES_COLS) + col].x = col * NPC_FRAME_WIDTH;
+                            mNPCFrames[(row * NPC_FRAMES_COLS) + col].y = row * NPC_FRAME_HEIGHT;
+                            mNPCFrames[(row * NPC_FRAMES_COLS) + col].w = NPC_FRAME_WIDTH;
+                            mNPCFrames[(row * NPC_FRAMES_COLS) + col].h = NPC_FRAME_HEIGHT;
+                        }
+                    }
+
+                    // Create 1 unique NPCs
+                    for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
+                    {
+                        npcs.push_back(new NPC());
+                        npcs[i]->init(&mNPCTexture, mNPCFrames, &mWorld);
+                    }
+
+                    // Load the background and scale it to fit the screen
+                    mBackgroundTexture.initTexture(sdl->getRenderer());
+                    if (!mBackgroundTexture.loadFromFile("assets/bckgrnd.png"))
+                    {
+                        cout << "Failed to load the background texture!\n";
+                        success = false;
+                    }
+                    else
+                    {
+                        // Determine the scale of the background to fit the screen
+                        float wRatio = static_cast<float>(SDLManager::mWindowWidth) / static_cast<float>(BACKGROUND_WIDTH);
+                        float hRatio = static_cast<float>(SDLManager::mWindowHeight) / static_cast<float>(BACKGROUND_HEIGHT);
+
+                        float backgroundScale = (wRatio > hRatio) ? (wRatio) : (hRatio);
+
+                        cout << "Background Texture Scale is " << backgroundScale << "\n";
+                        mBackgroundTexture.updateScale(backgroundScale);
+                    
+                        // Seed the thread safe random number with a random number
+                        srand(static_cast<unsigned>(time(nullptr)));
+                        Seed(rand() % 333);
+                    }
+                }
             }
         }
-
-        // Create 1 unique NPCs
-        for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
-        {
-            npcs.push_back(new NPC());
-            npcs[i]->init(&mNPCTexture, mNPCFrames);
-        }
     }
-
-    // Load the background and scale it to fit the screen
-    mBackgroundTexture.initTexture(sdl->getRenderer());
-    if (!mBackgroundTexture.loadFromFile("assets/bckgrnd.png"))
-    {
-        cout << "Failed to load the background texture!\n";
-        success = false;
-    }
-    else
-    {
-        // Determine the scale of the background to fit the screen
-        float wRatio = static_cast<float>(SDLManager::mWindowWidth) / static_cast<float>(BACKGROUND_WIDTH);
-        float hRatio = static_cast<float>(SDLManager::mWindowHeight) / static_cast<float>(BACKGROUND_HEIGHT);
-
-        float backgroundScale = (wRatio > hRatio) ? (wRatio) : (hRatio);
-
-        cout << "Background Texture Scale is " << backgroundScale << "\n";
-        mBackgroundTexture.updateScale(backgroundScale); 
-    }
-
-    if (!mWorld.init())
-    {
-        cout << "World was not properly initialized!\n";
-        success = false;
-    }
-    
-    // Seed the thread safe random number with a random number
-    srand(static_cast<unsigned>(time(nullptr)));
-    Seed(rand() % 333);
 
     return success;
 }
@@ -181,7 +186,7 @@ bool Game::handleEvent(SDL_Event& e)
             cout << "NPCS MOVE TO TOP RIGHT!";
             for (NPC* npc : npcs)
             {
-                npc->setNewWalkLocation(SDLManager::mWindowWidth, 0);
+                npc->setNewWalkLocation(1, 0);
             }
             break;
 
@@ -189,7 +194,7 @@ bool Game::handleEvent(SDL_Event& e)
             cout << "NPCS MOVE TO BOTTOM LEFT!";
             for (NPC* npc : npcs)
             {
-                npc->setNewWalkLocation(0, SDLManager::mWindowHeight);
+                npc->setNewWalkLocation(0, 1);
             }
             break;
 
@@ -197,7 +202,7 @@ bool Game::handleEvent(SDL_Event& e)
             cout << "NPCS MOVE TO BOTTOM RIGHT!";
             for (NPC* npc : npcs)
             {
-                npc->setNewWalkLocation(SDLManager::mWindowWidth, SDLManager::mWindowHeight);
+                npc->setNewWalkLocation(1, 1);
             }
             break;
 
@@ -274,8 +279,8 @@ void Game::close()
     }
     npcs.clear();
 
-    // If sdl is a valid pointer change it to a nullptr, no need to explicitly delete the sdl pointer because
-    // it's managed by the SDLManager
+    // If sdl is a valid pointer change it to a nullptr, no need to explicitly delete the
+    //  sdl pointer because it's managed by the SDLManager
     if (sdl)
     {
         sdl = nullptr;

@@ -18,6 +18,7 @@ class Game
 private:
     // Pointer to the SDL system
     SDLManager* sdl;
+
     // Mutex to prevent the renderer from being used by more than one thread at a time
     mutex mTextureMutex;
 

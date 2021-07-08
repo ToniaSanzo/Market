@@ -15,9 +15,15 @@
 * Default Constructor, default iniatialize every member variable
 */
 World::World()
-{}
+{
+    mWindowWidth  = 0;
+    mWindowHeight = 0;
+}
 
-// Initialize the mWorld vector
+
+/**
+* Initialize the World to match the dimensions of the map
+*/
 bool World::init()
 {
     bool success = true;
@@ -39,7 +45,6 @@ bool World::init()
     }
 
     return success;
-
 }
 
 
@@ -49,63 +54,183 @@ bool World::init()
 * @param Entity* - reference to the entity being added to the world
 * @param mLocation - location to move the entity to.
 */
-void World::addEntity(Entity* mEntity, const Vector3& mLocation)
+void World::addEntity(Entity* aEntity, const Vector3& mLocation)
 {
-    EWorldPartition partition;
+    // the vector index of the given location
+    uint32_t locationIndex = (mWindowWidth * static_cast<uint32_t>(mLocation.y)) + static_cast<uint32_t>(mLocation.x);
+    if (locationIndex > mWorld.size())
+    {
+        cout << "locationIndex > mWorld.size()! oh no\n";
+    }
 
     // Determine which partition the entity is being added to,
     // lock that partition and add the element to it.
     if (mLocation.x < mWindowWidth / 3)
     {
         lock_guard<mutex> lk(mLeftMtx);
+        Entity* worldEntity = mWorld[locationIndex];
         
         // If the location is empty add the current entity to the location.
-        if ((mWorld[(mWindowWidth * mLocation.y) + mLocation.x]) == nullptr)
+        if (worldEntity == nullptr)
         {
-            mWorld[(mWindowWidth * mLocation.y) + mLocation.x] = mEntity;
+            worldEntity = aEntity;
         }
 
         // Otherwise, grow the linked list of entities at that location, the current
         // entity is the head of the chain.
         else
         {
-            mEntity->mNextEntity = mWorld[(mWindowWidth * mLocation.y) + mLocation.x];
-            mWorld[(mWindowWidth * mLocation.y) + mLocation.x] = mEntity;
+            aEntity->mNextEntity = worldEntity;
+            worldEntity = aEntity;
         }
     }
     else if (mLocation.x > (2 * mWindowWidth) / 3)
     {
         lock_guard<mutex> lk(mCenterMtx);
+        Entity* worldEntity = mWorld[locationIndex];
 
         // If the location is empty add the current entity to the location.
-        if ((mWorld[(mWindowWidth * mLocation.y) + mLocation.x]) == nullptr)
+        if (worldEntity == nullptr)
         {
-            mWorld[(mWindowWidth * mLocation.y) + mLocation.x] = mEntity;
+            worldEntity = aEntity;
         }
 
         // Otherwise, grow the linked list of entities at that location, the current
         // entity is the head of the chain.
         else
         {
-            mEntity->mNextEntity = mWorld[(mWindowWidth * mLocation.y) + mLocation.x];
+            aEntity->mNextEntity = worldEntity;
         }
     }
     else
     {
         lock_guard<mutex> lk(mRightMtx);
+        Entity* worldEntity = mWorld[locationIndex];
 
         // If the location is empty add the current entity to the location.
-        if ((mWorld[(mWindowWidth * mLocation.y) + mLocation.x]) == nullptr)
+        if (worldEntity == nullptr)
         {
-            mWorld[(mWindowWidth * mLocation.y) + mLocation.x] = mEntity;
+            worldEntity = aEntity;
         }
 
         // Otherwise, grow the linked list of entities at that location, the current
         // entity is the head of the chain.
         else
         {
-            mEntity->mNextEntity = mWorld[(mWindowWidth * mLocation.y) + mLocation.x];
+            aEntity->mNextEntity = worldEntity;
         }
     }
+}
 
+
+/**
+* Remove an Entity from the world at a certain location
+*
+* @param Entity* - reference to the Entity being removed from the world
+* @param mLocation - location to move the entity to
+*/
+void World::removeEntity(Entity* aEntity, const Vector3& mLocation)
+{
+    // the vector index of the given location
+    uint32_t locationIndex = (mWindowWidth * static_cast<uint32_t>(mLocation.y)) + static_cast<uint32_t>(mLocation.x);
+    if (locationIndex > mWorld.size())
+    {
+        cout << "locationIndex > mWorld.size()! oh no (removeEntity)\n";
+    }
+
+    // Determine which partition the entity is being added to,
+    // lock that partition and add the element to it.
+    if (mLocation.x < mWindowWidth / 3)
+    {
+        lock_guard<mutex> lk(mLeftMtx);
+        Entity* worldEntity = mWorld[locationIndex];
+        
+        // If the location is not empty remove the current Entity
+        if (worldEntity != nullptr)
+        {
+            // handle special case when the first element in the linked list is the target Entity
+            if (worldEntity == aEntity)
+            {
+                mWorld[locationIndex] = mWorld[locationIndex]->mNextEntity;
+            }
+            else
+            {
+                bool keepSearching = true;
+                while(keepSearching)
+                {
+                    if (worldEntity->mNextEntity == nullptr)
+                    {
+                        keepSearching = false;
+                    }
+                    else if (worldEntity->mNextEntity == aEntity)
+                    {
+                        worldEntity->mNextEntity = worldEntity->mNextEntity->mNextEntity;
+                        keepSearching = false;
+                    }
+                }
+            }
+        }
+    }
+    else if (mLocation.x > (2 * mWindowWidth) / 3)
+    {
+        lock_guard<mutex> lk(mCenterMtx);
+        Entity* worldEntity = mWorld[locationIndex];
+
+        // If the location is not empty remove the current Entity
+        if (worldEntity != nullptr)
+        {
+            // handle special case when the first element in the linked list is the target Entity
+            if (worldEntity == aEntity)
+            {
+                mWorld[locationIndex] = mWorld[locationIndex]->mNextEntity;
+            }
+            else
+            {
+                bool keepSearching = true;
+                while (keepSearching)
+                {
+                    if (worldEntity->mNextEntity == nullptr)
+                    {
+                        keepSearching = false;
+                    }
+                    else if (worldEntity->mNextEntity == aEntity)
+                    {
+                        worldEntity->mNextEntity = worldEntity->mNextEntity->mNextEntity;
+                        keepSearching = false;
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        lock_guard<mutex> lk(mRightMtx);
+        Entity* worldEntity = mWorld[locationIndex];
+
+        // If the location is not empty remove the current Entity
+        if (worldEntity != nullptr)
+        {
+            // handle special case when the first element in the linked list is the target Entity
+            if (worldEntity == aEntity)
+            {
+                mWorld[locationIndex] = mWorld[locationIndex]->mNextEntity;
+            }
+            else
+            {
+                bool keepSearching = true;
+                while (keepSearching)
+                {
+                    if (worldEntity->mNextEntity == nullptr)
+                    {
+                        keepSearching = false;
+                    }
+                    else if (worldEntity->mNextEntity == aEntity)
+                    {
+                        worldEntity->mNextEntity = worldEntity->mNextEntity->mNextEntity;
+                        keepSearching = false;
+                    }
+                }
+            }
+        }
+    }
 }

@@ -21,15 +21,14 @@ NPC::NPC()
     mCurrFrame += static_cast<uint16_t>(mState) * NPC_TRADE_FRAMES;
     mCurrFrame += mCurrStep;
 
-    // Generate a random location for the NPC to spawn
-    mCurrLocation.x = static_cast<float>(rand() % SDLManager::mWindowWidth);
-    mCurrLocation.y = static_cast<float>(rand() % SDLManager::mWindowHeight);
-
     // Generate a random location to walk too
-    setNewWalkLocation(static_cast<float>(rand() % SDLManager::mWindowWidth), static_cast<float>(rand() % SDLManager::mWindowHeight));
+    mCurrLocation.x = rand() % SDLManager::mWindowWidth;
+    mCurrLocation.y = rand() % SDLManager::mWindowHeight;
+    setNewWalkLocation(static_cast<float>(rand()) / RAND_MAX, static_cast<float>(rand()) / RAND_MAX);
+    mTimeSinceDirectionReset = 0;
+
 
     // Set random movement speed of the NPC
-    mSpeed = (rand() % static_cast<uint16_t>(MAX_SPEED - MIN_SPEED)) + MIN_SPEED;
     float speedRange = MAX_SPEED - MIN_SPEED;
     float currSpeedInRange = mSpeed - MIN_SPEED;
     float animSpeedRange = MAX_ANIMATION_SPEED - MIN_ANIMATION_SPEED;
@@ -39,6 +38,8 @@ NPC::NPC()
 
     mTexturePtr = nullptr;
     mTextureFrames = nullptr;
+
+    mWorld = nullptr;
 }
 
 
@@ -58,29 +59,43 @@ NPC::~NPC()
 }
 
 
-bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[])
+bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld)
 {
     // Initialization success flag
     bool success = true;
 
-    if (!aTxtrPtr)
+    mWorld = aWorld;
+    if (mWorld == nullptr)
     {
-        cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+        cout << "Cannot initilaize NPC without a reference to a World object.\n";
         success = false;
     }
     else
     {
-        mTexturePtr = aTxtrPtr;
-    }
+        if (!aTxtrPtr)
+        {
+            cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+            success = false;
+        }
+        else
+        {
+            mTexturePtr = aTxtrPtr;
 
-    if (!aTxtrFrames)
-    {
-        cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
-        success = false;
-    }
-    else
-    {
-        mTextureFrames = aTxtrFrames;
+            if (!aTxtrFrames)
+            {
+                cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+                success = false;
+            }
+            else
+            {
+                mTextureFrames = aTxtrFrames;
+
+                // Generate a random location for the NPC to spawn
+                mCurrLocation.x = static_cast<float>(rand() % SDLManager::mWindowWidth - 1);
+                mCurrLocation.y = static_cast<float>(rand() % SDLManager::mWindowHeight - 1);
+                mWorld->addEntity(getEntity(), mCurrLocation);
+            }
+        }
     }
 
     return success;
@@ -93,10 +108,11 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
     // Whether the trade state changed and we need to update the current frame
     bool bUpdateFrame = false;
     
+    mTimeSinceDirectionReset += dt;
     // Generate a new target location to walk to based on if the target location was reached
     if (bNewWalkLocation)
     {
-        setNewWalkLocation(aRandomX * SDLManager::mWindowWidth, aRandomY * SDLManager::mWindowHeight);
+        setNewWalkLocation(aRandomX, aRandomY);
     }
     // Otherwise, continue walking towards the target location
     else
@@ -112,13 +128,13 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
         // Otherwise, move closer to the target location
         else
         {
+            mWorld->removeEntity(this, mCurrLocation);
             mCurrLocation.x += mDirection.x * (dt * mSpeed);
             mCurrLocation.y += mDirection.y * (dt * mSpeed);
-
-            if (mCurrLocation.x < 0 || mCurrLocation.x > SDLManager::mWindowWidth || mCurrLocation.y < 0 || mCurrLocation.y > SDLManager::mWindowHeight)
-            {
-                setDirection();
-            }
+            MATH::clamp(mCurrLocation, Vector3{ static_cast<float>(SDLManager::mWindowWidth), static_cast<float>(SDLManager::mWindowHeight), 0 });
+            
+            cout << "Entity added to location: {x: " << mCurrLocation.x << ", y: " << mCurrLocation.y << ", z: " << mCurrLocation.z << "}\n";
+            mWorld->addEntity(this, mCurrLocation);
         }
     }
 
@@ -139,6 +155,11 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
         mCurrFrame += static_cast<uint16_t>(mState) * NPC_TRADE_FRAMES;
         mCurrFrame += mCurrStep;
         bUpdateFrame = false;
+    }
+
+    if (mTimeSinceDirectionReset > NPC_RESET_DIRECTION_TIME)
+    {
+        setDirection();
     }
 }
 
@@ -165,13 +186,25 @@ EEntityType NPC::getType()
 }
 
 
-// Generate new walk location of the NPC  
+// Returns the EEntityType of the NPC
+Entity* NPC::getEntity()
+{
+    return this;
+}
+
+
+/**
+* Given two values between [0,1) generate a random location within the window for the NPC to walk to
+* 
+* @param aRandomX - Value between [0,1) to set the target x coordinate
+* @param aRandomY - Value between [0,1) to set the target x coordinate
+*/
 void NPC::setNewWalkLocation(const float& aRandomX, const float& aRandomY)
 {
 
     // Set target location variables
-    mTargetLocation.x = aRandomX;
-    mTargetLocation.y = aRandomY;
+    mTargetLocation.x = aRandomX * SDLManager::mWindowWidth - 1;
+    mTargetLocation.y = aRandomY * SDLManager::mWindowHeight - 1;
 
     setDirection();
 
@@ -191,6 +224,7 @@ void NPC::setDirection()
     float hypotenuse = static_cast<float>(sqrt((pow(deltaX, 2) + pow(deltaY, 2))));
     mDirection.x = deltaX / hypotenuse;
     mDirection.y = deltaY / hypotenuse;
+    mTimeSinceDirectionReset = 0;
 }
 
 

@@ -23,6 +23,9 @@ enum class EEntityType
 class Entity
 {
 public:
+    // Linked list of entities, with the same pixel coordinate
+    Entity* mNextEntity = nullptr;
+
     // Only need to set mNextEntity to nullptr since it's deallocated elsewhere in the
     // program
     ~Entity()
@@ -36,9 +39,10 @@ public:
     // Returns the entity type of the derived class
     virtual EEntityType getType() = 0;
 
+    // Return an Entity pointer, to the object the function was called on
+    virtual Entity* getEntity() = 0;
+
     // Render the entity to the screen
     virtual void render() = 0;
 
-    // Linked list of entities, with the same pixel coordinate
-    Entity* mNextEntity = nullptr;
 };

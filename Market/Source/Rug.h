@@ -53,4 +53,7 @@ public:
 
     // Returns the EEntityType of the rug
     EEntityType getType();
+
+    // Get's this Rug as an Entity pointer
+    Entity* getEntity();
 };

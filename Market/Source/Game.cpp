@@ -237,12 +237,15 @@ void Game::render()
 {
     mBackgroundTexture.render(0, 0);
 
-    // Render the rugs and npcs
-    for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
+    for (Rug* rug : rugs)
     {
-        threads.push_back(thread(&Rug::render, rugs[i]));
-        threads.push_back(thread(&NPC::render, npcs[i]));
+        rug->render();
     }
+
+    // Render each world parition in seperate threads
+    threads.push_back(thread(&World::render, &mWorld, EWorldPartition::LEFT));
+    threads.push_back(thread(&World::render, &mWorld, EWorldPartition::CENTER));
+    threads.push_back(thread(&World::render, &mWorld, EWorldPartition::RIGHT));
 
     for (thread& thread : threads)
     {

@@ -16,8 +16,11 @@
 */
 World::World()
 {
-    mWindowWidth  = 0;
-    mWindowHeight = 0;
+    mWindowWidth         = 0;
+    mWindowHeight        = 0;
+    mRenderTileLength    = 0;
+    mHorizontalTileCount = 12.f;
+    mVerticalTileCount   = 0;
 }
 
 
@@ -28,8 +31,8 @@ bool World::init()
 {
     bool success = true;
 
-    mWindowWidth  = SDLManager::mWindowWidth;
-    mWindowHeight = SDLManager::mWindowHeight;
+    mWindowWidth  = SDLManager::mWindowWidth + 1;
+    mWindowHeight = SDLManager::mWindowHeight + 1;
 
     // Confirm the SDLManager window is initialized
     if ((mWindowHeight * mWindowWidth) == 0)
@@ -39,9 +42,14 @@ bool World::init()
     }
     else
     {
+        // Because the world is made up of square render tiles, determine the dimensions
+        // and number of tiles needed
+        mRenderTileLength = mWindowWidth / static_cast<float>(mHorizontalTileCount);
+        mVerticalTileCount = (mWindowHeight / mRenderTileLength) + 1;
+
         // mWorld is a "1D" array that represents a "2D" world
-        mWorld.resize((static_cast<size_t>(mWindowWidth) * static_cast<size_t>(mWindowHeight)), nullptr);
-        cout << "World size: " << mWorld.size() << "\n";
+        mWorld.resize(static_cast<size_t>(mHorizontalTileCount) * static_cast<size_t>(mVerticalTileCount), nullptr);
+
     }
 
     return success;
@@ -58,66 +66,66 @@ void World::addEntity(Entity* aEntity, const Vector3& mLocation)
 {
     // the vector index of the given location
     uint32_t locationIndex = (mWindowWidth * static_cast<uint32_t>(mLocation.y)) + static_cast<uint32_t>(mLocation.x);
+    cout << "Adding Entity at location: [" << locationIndex << "]\n";
     if (locationIndex > mWorld.size())
     {
-        cout << "locationIndex > mWorld.size()! oh no\n";
+        exit(1);
     }
 
     // Determine which partition the entity is being added to,
     // lock that partition and add the element to it.
-    if (mLocation.x < mWindowWidth / 3)
+    if (mLocation.x < mWindowWidth / PARTITION_COUNT)
     {
         lock_guard<mutex> lk(mLeftMtx);
-        Entity* worldEntity = mWorld[locationIndex];
         
         // If the location is empty add the current entity to the location.
-        if (worldEntity == nullptr)
+        if (mWorld[locationIndex] == nullptr)
         {
-            worldEntity = aEntity;
+            mWorld[locationIndex] = aEntity;
         }
 
         // Otherwise, grow the linked list of entities at that location, the current
         // entity is the head of the chain.
         else
         {
-            aEntity->mNextEntity = worldEntity;
-            worldEntity = aEntity;
+            aEntity->mNextEntity = mWorld[locationIndex];
+            mWorld[locationIndex] = aEntity;
         }
     }
-    else if (mLocation.x > (2 * mWindowWidth) / 3)
+    else if (mLocation.x > (2 * mWindowWidth) / PARTITION_COUNT)
     {
         lock_guard<mutex> lk(mCenterMtx);
-        Entity* worldEntity = mWorld[locationIndex];
 
         // If the location is empty add the current entity to the location.
-        if (worldEntity == nullptr)
+        if (mWorld[locationIndex] == nullptr)
         {
-            worldEntity = aEntity;
+            mWorld[locationIndex] = aEntity;
         }
 
         // Otherwise, grow the linked list of entities at that location, the current
         // entity is the head of the chain.
         else
         {
-            aEntity->mNextEntity = worldEntity;
+            aEntity->mNextEntity = mWorld[locationIndex];
+            mWorld[locationIndex] = aEntity;
         }
     }
     else
     {
         lock_guard<mutex> lk(mRightMtx);
-        Entity* worldEntity = mWorld[locationIndex];
 
         // If the location is empty add the current entity to the location.
-        if (worldEntity == nullptr)
+        if (mWorld[locationIndex] == nullptr)
         {
-            worldEntity = aEntity;
+            mWorld[locationIndex] = aEntity;
         }
 
         // Otherwise, grow the linked list of entities at that location, the current
         // entity is the head of the chain.
         else
         {
-            aEntity->mNextEntity = worldEntity;
+            aEntity->mNextEntity = mWorld[locationIndex];
+            mWorld[locationIndex] = aEntity;
         }
     }
 }
@@ -135,7 +143,7 @@ void World::removeEntity(Entity* aEntity, const Vector3& mLocation)
     uint32_t locationIndex = (mWindowWidth * static_cast<uint32_t>(mLocation.y)) + static_cast<uint32_t>(mLocation.x);
     if (locationIndex > mWorld.size())
     {
-        cout << "locationIndex > mWorld.size()! oh no (removeEntity)\n";
+        exit(1);
     }
 
     // Determine which partition the entity is being added to,
@@ -232,5 +240,92 @@ void World::removeEntity(Entity* aEntity, const Vector3& mLocation)
                 }
             }
         }
+    }
+}
+
+
+/**
+* Renders every entity in a partition of the world, this is designed to be done concurrently
+*
+* @param aPartition - The partition to render
+*/
+void World::render(const EWorldPartition& aPartition)
+{
+    switch (aPartition)
+    {
+    // Render the leftmost partition
+    case EWorldPartition::LEFT:
+        for (uint32_t col = 0; col < (SDLManager::mWindowWidth / 3.f); ++col)
+        {
+            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            {
+                size_t currIndex = (static_cast<size_t>(mWindowWidth) * row) + col;
+
+                // If the current location has an entity render the location
+                if (mWorld[currIndex])
+                {
+                    lock_guard<mutex> lock(mLeftMtx);
+                    renderLocation(currIndex);
+                }
+            }
+        }
+        break;
+
+    // Render the rightmost partition
+    case EWorldPartition::CENTER:
+        for (uint32_t col = SDLManager::mWindowWidth / 3.f; col < ((2 * SDLManager::mWindowWidth) / 3.f); ++col)
+        {
+            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            {
+                size_t currIndex = (static_cast<size_t>(mWindowWidth) * row) + col;
+
+                // If the current location has an entity render the location
+                if (mWorld[currIndex])
+                {
+                    lock_guard<mutex> lock(mCenterMtx);
+                    renderLocation(currIndex);
+                }
+            }
+        }
+        break;
+
+    case EWorldPartition::RIGHT:
+        for (uint32_t col = ((2 * SDLManager::mWindowWidth) / 3.f); col < SDLManager::mWindowWidth; ++col)
+        {
+            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            {
+                size_t currIndex = (static_cast<size_t>(mWindowWidth) * row) + col;
+
+                // If the current location has an entity render the location
+                if (mWorld[currIndex])
+                {
+                    lock_guard<mutex> lock(mRightMtx);
+                    renderLocation(currIndex);
+                }
+            }
+        }
+        break;
+    }
+}
+
+
+/**
+* Renders the Entity chain at the given index location
+*
+* @param aIndex - The mWorld vector index of the location
+*/
+void World::renderLocation(const size_t& aIndex)
+{
+    Entity* currEntity = mWorld[aIndex];
+
+    while (currEntity)
+    {
+        if (currEntity->getType() == EEntityType::RUG)
+        {
+            return;
+        }
+
+        currEntity->render();
+        currEntity = currEntity->mNextEntity;
     }
 }

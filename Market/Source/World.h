@@ -31,6 +31,10 @@ private:
     mutex mLeftMtx;
     mutex mCenterMtx;
     mutex mRightMtx;
+
+    float mRenderTileLength;
+    uint32_t mHorizontalTileCount;
+    uint32_t mVerticalTileCount;
     
 public:
     /**
@@ -60,4 +64,20 @@ public:
     * @param mLocation - location to move the entity to
     */
     void removeEntity(Entity* mEntity, const Vector3& mLocation);
+
+
+    /**
+    * Renders every entity in a partition of the world, this is designed to be done concurrently
+    * 
+    * @param aPartition - The partition to render
+    */
+    void render(const EWorldPartition& aPartition);
+
+
+    /**
+    * Renders the Entity chain at the given index location
+    * 
+    * @param aIndex - The mWorld vector index of the location
+    */
+    void renderLocation(const size_t& aIndex);
 };

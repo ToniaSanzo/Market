@@ -35,7 +35,7 @@ enum class ETradeState
 };
 
 // Number of each entity types in game world (rugs, npcs)
-constexpr uint16_t ENTITY_COUNT = 26;
+constexpr uint16_t ENTITY_COUNT = 81;
 
 // Metadata about rug.png spritesheet
 constexpr uint16_t RUG_FRAMES       = 3;
@@ -66,6 +66,9 @@ constexpr uint16_t BACKGROUND_HEIGHT = 380;
 // Number of NPCs and rugs to generate
 constexpr uint16_t NPC_COUNT = 5;
 constexpr uint16_t RUG_COUNT = 3;
+
+// Number of partitions that make up the world
+constexpr float PARTITION_COUNT = 3.f;
 
 // Absolute value function
 #define ABS(N) ((N < 0) ? (-N) : (N))

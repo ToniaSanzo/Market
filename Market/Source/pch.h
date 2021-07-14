@@ -38,14 +38,15 @@ enum class ETradeState
 constexpr uint16_t ENTITY_COUNT = 81;
 
 // Metadata about rug.png spritesheet
-constexpr uint16_t RUG_FRAMES       = 3;
+constexpr uint16_t RUG_FRAME_COLS   = 3;
+constexpr uint16_t RUG_FRAME_ROWS   = 2;
 constexpr uint16_t RUG_FRAME_WIDTH  = 64;
 constexpr uint16_t RUG_FRAME_HEIGHT = 64;
 constexpr uint16_t RUG_SCALE        = 3;
 
 // Metadata about npc.png spritesheet
-constexpr uint16_t NPC_FRAMES_COLS       = 6;
-constexpr uint16_t NPC_FRAMES_ROWS       = 3;
+constexpr uint16_t NPC_FRAME_COLS       = 6;
+constexpr uint16_t NPC_FRAME_ROWS       = 3;
 constexpr uint16_t NPC_FRAME_WIDTH       = 96;
 constexpr uint16_t NPC_FRAME_HEIGHT      = 32;
 constexpr uint16_t NPC_TRADE_FRAMES      = 2;

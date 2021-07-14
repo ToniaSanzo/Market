@@ -29,7 +29,7 @@ private:
 
     // Collection of NPCs, and shared resources used by the rug
     Texture mNPCTexture;
-    SDL_Rect mNPCFrames[NPC_FRAMES_COLS * NPC_FRAMES_ROWS];
+    SDL_Rect mNPCFrames[NPC_FRAME_COLS * NPC_FRAME_ROWS];
     vector<NPC*> npcs;
 
     // The background texture

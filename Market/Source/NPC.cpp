@@ -17,7 +17,7 @@ NPC::NPC()
     mState = static_cast<ETradeState>(rand() % 3);
     mNPCColor = static_cast<EColor>(rand() % 3);
     mCurrStep = rand() % 2;
-    mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAMES_COLS;
+    mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAME_COLS;
     mCurrFrame += static_cast<uint16_t>(mState) * NPC_TRADE_FRAMES;
     mCurrFrame += mCurrStep;
 
@@ -151,7 +151,7 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
     
     if (bUpdateFrame)
     {
-        mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAMES_COLS;
+        mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAME_COLS;
         mCurrFrame += static_cast<uint16_t>(mState) * NPC_TRADE_FRAMES;
         mCurrFrame += mCurrStep;
         bUpdateFrame = false;

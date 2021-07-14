@@ -23,6 +23,7 @@ enum class EWorldPartition
 class World
 {
 private:
+
     vector<Entity*> mWorld;
 
     uint32_t mWindowWidth;
@@ -80,4 +81,33 @@ public:
     * @param aIndex - The mWorld vector index of the location
     */
     void renderLocation(const size_t& aIndex);
+};
+
+
+class Subspace
+{
+private:
+    // World can access private/protected members of Subspace
+    friend class World; 
+
+    // Vector of entites within the subspace
+    vector<Entity*> entities;
+
+    /**
+    * Adds an Entity to the subspace.
+    *
+    * @param aEntity - reference to the entity being added to the subspace.
+    */
+    void addEntity(Entity* aEntity);
+
+    /**
+    * Remove target Entity from the subspace
+    * 
+    * @param aEntity - reference to the entity being removed from the subspace
+    */
+    void removeEntity(Entity* aEntity);
+
+    /**
+    * Reorders when elements are rendered based on when
+    */
 };

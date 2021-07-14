@@ -58,12 +58,15 @@ bool Game::init(SDLManager* aSDL)
                 mRugTexture.updateScale(RUG_SCALE);
 
                 // Set the rug's frames dimensions
-                for (uint16_t col = 0; col < RUG_FRAMES; ++col)
+                for (uint16_t row = 0; row < RUG_FRAME_ROWS; ++row)
                 {
-                    mRugFrames[col].x = col * RUG_FRAME_WIDTH;
-                    mRugFrames[col].y = 0;
-                    mRugFrames[col].w = RUG_FRAME_WIDTH;
-                    mRugFrames[col].h = RUG_FRAME_HEIGHT;
+                    for (uint16_t col = 0; col < RUG_FRAME_COLS; ++col)
+                    {
+                        mRugFrames[(row * RUG_FRAME_COLS) + col].x = col * RUG_FRAME_WIDTH;
+                        mRugFrames[(row * RUG_FRAME_COLS) + col].y = row * RUG_FRAME_HEIGHT;
+                        mRugFrames[(row * RUG_FRAME_COLS) + col].w = RUG_FRAME_WIDTH;
+                        mRugFrames[(row * RUG_FRAME_COLS) + col].h = RUG_FRAME_HEIGHT;
+                    }
                 }
 
                 // Create 1 unique rugs
@@ -85,14 +88,14 @@ bool Game::init(SDLManager* aSDL)
                     mNPCTexture.updateScale(NPC_SCALE);
 
                     // Set the npc's frames dimensions
-                    for (uint16_t row = 0; row < NPC_FRAMES_ROWS; ++row)
+                    for (uint16_t row = 0; row < NPC_FRAME_ROWS; ++row)
                     {
-                        for (uint16_t col = 0; col < NPC_FRAMES_COLS; ++col)
+                        for (uint16_t col = 0; col < NPC_FRAME_COLS; ++col)
                         {
-                            mNPCFrames[(row * NPC_FRAMES_COLS) + col].x = col * NPC_FRAME_WIDTH;
-                            mNPCFrames[(row * NPC_FRAMES_COLS) + col].y = row * NPC_FRAME_HEIGHT;
-                            mNPCFrames[(row * NPC_FRAMES_COLS) + col].w = NPC_FRAME_WIDTH;
-                            mNPCFrames[(row * NPC_FRAMES_COLS) + col].h = NPC_FRAME_HEIGHT;
+                            mNPCFrames[(row * NPC_FRAME_COLS) + col].x = col * NPC_FRAME_WIDTH;
+                            mNPCFrames[(row * NPC_FRAME_COLS) + col].y = row * NPC_FRAME_HEIGHT;
+                            mNPCFrames[(row * NPC_FRAME_COLS) + col].w = NPC_FRAME_WIDTH;
+                            mNPCFrames[(row * NPC_FRAME_COLS) + col].h = NPC_FRAME_HEIGHT;
                         }
                     }
 

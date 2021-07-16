@@ -22,12 +22,6 @@ private:
     ETradeState mState;
     mutex mStateMtx;
 
-    // Number of rugs constructed
-    static uint16_t sRugCount;
-
-    // The index of this rug
-    uint16_t mRugIdx;
-
     // Pointer to the rugs Texture, and SDL_Rect array
     Texture* mTexturePtr;
     SDL_Rect* mTextureFrames;

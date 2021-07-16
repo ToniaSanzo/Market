@@ -4,15 +4,9 @@
 #include "Game.h"
 
 
-// Number of NPCs constructed
-uint16_t NPC::sNPCCount = 0;
-
-
 // Construct a non-initialized NPC
 NPC::NPC()
 {
-    mNPCIdx = ++sNPCCount;
-
     // Set the NPC's member variables to random values
     mState = static_cast<ETradeState>(rand() % 3);
     mNPCColor = static_cast<EColor>(rand() % 3);
@@ -22,8 +16,8 @@ NPC::NPC()
     mCurrFrame += mCurrStep;
 
     // Generate a random location to walk too
-    mCurrLocation.x = rand() % SDLManager::mWindowWidth;
-    mCurrLocation.y = rand() % SDLManager::mWindowHeight;
+    mCurrLocation.x = static_cast<float>(rand() % SDLManager::mWindowWidth);
+    mCurrLocation.y = static_cast<float>(rand() % SDLManager::mWindowHeight);
     setNewWalkLocation(static_cast<float>(rand()) / RAND_MAX, static_cast<float>(rand()) / RAND_MAX);
     mTimeSinceDirectionReset = 0;
 

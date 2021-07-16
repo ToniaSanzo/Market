@@ -24,7 +24,7 @@ private:
 
     // Collection of rugs, and shared resources used by the rug
     Texture mRugTexture;
-    SDL_Rect mRugFrames[RUG_FRAMES];
+    SDL_Rect mRugFrames[RUG_FRAME_COLS * RUG_FRAME_ROWS];
     vector<Rug*> rugs;
 
     // Collection of NPCs, and shared resources used by the rug

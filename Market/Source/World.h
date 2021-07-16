@@ -24,7 +24,7 @@ class World
 {
 private:
 
-    vector<Entity*> mWorld;
+    vector<Subspace*> mWorld;
 
     uint32_t mWindowWidth;
     uint32_t mWindowHeight;
@@ -36,6 +36,23 @@ private:
     float mRenderTileLength;
     uint32_t mHorizontalTileCount;
     uint32_t mVerticalTileCount;
+
+
+    /**
+    * Removes the Entity from the world, uses the Entity's subspace to determine which subspace
+    * to remove from.
+    * 
+    * @param aEntity   - Entity to remove from the world.
+    */
+    void removeEntity(Entity* aEntity);
+
+    /**
+    * Adds the Entity to the world, uses the Entity's subspace to determine which subspace to add to.
+    * 
+    * @param aEntity   - Entity to add to the world.
+    */
+    void addEntity(Entity* aEntity);
+
     
 public:
     /**
@@ -50,21 +67,12 @@ public:
     bool init();
 
     /**
-    * Add an Entity to the world at a certain location
+    * Place an Entity into the game world at a certain location
     * 
     * @param Entity* - reference to the Entity being added to the world
     * @param mLocation - location to add the Entity to
     */
-    void addEntity(Entity* mEntity, const Vector3& mLocation);
-
-
-    /**
-    * Remove an Entity from the world at a certain location
-    * 
-    * @param Entity* - reference to the Entity being removed from the world
-    * @param mLocation - location to move the entity to
-    */
-    void removeEntity(Entity* mEntity, const Vector3& mLocation);
+    void placeEntity(Entity* mEntity, const Vector3& mLocation);
 
 
     /**
@@ -91,10 +99,10 @@ private:
     friend class World; 
 
     // Vector of entites within the subspace
-    vector<Entity*> entities;
+    vector<Entity*> mEntities;
 
     /**
-    * Adds an Entity to the subspace.
+    * Adds an Entity to the subspace. (Warning! does not order the subspace based on the entities coordinate)
     *
     * @param aEntity - reference to the entity being added to the subspace.
     */
@@ -108,6 +116,7 @@ private:
     void removeEntity(Entity* aEntity);
 
     /**
-    * Reorders when elements are rendered based on when
+    * Reorders the entities within the subspace based on the entities locations
     */
+    void reorder();
 };

@@ -30,12 +30,6 @@ private:
     // Represents the current state of the NPC
     ETradeState mState;
 
-    // Number of NPCs constructed
-    static uint16_t sNPCCount;
-
-    // The index of this NPC
-    uint16_t mNPCIdx;
-
     // Pointer to the NPCs texture, and SDL_Rect array
     Texture* mTexturePtr;
     SDL_Rect* mTextureFrames;

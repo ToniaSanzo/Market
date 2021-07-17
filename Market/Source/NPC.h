@@ -99,4 +99,11 @@ public:
     // between the (MIN_SPEED | MIN_ANIMATION_SPEED) and
     // (MAX_SPEED | MAX_ANIMATION_SPEED)
     void setSpeed(const float&);
+
+    /**
+    * Get the NPC's current location.
+    *
+    * @return Vector3 the current location of the Entity.
+    */
+    Vector3 getLocation();
 };

@@ -50,4 +50,11 @@ public:
 
     // Get's this Rug as an Entity pointer
     Entity* getEntity();
+
+    /**
+    * Get the Rug's current location.
+    *
+    * @return Vector3 the current location of the Entity.
+    */
+    Vector3 getLocation();
 };

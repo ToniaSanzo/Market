@@ -119,3 +119,14 @@ Entity* Rug::getEntity()
 {
     return static_cast<Entity*>(this);
 }
+
+
+/**
+* Get the Rug's current location.
+*
+* @return Vector3 the current location of the Entity.
+*/
+Vector3 Rug::getLocation()
+{
+    return mLocation;
+}

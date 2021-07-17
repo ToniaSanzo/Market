@@ -234,3 +234,14 @@ void NPC::setSpeed(const float& ratio)
     mSpeed = (speedRange * ratio) + MIN_SPEED;
     mAnimationSpeed = (animSpeedRange * (1.f - ratio)) + MAX_ANIMATION_SPEED;
 }
+
+
+/**
+* Get the NPC's current location.
+*
+* @return Vector3 the current location of the Entity.
+*/
+Vector3 NPC::getLocation()
+{
+    return mCurrLocation;
+}

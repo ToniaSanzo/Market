@@ -116,7 +116,20 @@ private:
     void removeEntity(Entity* aEntity);
 
     /**
-    * Reorders the entities within the subspace based on the entities locations
+    * Sorts the entities within the subspace based on the entities y-coordinate.
+    * 
+    * @param low - Starting index.
+    * @param high - Ending index.
     */
-    void reorder();
+    void quickSort(uint32_t low, uint32_t high);
+
+
+    /**
+    * Moves all the values higher than the pivot to the right of the pivot
+    * 
+    * @param low - Starting index.
+    * @param high - Ending index
+    * @return uint32_t the index of the pivot position.
+    */
+    uint32_t partition(uint32_t low, uint32_t high);
 };

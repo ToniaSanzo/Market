@@ -277,3 +277,37 @@ void Subspace::removeEntity(Entity* aEntity)
         }
     }
 }
+
+
+/**
+* Sorts the entities within the subspace based on the entities locations.
+* 
+* @param low - Starting index.
+* @param high - Ending index.
+*/
+void Subspace::quickSort(uint32_t low, uint32_t high)
+{
+
+}
+
+/**
+* Moves all the values higher than the pivot to the right of the pivot
+*
+* @param low - Starting index.
+* @param high - Ending index.
+* @return uint32_t the index of the pivot position.
+*/
+uint32_t Subspace::partition(uint32_t low, uint32_t high)
+{
+    Entity* pivot = mEntities[high];
+    uint32_t i = low;
+
+    for (uint32_t j = low; j <= high; ++j)
+    {
+        if (mEntities[j]->getLocation().y < pivot->getLocation().y)
+        {
+            Finish implementing QUICKSORT here
+        }
+
+    }
+}

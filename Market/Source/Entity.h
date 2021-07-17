@@ -9,8 +9,9 @@
 #pragma once
 #include "PCH.h"
 
-
-// The different subclasses that inherit from Entity
+/**
+* The different subclasses that inherit from Entity
+*/
 enum class EEntityType
 {
     NPC,
@@ -18,8 +19,10 @@ enum class EEntityType
 };
 
 
-// Abstract base class that represents different game entities, this class guarentees we will be able
-// to safely cast to the derived base class given an Entity object.
+/**
+* Abstract base class that represents different game entities, this class guarentees we will be able
+* to safely cast to the derived base class given an Entity object.
+*/
 class Entity
 {
 private:
@@ -89,6 +92,14 @@ public:
     {
         return mID;
     }
+
+    /**
+    * Get the Entity's current location.
+    * 
+    * @return Vector3 the current location of the Entity.
+    */
+    virtual Vector3 getLocation() = 0;
+
 };
 
 uint32_t Entity::sCreatedEntityCount = 0;

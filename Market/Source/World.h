@@ -76,6 +76,15 @@ public:
 
 
     /**
+    * Each Subspace's Entity chain in the given partition will be organized based on
+    * the Entitiy's y-coordinate.
+    *
+    * @param aPartition - The partition to order.
+    */
+    void orderWorld(const EWorldPartition& aPartition);
+
+
+    /**
     * Renders every entity in a partition of the world, this is designed to be done concurrently
     * 
     * @param aPartition - The partition to render
@@ -92,6 +101,9 @@ public:
 };
 
 
+/**
+* A Subspace contains all the Entity's within a certain shared area of the world.
+*/
 class Subspace
 {
 private:
@@ -116,13 +128,17 @@ private:
     void removeEntity(Entity* aEntity);
 
     /**
-    * Sorts the entities within the subspace based on the entities y-coordinate.
+    * Order the Subspace.
+    */
+    void order();
+
+    /**
+    * QuickSort algorithm implemented to sort the Subspace based on the Entity's y-coordinate.
     * 
     * @param low - Starting index.
     * @param high - Ending index.
     */
     void quickSort(uint32_t low, uint32_t high);
-
 
     /**
     * Moves all the values higher than the pivot to the right of the pivot
@@ -132,4 +148,12 @@ private:
     * @return uint32_t the index of the pivot position.
     */
     uint32_t partition(uint32_t low, uint32_t high);
+
+    /**
+    * Swap the Entity's given by the index numbers.
+    * 
+    * @param aIndex1 - Index of the first Entity to be swapped.
+    * @param aIndex2 - Index of the second Entity to be swapped.
+    */
+    void swap(uint32_t aIndex1, uint32_t aIndex2);
 };

@@ -164,6 +164,55 @@ void World::placeEntity(Entity* aEntity, const Vector3& mNewLocation)
 
 
 /**
+* Each Subspace's Entity chain in the given partition will be organized based on
+* the Entitiy's y-coordinate.
+* 
+* @param aPartition - The partition to order.
+*/
+void World::orderWorld(const EWorldPartition& aPartition)
+{
+    switch (aPartition)
+    {
+    // Order the leftmost partition
+    case EWorldPartition::LEFT:
+        for (uint32_t col = 0; col < (SDLManager::mWindowWidth / 3.f); ++col)
+        {
+            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            {
+                lock_guard<mutex> lock(mLeftMtx);
+                mWorld[(static_cast<size_t>(mWindowWidth) * row) + col]->order();
+            }
+        }
+        break;
+
+    // Order the center partition
+    case EWorldPartition::CENTER:
+        for (uint32_t col = SDLManager::mWindowWidth / 3.f; col < ((2 * SDLManager::mWindowWidth) / 3.f); ++col)
+        {
+            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            {
+                lock_guard<mutex> lock(mCenterMtx);
+                mWorld[(static_cast<size_t>(mWindowWidth) * row) + col]->order();
+            }
+        }
+        break;
+
+    // Order the rightmost partition
+    case EWorldPartition::RIGHT:
+        for (uint32_t col = ((2 * SDLManager::mWindowWidth) / 3.f); col < SDLManager::mWindowWidth; ++col)
+        {
+            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            {
+                lock_guard<mutex> lock(mRightMtx);
+                mWorld[(static_cast<size_t>(mWindowWidth) * row) + col]->order();
+            }
+        }
+        break;
+    }
+}
+
+
+/**
 * Renders every entity in a partition of the world, this is designed to be done concurrently
 *
 * @param aPartition - The partition to render
@@ -190,7 +239,7 @@ void World::render(const EWorldPartition& aPartition)
         }
         break;
 
-    // Render the rightmost partition
+    // Render the center partition
     case EWorldPartition::CENTER:
         for (uint32_t col = SDLManager::mWindowWidth / 3.f; col < ((2 * SDLManager::mWindowWidth) / 3.f); ++col)
         {
@@ -208,6 +257,7 @@ void World::render(const EWorldPartition& aPartition)
         }
         break;
 
+    // Render the rightmost partition
     case EWorldPartition::RIGHT:
         for (uint32_t col = ((2 * SDLManager::mWindowWidth) / 3.f); col < SDLManager::mWindowWidth; ++col)
         {
@@ -229,23 +279,17 @@ void World::render(const EWorldPartition& aPartition)
 
 
 /**
-* Renders the Entity chain at the given index location
+* Renders the Entity chain for the given subspace
 *
-* @param aIndex - The mWorld vector index of the location
+* @param aIndex - The mWorld index of the subspace to render
 */
 void World::renderLocation(const size_t& aIndex)
 {
-    Entity* currEntity = mWorld[aIndex];
+    Subspace* targetSubspace = mWorld[aIndex];
 
-    while (currEntity)
+    for (Entity* entity : targetSubspace->mEntities)
     {
-        if (currEntity->getType() == EEntityType::RUG)
-        {
-            return;
-        }
-
-        currEntity->render();
-        currEntity = currEntity->mNextEntity;
+        entity->render();
     }
 }
 
@@ -280,6 +324,15 @@ void Subspace::removeEntity(Entity* aEntity)
 
 
 /**
+* Order the Subspace.
+*/
+void Subspace::order()
+{
+    quickSort(0, mEntities.size() - 1);
+}
+
+
+/**
 * Sorts the entities within the subspace based on the entities locations.
 * 
 * @param low - Starting index.
@@ -287,27 +340,61 @@ void Subspace::removeEntity(Entity* aEntity)
 */
 void Subspace::quickSort(uint32_t low, uint32_t high)
 {
-
+    if (low < high)
+    {
+        uint32_t pivot = partition(low, high);
+        quickSort(low, pivot);
+        quickSort(pivot + 1, high);
+    }
 }
 
 /**
-* Moves all the values higher than the pivot to the right of the pivot
+* All the values less then the center value are moved lower of the 
+* center value, and the values greater than the center value are moved upper of the 
+* center value.
 *
 * @param low - Starting index.
 * @param high - Ending index.
-* @return uint32_t the index of the pivot position.
+* @return uint32_t the index where the left index is equal to or greater then the 
+*                  right index.
 */
 uint32_t Subspace::partition(uint32_t low, uint32_t high)
 {
-    Entity* pivot = mEntities[high];
-    uint32_t i = low;
+    Entity* pivot = mEntities[(high + low) / 2];
+    
+    uint32_t lowerIndex  = low - 1;
+    uint32_t upperIndex = high + 1;
 
-    for (uint32_t j = low; j <= high; ++j)
+    while (true)
     {
-        if (mEntities[j]->getLocation().y < pivot->getLocation().y)
+        do
         {
-            Finish implementing QUICKSORT here
+            ++lowerIndex;
+        } while (mEntities[lowerIndex]->getLocation().y < pivot->getLocation().y);
+        
+        do
+        {
+            ++upperIndex;
+        } while (mEntities[upperIndex]->getLocation().y > pivot->getLocation().y);
+        
+        if (lowerIndex >= upperIndex)
+        {
+            return upperIndex;
         }
-
+        swap(lowerIndex, upperIndex);
     }
+}
+
+
+/**
+* Swap the Entity's given by the index numbers.
+*
+* @param aIndex1 - Index of the first Entity to be swapped.
+* @param aIndex2 - Index of the second Entity to be swapped.
+*/
+void Subspace::swap(uint32_t aIndex1, uint32_t aIndex2)
+{
+    Entity* tempEntity = mEntities[aIndex1];
+    mEntities[aIndex1] = mEntities[aIndex2];
+    mEntities[aIndex2] = tempEntity;
 }

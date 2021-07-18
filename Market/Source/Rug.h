@@ -39,8 +39,11 @@ public:
     // Properly initialize the rug 
     bool init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& aWorld);
 
-    // Draw the rug to the screen
+    // Only draws the rugs trade item to the screen
     void render();
+
+    // Draw the full rug entity to the screen
+    void renderFull();
 
     // Update the state of the rug
     void updateState(const ETradeState& aState);

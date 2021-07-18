@@ -79,7 +79,7 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
             mLocation.x = rand() % SDLManager::mWindowWidth;
             mLocation.y = rand() % SDLManager::mWindowHeight;
 
-            mWorld.addEntity(this, mLocation);
+            mWorld.placeEntity(this, mLocation);
         }
     }
 
@@ -90,6 +90,14 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
 
 // Draw the rug to the screen
 void Rug::render()
+{
+    lock_guard<mutex> lock(mStateMtx);
+    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[static_cast<uint16_t>(mState) + RUG_FRAME_COLS]);
+}
+
+
+// Draw the full rug entity to the screen
+void Rug::renderFull()
 {
     lock_guard<mutex> lock(mStateMtx);
     mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[static_cast<uint16_t>(mState)]);

@@ -231,6 +231,12 @@ void Game::update(const float& dt)
     {
             thread.join();
     }
+
+    // Order each world parition in seperate threads
+    threads.push_back(thread(&World::orderWorld, &mWorld, EWorldPartition::LEFT));
+    threads.push_back(thread(&World::orderWorld, &mWorld, EWorldPartition::CENTER));
+    threads.push_back(thread(&World::orderWorld, &mWorld, EWorldPartition::RIGHT));
+
     threads.clear();
 }
 
@@ -242,7 +248,7 @@ void Game::render()
 
     for (Rug* rug : rugs)
     {
-        rug->render();
+        rug->renderFull();
     }
 
     // Render each world parition in seperate threads

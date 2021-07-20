@@ -37,12 +37,7 @@ public:
     * Every time an Entity is constructed increment the sCreatedEntityCount, and assign this 
     * Entity a unique ID.
     */
-    Entity()
-    {
-        mID = ++sCreatedEntityCount;
-        mCurrSubspace = UINT32_MAX;
-        cout << "Abstract Base Class (Entity) constructor called [mID = " << mID << "]!\n";
-    }
+    Entity();
 
     /**
     *  Returns the entity type of the derived class.
@@ -68,30 +63,21 @@ public:
     * 
     * @param aCurrSubspace - The index of the current Subspace.
     */
-    void setSubspace(const uint32_t& aCurrSubspace)
-    {
-        mCurrSubspace = aCurrSubspace;
-    }
+    void setSubspace(const uint32_t& aCurrSubspace);
 
     /**
     * Get the Entity's current subspace.
     * 
     * @return uint32_t the current subspace of the Entity.
     */
-    uint32_t getSubspace()
-    {
-        return mCurrSubspace;
-    }
+    uint32_t getSubspace();
 
     /**
     * Get the Entity's unique ID number.
     * 
     * @return The unique ID number of the Entity.
     */
-    uint32_t getUniqueID()
-    {
-        return mID;
-    }
+    uint32_t getUniqueID();
 
     /**
     * Get the Entity's current location.
@@ -99,7 +85,4 @@ public:
     * @return Vector3 the current location of the Entity.
     */
     virtual Vector3 getLocation() = 0;
-
 };
-
-uint32_t Entity::sCreatedEntityCount = 0;

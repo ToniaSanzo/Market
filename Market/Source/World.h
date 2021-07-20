@@ -20,6 +20,7 @@ enum class EWorldPartition
 };
 
 
+class Subspace;
 class World
 {
 private:
@@ -61,18 +62,22 @@ public:
     World();
 
     /**
+    * Deallocate the subspaces used in this world
+    */
+    ~World();
+
+    /**
     * Properly initialize the world, this uses the SDLManager's window dimensions to
     * create a vector that has an index for each pixel in the window.
     */
     bool init();
 
     /**
-    * Place an Entity into the game world at a certain location
+    * Place an Entity into the game world at a certain location.
     * 
     * @param Entity* - reference to the Entity being added to the world
-    * @param mLocation - location to add the Entity to
     */
-    void placeEntity(Entity* mEntity, const Vector3& mLocation);
+    void placeEntity(Entity* mEntity);
 
 
     /**
@@ -112,6 +117,15 @@ private:
 
     // Vector of entites within the subspace
     vector<Entity*> mEntities;
+    /**
+    * Constructor
+    */
+    Subspace();
+
+    /**
+    * Destructor
+    */
+    ~Subspace();
 
     /**
     * Adds an Entity to the subspace. (Warning! does not order the subspace based on the entities coordinate)

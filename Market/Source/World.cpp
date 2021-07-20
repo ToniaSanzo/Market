@@ -95,6 +95,19 @@ World::World()
 
 
 /**
+* Deallocate the subspaces used in this world
+*/
+World::~World()
+{
+    for (Subspace* subspace : mWorld)
+    {
+        delete subspace;
+    }
+    mWorld.clear();
+}
+
+
+/**
 * Initialize the World to match the dimensions of the map
 */
 bool World::init()
@@ -118,7 +131,10 @@ bool World::init()
         mVerticalTileCount = (mWindowHeight / mRenderTileLength) + 1;
 
         // mWorld is a "1D" array that represents a "2D" world
-        mWorld.resize(static_cast<size_t>(mHorizontalTileCount) * static_cast<size_t>(mVerticalTileCount), nullptr);
+        for(uint32_t i = 0; i < static_cast<size_t>(mHorizontalTileCount) * static_cast<size_t>(mVerticalTileCount); ++i)
+        {
+            mWorld.push_back(new Subspace());
+        }
 
     }
 
@@ -127,16 +143,15 @@ bool World::init()
 
 
 /**
-* Add an entity to the world at a certain location
+* Add an entity to the world at a certain location.
 *
 * @param Entity* - reference to the entity being added to the world
-* @param mLocation - location to move the entity to.
 */
-void World::placeEntity(Entity* aEntity, const Vector3& mNewLocation)
+void World::placeEntity(Entity* aEntity)
 {
     // the vector index of the given location
-    uint32_t newRow      = mNewLocation.y / mRenderTileLength;
-    uint32_t newCol      = mNewLocation.x / mRenderTileLength;
+    uint32_t newRow      = aEntity->getLocation().y / mRenderTileLength;
+    uint32_t newCol      = aEntity->getLocation().x / mRenderTileLength;
     uint32_t newSubspace = (newRow * mHorizontalTileCount) + newCol;
 
     // Update the subspaces only if the entity moved to a different subspace
@@ -180,7 +195,7 @@ void World::orderWorld(const EWorldPartition& aPartition)
             for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
             {
                 lock_guard<mutex> lock(mLeftMtx);
-                mWorld[(static_cast<size_t>(mWindowWidth) * row) + col]->order();
+                mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
             }
         }
         break;
@@ -192,10 +207,12 @@ void World::orderWorld(const EWorldPartition& aPartition)
             for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
             {
                 lock_guard<mutex> lock(mCenterMtx);
-                mWorld[(static_cast<size_t>(mWindowWidth) * row) + col]->order();
+                mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
             }
         }
         break;
+
+        YOU LEFT OFF HERE SWITCH THESE FOR LOOPS FROM USING WINDOW DIMENSIONS TO USING SUBSPACE COUNT
 
     // Order the rightmost partition
     case EWorldPartition::RIGHT:
@@ -204,7 +221,7 @@ void World::orderWorld(const EWorldPartition& aPartition)
             for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
             {
                 lock_guard<mutex> lock(mRightMtx);
-                mWorld[(static_cast<size_t>(mWindowWidth) * row) + col]->order();
+                mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
             }
         }
         break;
@@ -295,6 +312,22 @@ void World::renderLocation(const size_t& aIndex)
 
 
 /**
+* Constructor
+*/
+Subspace::Subspace()
+{}
+
+
+/**
+* Destructor
+*/
+Subspace::~Subspace()
+{
+    mEntities.clear();
+}
+
+
+/**
 * Adds an Entity to the subspace.
 *
 * @param aEntity - reference to the entity being added to the subspace.
@@ -347,6 +380,7 @@ void Subspace::quickSort(uint32_t low, uint32_t high)
         quickSort(pivot + 1, high);
     }
 }
+
 
 /**
 * All the values less then the center value are moved lower of the 

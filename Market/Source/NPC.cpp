@@ -87,7 +87,7 @@ bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld)
                 // Generate a random location for the NPC to spawn
                 mCurrLocation.x = static_cast<float>(rand() % (SDLManager::mWindowWidth));
                 mCurrLocation.y = static_cast<float>(rand() % (SDLManager::mWindowHeight));
-                mWorld->addEntity(getEntity(), mCurrLocation);
+                mWorld->placeEntity(getEntity());
             }
         }
     }
@@ -122,13 +122,12 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
         // Otherwise, move closer to the target location
         else
         {
-            mWorld->removeEntity(this, mCurrLocation);
             mCurrLocation.x += mDirection.x * (dt * mSpeed);
             mCurrLocation.y += mDirection.y * (dt * mSpeed);
             MATH::clamp(mCurrLocation, Vector3{ static_cast<float>(SDLManager::mWindowWidth), static_cast<float>(SDLManager::mWindowHeight), 0 });
             
             cout << "Entity added to location: {x: " << mCurrLocation.x << ", y: " << mCurrLocation.y << ", z: " << mCurrLocation.z << "}\n";
-            mWorld->addEntity(this, mCurrLocation);
+            mWorld->placeEntity(getEntity());
         }
     }
 

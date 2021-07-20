@@ -11,16 +11,11 @@
 #include "World.h"
 
 
-// Number of rugs constructed
-uint16_t Rug::sRugCount = 0;
-
-
 // Default initialize the rug, the rug will not be properly initialized until it is
 // initialized with init
 Rug::Rug()
 {
     lock_guard<mutex> lock(mStateMtx);
-    mRugIdx = ++sRugCount;
 
     // Initialize with a random state
     mState = static_cast<ETradeState>(rand() % 3);
@@ -79,7 +74,7 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
             mLocation.x = rand() % SDLManager::mWindowWidth;
             mLocation.y = rand() % SDLManager::mWindowHeight;
 
-            mWorld.placeEntity(this, mLocation);
+            mWorld.placeEntity(this);
         }
     }
 

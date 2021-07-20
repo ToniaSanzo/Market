@@ -156,6 +156,7 @@
     <Image Include="assets\rug.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\Game.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\NPC.cpp" />

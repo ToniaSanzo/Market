@@ -190,9 +190,9 @@ void World::orderWorld(const EWorldPartition& aPartition)
     {
     // Order the leftmost partition
     case EWorldPartition::LEFT:
-        for (uint32_t col = 0; col < (SDLManager::mWindowWidth / 3.f); ++col)
+        for (uint32_t col = 0; col < (mHorizontalTileCount / PARTITION_COUNT); ++col)
         {
-            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
                 lock_guard<mutex> lock(mLeftMtx);
                 mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
@@ -202,9 +202,9 @@ void World::orderWorld(const EWorldPartition& aPartition)
 
     // Order the center partition
     case EWorldPartition::CENTER:
-        for (uint32_t col = SDLManager::mWindowWidth / 3.f; col < ((2 * SDLManager::mWindowWidth) / 3.f); ++col)
+        for (uint32_t col = mHorizontalTileCount / 3.f; col < (2 * mHorizontalTileCount) / PARTITION_COUNT; ++col)
         {
-            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
                 lock_guard<mutex> lock(mCenterMtx);
                 mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
@@ -212,13 +212,11 @@ void World::orderWorld(const EWorldPartition& aPartition)
         }
         break;
 
-        YOU LEFT OFF HERE SWITCH THESE FOR LOOPS FROM USING WINDOW DIMENSIONS TO USING SUBSPACE COUNT
-
     // Order the rightmost partition
     case EWorldPartition::RIGHT:
-        for (uint32_t col = ((2 * SDLManager::mWindowWidth) / 3.f); col < SDLManager::mWindowWidth; ++col)
+        for (uint32_t col = ((2 * mHorizontalTileCount) / 3.f); col < mHorizontalTileCount; ++col)
         {
-            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
                 lock_guard<mutex> lock(mRightMtx);
                 mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
@@ -240,16 +238,16 @@ void World::render(const EWorldPartition& aPartition)
     {
     // Render the leftmost partition
     case EWorldPartition::LEFT:
-        for (uint32_t col = 0; col < (SDLManager::mWindowWidth / 3.f); ++col)
+        for (uint32_t col = 0; col < (mHorizontalTileCount / 3.f); ++col)
         {
-            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
-                size_t currIndex = (static_cast<size_t>(mWindowWidth) * row) + col;
+                size_t currIndex = (static_cast<size_t>(mHorizontalTileCount) * row) + col;
+                lock_guard<mutex> lock(mLeftMtx);
 
                 // If the current location has an entity render the location
                 if (mWorld[currIndex])
                 {
-                    lock_guard<mutex> lock(mLeftMtx);
                     renderLocation(currIndex);
                 }
             }
@@ -258,16 +256,16 @@ void World::render(const EWorldPartition& aPartition)
 
     // Render the center partition
     case EWorldPartition::CENTER:
-        for (uint32_t col = SDLManager::mWindowWidth / 3.f; col < ((2 * SDLManager::mWindowWidth) / 3.f); ++col)
+        for (uint32_t col = mHorizontalTileCount / 3.f; col < ((2 * mHorizontalTileCount) / 3.f); ++col)
         {
-            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
-                size_t currIndex = (static_cast<size_t>(mWindowWidth) * row) + col;
+                lock_guard<mutex> lock(mCenterMtx);
+                size_t currIndex = (static_cast<size_t>(mHorizontalTileCount) * row) + col;
 
                 // If the current location has an entity render the location
                 if (mWorld[currIndex])
                 {
-                    lock_guard<mutex> lock(mCenterMtx);
                     renderLocation(currIndex);
                 }
             }
@@ -276,16 +274,16 @@ void World::render(const EWorldPartition& aPartition)
 
     // Render the rightmost partition
     case EWorldPartition::RIGHT:
-        for (uint32_t col = ((2 * SDLManager::mWindowWidth) / 3.f); col < SDLManager::mWindowWidth; ++col)
+        for (uint32_t col = ((2 * mHorizontalTileCount) / 3.f); col < mHorizontalTileCount; ++col)
         {
-            for (uint32_t row = 0; row < SDLManager::mWindowHeight; ++row)
+            for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
-                size_t currIndex = (static_cast<size_t>(mWindowWidth) * row) + col;
+                lock_guard<mutex> lock(mRightMtx);
+                size_t currIndex = (static_cast<size_t>(mHorizontalTileCount) * row) + col;
 
                 // If the current location has an entity render the location
                 if (mWorld[currIndex])
                 {
-                    lock_guard<mutex> lock(mRightMtx);
                     renderLocation(currIndex);
                 }
             }
@@ -351,6 +349,7 @@ void Subspace::removeEntity(Entity* aEntity)
         if ((*itr)->getUniqueID() == aEntity->getUniqueID())
         {
             mEntities.erase(itr);
+            return;
         }
     }
 }
@@ -361,7 +360,11 @@ void Subspace::removeEntity(Entity* aEntity)
 */
 void Subspace::order()
 {
-    quickSort(0, mEntities.size() - 1);
+    // Only sort Subspaces with more than one Entity
+    if (mEntities.size() > 1)
+    {
+        quickSort(0, mEntities.size() - 1);
+    }
 }
 
 
@@ -373,6 +376,7 @@ void Subspace::order()
 */
 void Subspace::quickSort(uint32_t low, uint32_t high)
 {
+    cout << "Subspace::quickSort(..)\n";
     if (low < high)
     {
         uint32_t pivot = partition(low, high);
@@ -394,6 +398,11 @@ void Subspace::quickSort(uint32_t low, uint32_t high)
 */
 uint32_t Subspace::partition(uint32_t low, uint32_t high)
 {
+    cout << "Subspace::partition(..)\n";
+    if (((high + low) / 2) == mEntities.size())
+    {
+        cout << "w!\n";
+    }
     Entity* pivot = mEntities[(high + low) / 2];
     
     uint32_t lowerIndex  = low - 1;
@@ -408,7 +417,7 @@ uint32_t Subspace::partition(uint32_t low, uint32_t high)
         
         do
         {
-            ++upperIndex;
+            --upperIndex;
         } while (mEntities[upperIndex]->getLocation().y > pivot->getLocation().y);
         
         if (lowerIndex >= upperIndex)
@@ -428,6 +437,7 @@ uint32_t Subspace::partition(uint32_t low, uint32_t high)
 */
 void Subspace::swap(uint32_t aIndex1, uint32_t aIndex2)
 {
+    cout << "Subspace::swap(..)\n";
     Entity* tempEntity = mEntities[aIndex1];
     mEntities[aIndex1] = mEntities[aIndex2];
     mEntities[aIndex2] = tempEntity;

@@ -227,15 +227,15 @@ void Game::update(const float& dt)
         threads.push_back(thread(&NPC::update, npcs[i], dt, RANDOM(), RANDOM()));
     }
 
-    for (thread& thread : threads)
-    {
-            thread.join();
-    }
-
     // Order each world parition in seperate threads
     threads.push_back(thread(&World::orderWorld, &mWorld, EWorldPartition::LEFT));
     threads.push_back(thread(&World::orderWorld, &mWorld, EWorldPartition::CENTER));
     threads.push_back(thread(&World::orderWorld, &mWorld, EWorldPartition::RIGHT));
+
+    for (thread& thread : threads)
+    {
+            thread.join();
+    }
 
     threads.clear();
 }

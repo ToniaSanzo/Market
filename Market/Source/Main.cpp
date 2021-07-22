@@ -62,9 +62,10 @@ int main(int argc, char* args[])
             // Determine the amount of time in seconds since the last time update was called
             cTime = SDL_GetTicks();
             dt = static_cast<float>(cTime - pTime) / 1000.f;
+
             pTime = cTime;
 
-            game.update(dt);
+            game.update(MATH::clamp(dt, MAX_FRAME_TIME));
 
             // Draw the game world to the screen
             SDL_SetRenderDrawColor(sdl.getRenderer(), 0xD3, 0xD3, 0xD3, 0xFF);

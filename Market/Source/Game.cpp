@@ -222,6 +222,7 @@ bool Game::handleEvent(SDL_Event& e)
 // Update the game world
 void Game::update(const float& dt)
 {
+
     for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
     {
         threads.push_back(thread(&NPC::update, npcs[i], dt, RANDOM(), RANDOM()));

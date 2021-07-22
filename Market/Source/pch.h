@@ -30,8 +30,8 @@ using namespace std;    // This set's the namespace for the entire project
 enum class ETradeState
 {
     CHICKEN,
-    COW,
-    BREAD
+    LAMB,
+    BREAD_WINE
 };
 
 // Number of each entity types in game world (rugs, npcs)
@@ -40,15 +40,15 @@ constexpr uint16_t ENTITY_COUNT = 81;
 // Metadata about rug.png spritesheet
 constexpr uint16_t RUG_FRAME_COLS   = 3;
 constexpr uint16_t RUG_FRAME_ROWS   = 2;
-constexpr uint16_t RUG_FRAME_WIDTH  = 64;
-constexpr uint16_t RUG_FRAME_HEIGHT = 64;
+constexpr uint16_t RUG_FRAME_WIDTH  = 49;
+constexpr uint16_t RUG_FRAME_HEIGHT = 49;
 constexpr uint16_t RUG_SCALE        = 3;
 
 // Metadata about npc.png spritesheet
-constexpr uint16_t NPC_FRAME_COLS       = 6;
-constexpr uint16_t NPC_FRAME_ROWS       = 3;
-constexpr uint16_t NPC_FRAME_WIDTH       = 96;
-constexpr uint16_t NPC_FRAME_HEIGHT      = 32;
+constexpr uint16_t NPC_FRAME_COLS        = 6;
+constexpr uint16_t NPC_FRAME_ROWS        = 3;
+constexpr uint16_t NPC_FRAME_WIDTH       = 18;
+constexpr uint16_t NPC_FRAME_HEIGHT      = 28;
 constexpr uint16_t NPC_TRADE_FRAMES      = 2;
 constexpr uint16_t NPC_SCALE             = 3;
 constexpr float NPC_RESET_DIRECTION_TIME = 1.3f;
@@ -68,6 +68,9 @@ constexpr uint16_t BACKGROUND_HEIGHT = 380;
 constexpr uint16_t NPC_COUNT = 5;
 constexpr uint16_t RUG_COUNT = 3;
 
+// Max amount of in game time that can pass for a single game loop
+constexpr float MAX_FRAME_TIME = .3f;
+
 // Number of partitions that make up the world
 constexpr float PARTITION_COUNT = 3.f;
 
@@ -86,29 +89,12 @@ struct Vector3
 // Math function
 namespace MATH
 {
-    //// given to numbers determine the GCD of them using 
-    //// the Euclidean algorithm
-    //int16_t getGCD(int16_t a, int16_t b)
-    //{
-    //    int r = a % b;
-    //    if (!r)
-    //    {
-    //        return b;
-    //    }
-    //    getGCD(b, r);
-    //}
-
-    //// Reduce a fraction to it's least common denominator
-    //Vector3 reduceFraction(int16_t aNumerator, int16_t aDenominator)
-    //{
-    //    int gcd = getGCD(aNumerator, aDenominator);
-    //    return Vector3{ static_cast<float>(aNumerator / gcd), static_cast<float>(aDenominator / gcd), 0 };
-    //}
-
     /**
-    * Returns a Vector3 clamped in the range specified by the argument
+    * Keeps a Vector3 value clamped in the range specified by the argument. The aValue range is updated by 
+    reference.
     * 
-    * @param aValue - The given value will be kept between 0, and the corresponding {x,y,z} range specified by aRange
+    * @param aValue - The given value will be kept between 0, and the corresponding {x,y,z} range specified by
+    *                 aRange
     * @param aRange - The max values for eacch {x,y,z} value of aValue
     * @return aValue clamped between 0 and aRange
     */
@@ -139,5 +125,33 @@ namespace MATH
         {
             aValue.y = aValue.y;
         }
+    }
+
+
+    /**
+    * Keeps a float value clamped in the range specified by the argument. The aValue range is updated by
+    * reference.
+    *
+    * @param aValue - The given value will be kept between 0, and the corresponding range specified by
+    *                 aRange
+    * @param aRange - The max values for each {x,y,z} value of aValue
+    * @return aValue clamped between 0 and aRange
+    */
+    inline float clamp(float& aValue, const float& aRange)
+    {
+        if (aValue < 0)
+        {
+            aValue = 0;
+        }
+        else if (aValue >= aRange)
+        {
+            aValue = aRange;
+        }
+        else
+        {
+            aValue = aValue;
+        }
+
+        return aValue;
     }
 }

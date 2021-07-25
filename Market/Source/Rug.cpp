@@ -17,12 +17,13 @@ Rug::Rug()
 {
     lock_guard<mutex> lock(mStateMtx);
 
-    // Initialize with a random state
     mState = static_cast<ETradeState>(rand() % 3);
 
     // Generate a random location for the rug to spawn
     mLocation.x = 0;
     mLocation.y = 0;
+
+    mTimeToTrade = RUG_TRADE_TIME;
 
     // References used to render the rug
     mTexturePtr    = nullptr;
@@ -83,6 +84,22 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
 }
 
 
+/**
+* update the rug
+*
+* @param dt - time passed since last time update was called.
+*/
+void Rug::update(const float& dt)
+{
+    lock_guard<mutex> lock(mTimeMtx);
+    if (mTimeToTrade <= 0)
+    {
+        mTimeToTrade = 0;
+        return;
+    }
+    mTimeToTrade -= dt;
+}
+
 // Draw the rug to the screen
 void Rug::render()
 {
@@ -99,14 +116,33 @@ void Rug::renderFull()
 }
 
 
-// Update the state of the rug
-void Rug::updateState(const ETradeState& aState)
+/**
+* Set this Rug's current trade state to the argument trade state.
+*
+* @param aState - The trade state to set the Rug to.
+*/
+void Rug::setTradeState(const ETradeState& aState)
 {
-    lock_guard<mutex> lock(mStateMtx);
+    lock_guard<mutex> lock_time(mTimeMtx);
+    mTimeToTrade = RUG_TRADE_TIME;
+
+    lock_guard<mutex> lock_state(mStateMtx);
     if (aState != mState)
     {
         mState = aState;
     }
+}
+
+
+/**
+* Get this Rug's current trade state.
+*
+* @return ETradeState The trade state of the Rug.
+*/
+ETradeState Rug::getTradeState()
+{
+    lock_guard<mutex> lock(mStateMtx);
+    return mState;
 }
 
 
@@ -127,9 +163,28 @@ Entity* Rug::getEntity()
 /**
 * Get the Rug's current location.
 *
-* @return Vector3 the current location of the Entity.
+* @return Vector the current location of the Entity.
 */
-Vector3 Rug::getLocation()
+Vector Rug::getLocation()
 {
     return mLocation;
+}
+
+
+/**
+* Whether the current can make a trade or not
+*
+* @return bool True if the rug can trade, otherwise false
+*/
+bool Rug::canTrade()
+{
+    lock_guard<mutex> lock(mTimeMtx);
+    if (mTimeToTrade <= 0)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

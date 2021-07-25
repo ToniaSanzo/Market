@@ -8,6 +8,7 @@
 NPC::NPC()
 {
     // Set the NPC's member variables to random values
+    lock_guard<mutex> lock(mStateMtx);
     mState = static_cast<ETradeState>(rand() % 3);
     mNPCColor = static_cast<EColor>(rand() % 3);
     mCurrStep = rand() % 2;
@@ -96,6 +97,30 @@ bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld)
 }
 
 
+/**
+* Set this Rug's current trade state to the argument trade state.
+*
+* @param aState - The trade state to set the Rug to.
+*/
+void NPC::setTradeState(const ETradeState& aState)
+{
+    lock_guard<mutex> lock(mStateMtx);
+    mState = aState;
+}
+
+
+/**
+* Get this NPC's current trade state.
+*
+* @return ETradeState The trade state of the NPC.
+*/
+ETradeState NPC::getTradeState()
+{
+    lock_guard<mutex> lock(mStateMtx);
+    return mState;
+}
+
+
 // NPC's have different speeds
 void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
 {
@@ -124,9 +149,8 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
         {
             mCurrLocation.x += mDirection.x * (dt * mSpeed);
             mCurrLocation.y += mDirection.y * (dt * mSpeed);
-            MATH::clamp(mCurrLocation, Vector3{ static_cast<float>(SDLManager::mWindowWidth), static_cast<float>(SDLManager::mWindowHeight), 0 });
+            MATH::clamp(mCurrLocation, Vector{ static_cast<float>(SDLManager::mWindowWidth), static_cast<float>(SDLManager::mWindowHeight), 0 });
             
-            cout << "Entity added to location: {x: " << mCurrLocation.x << ", y: " << mCurrLocation.y << ", z: " << mCurrLocation.z << "}\n";
             mWorld->placeEntity(getEntity());
         }
     }
@@ -144,6 +168,7 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
     
     if (bUpdateFrame)
     {
+        lock_guard<mutex> lock(mStateMtx);
         mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAME_COLS;
         mCurrFrame += static_cast<uint16_t>(mState) * NPC_TRADE_FRAMES;
         mCurrFrame += mCurrStep;
@@ -238,9 +263,9 @@ void NPC::setSpeed(const float& ratio)
 /**
 * Get the NPC's current location.
 *
-* @return Vector3 the current location of the Entity.
+* @return Vector the current location of the Entity.
 */
-Vector3 NPC::getLocation()
+Vector NPC::getLocation()
 {
     return mCurrLocation;
 }

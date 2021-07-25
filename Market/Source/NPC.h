@@ -29,6 +29,7 @@ class NPC : public Entity
 private:
     // Represents the current state of the NPC
     ETradeState mState;
+    mutex mStateMtx;
 
     // Pointer to the NPCs texture, and SDL_Rect array
     Texture* mTexturePtr;
@@ -56,15 +57,15 @@ private:
     // the NPC has to walk to get there 
     // and whether we need to generate a new location to walk
     // to.
-    Vector3 mTargetLocation;
-    Vector3 mDirection;
+    Vector mTargetLocation;
+    Vector mDirection;
     bool bNewWalkLocation;
 
     // Reference to the world
     World* mWorld;
 
     // The NPC's coordinates
-    Vector3 mCurrLocation;
+    Vector mCurrLocation;
 
     // Set NPC's direction
     void setDirection();
@@ -82,6 +83,20 @@ public:
 
     // Display NPC to user
     void render();
+
+    /**
+    * Set this Rug's current trade state to the argument trade state.
+    *
+    * @param aState - The trade state to set the Rug to.
+    */
+    void setTradeState(const ETradeState& aState);
+
+    /**
+    * Get this NPC's current trade state.
+    *
+    * @return ETradeState The trade state of the NPC.
+    */
+    ETradeState getTradeState();
 
     // Update the NPC
     void update(const float& dt, const float& aRandomX, const float& aRandomY);
@@ -103,7 +118,7 @@ public:
     /**
     * Get the NPC's current location.
     *
-    * @return Vector3 the current location of the Entity.
+    * @return Vector the current location of the Entity.
     */
-    Vector3 getLocation();
+    Vector getLocation();
 };

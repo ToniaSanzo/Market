@@ -22,7 +22,7 @@ int main(int argc, char* args[])
     SDLManager sdl;
 
     // Initialize SDL subsystem
-    if (!sdl.init())
+    if (!sdl.init("Market"))
     {
         cout << "Failed to initialize SDL!\n";
     }

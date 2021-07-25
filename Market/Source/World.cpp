@@ -8,6 +8,7 @@
 */
 #include "PCH.h"
 #include "World.h"
+#include "Rug.h"
 #include "SDLManager.h"
 
 
@@ -157,8 +158,6 @@ void World::placeEntity(Entity* aEntity)
     // Update the subspaces only if the entity moved to a different subspace
     if (newSubspace != aEntity->getSubspace())
     {
-        cout << "Moving Entity from subspace [" << aEntity->getSubspace() << "] to ["
-            << newSubspace << "]\n";
         if (newSubspace > mWorld.size())
         {
             cout << "[Tonia Sanzo] INDEX OUT OF RANGE EXCEPTION!\n";
@@ -196,6 +195,7 @@ void World::orderWorld(const EWorldPartition& aPartition)
             {
                 lock_guard<mutex> lock(mLeftMtx);
                 mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
+                mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->trade();
             }
         }
         break;
@@ -208,6 +208,7 @@ void World::orderWorld(const EWorldPartition& aPartition)
             {
                 lock_guard<mutex> lock(mCenterMtx);
                 mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
+                mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->trade();
             }
         }
         break;
@@ -220,6 +221,7 @@ void World::orderWorld(const EWorldPartition& aPartition)
             {
                 lock_guard<mutex> lock(mRightMtx);
                 mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->order();
+                mWorld[(static_cast<size_t>(mHorizontalTileCount) * row) + col]->trade();
             }
         }
         break;
@@ -376,7 +378,6 @@ void Subspace::order()
 */
 void Subspace::quickSort(uint32_t low, uint32_t high)
 {
-    cout << "Subspace::quickSort(..)\n";
     if (low < high)
     {
         uint32_t pivot = partition(low, high);
@@ -398,7 +399,6 @@ void Subspace::quickSort(uint32_t low, uint32_t high)
 */
 uint32_t Subspace::partition(uint32_t low, uint32_t high)
 {
-    cout << "Subspace::partition(..)\n";
     if (((high + low) / 2) == mEntities.size())
     {
         cout << "w!\n";
@@ -437,8 +437,110 @@ uint32_t Subspace::partition(uint32_t low, uint32_t high)
 */
 void Subspace::swap(uint32_t aIndex1, uint32_t aIndex2)
 {
-    cout << "Subspace::swap(..)\n";
     Entity* tempEntity = mEntities[aIndex1];
     mEntities[aIndex1] = mEntities[aIndex2];
     mEntities[aIndex2] = tempEntity;
+}
+
+
+/**
+* Trade objects when NPC's overlap Rug's in a single subspace.
+*/
+void Subspace::trade()
+{
+    // Iterators to the first Entity, and one past the last Entity in the mEntities vector
+    vector<Entity*>::iterator begin = mEntities.begin();
+    vector<Entity*>::iterator end   = mEntities.end();
+    
+    // Iterators above, below, and on the current Entity
+    vector<Entity*>::iterator currEntity;
+    vector<Entity*>::iterator entityAbove;
+    vector<Entity*>::iterator entityBelow;
+
+    // Whether we can continue looking above/below for Entity's overlapping the currEntity
+    bool lookAbove = true;
+    bool lookBelow = true;
+
+    // Iterate through the subspace
+    for (currEntity = begin; currEntity != end; ++currEntity)
+    {
+        // Confirm currEntity is a Rug
+        if ((*currEntity)->getType() == EEntityType::RUG)
+        {
+            // Confirm the currEntity can trade
+            if (static_cast<Rug*>(*currEntity)->canTrade())
+            {
+                // look for the next entity that is able to trade with the currEntity
+                entityAbove = entityBelow = currEntity;
+
+                while (lookAbove || lookBelow)
+                {
+                    if (lookAbove)
+                    {
+                        // If entityAbove is outside of the trade radius stop looking above, and short circuit
+                        // this trade check
+                        if ( pow((*entityAbove)->getLocation().y - ((*currEntity)->getLocation().y), 2.f) > TRADE_RADIUS_SQUARED)
+                        {
+                            lookAbove = false;
+
+                        }
+                        else
+                        {
+                            // Check to see if the entityAbove is in the trade radius of the currEntity
+                            if (((*entityAbove)->getType() == EEntityType::NPC) && MATH::distanceSquared((*currEntity)->getLocation(), (*entityAbove)->getLocation(), TRADE_RADIUS_SQUARED))
+                            {
+                                // Have the entity's trade
+                                ETradeState tempTradeState = (*currEntity)->getTradeState();
+                                (*currEntity)->setTradeState((*entityAbove)->getTradeState());
+                                (*entityAbove)->setTradeState(tempTradeState);
+                                
+                                // reset lookAbove and lookBelow
+                                lookAbove = lookBelow = true;
+                                break;
+                            }
+
+                            if (entityAbove == begin)
+                            {
+                                lookAbove = false;
+                            }
+                            else
+                            {
+                                --entityAbove;
+                            }
+                        }
+                    }
+
+                    if (lookBelow)
+                    {
+                        // If entityBelow is outside of the trade radius stop looking above, and short circuit
+                        // this trade check
+                        if (pow((*entityBelow)->getLocation().y - ((*currEntity)->getLocation().y), 2.f) > TRADE_RADIUS_SQUARED)
+                        {
+                            lookBelow = false;
+                        }
+                        else
+                        {
+                            // Check to see if the entityBelow is in the trade radius of the currEntity
+                            if (((*entityBelow)->getType() == EEntityType::NPC) && MATH::distanceSquared((*currEntity)->getLocation(), (*entityBelow)->getLocation(), TRADE_RADIUS_SQUARED))
+                            {
+                                // Have the entity's trade
+                                ETradeState tempTradeState = (*currEntity)->getTradeState();
+                                (*currEntity)->setTradeState((*entityBelow)->getTradeState());
+                                (*entityBelow)->setTradeState(tempTradeState);
+
+                                // reset lookAbove and lookBelow
+                                lookAbove = lookBelow = true;
+                                break;
+                            }
+
+                            if (++entityBelow == end)
+                            {
+                                lookBelow = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

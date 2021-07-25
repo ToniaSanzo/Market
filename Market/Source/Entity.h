@@ -73,6 +73,20 @@ public:
     uint32_t getSubspace();
 
     /**
+    * Set this Entity's current trade state to the argument trade state.
+    * 
+    * @param aState - The trade state to set the Entity to.
+    */
+    virtual void setTradeState(const ETradeState& aState) = 0;
+
+    /**
+    * Get this Entity's current trade state.
+    *
+    * @return ETradeState The trade state of the Entity.
+    */
+    virtual ETradeState getTradeState() = 0;
+
+    /**
     * Get the Entity's unique ID number.
     * 
     * @return The unique ID number of the Entity.
@@ -82,7 +96,7 @@ public:
     /**
     * Get the Entity's current location.
     * 
-    * @return Vector3 the current location of the Entity.
+    * @return Vector the current location of the Entity.
     */
-    virtual Vector3 getLocation() = 0;
+    virtual Vector getLocation() = 0;
 };

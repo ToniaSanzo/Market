@@ -27,7 +27,11 @@ private:
     SDL_Rect* mTextureFrames;
 
     // The rugs coordinates
-    Vector3 mLocation;
+    Vector mLocation;
+
+    // The amount of time before the Rug is able to be traded
+    float mTimeToTrade;
+    mutex mTimeMtx;
 public:
     // Default initialize the rug, the rug will not be properly initialized until it is
     // initialized with init(..)
@@ -39,25 +43,54 @@ public:
     // Properly initialize the rug 
     bool init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& aWorld);
 
+    /**
+    * update the rug
+    * 
+    * @param dt - time passed since last time update was called.
+    */
+    void update(const float& dt);
+
     // Only draws the rugs trade item to the screen
     void render();
 
     // Draw the full rug entity to the screen
     void renderFull();
 
-    // Update the state of the rug
-    void updateState(const ETradeState& aState);
+    /**
+    * Set this Rug's current trade state to the argument trade state.
+    *
+    * @param aNewTradeState - The trade state to set the Rug to.
+    */
+    void setTradeState(const ETradeState& aState);
+
+    /**
+    * Get this Rug's current trade state.
+    *
+    * @return ETradeState The trade state of the Rug.
+    */
+    ETradeState getTradeState();
 
     // Returns the EEntityType of the rug
     EEntityType getType();
 
-    // Get's this Rug as an Entity pointer
+    /**
+    * Get's this Rug as an Entity pointer.
+    * 
+    * @return Entity* returns the rug as an Entity pointer.
+    */
     Entity* getEntity();
 
     /**
     * Get the Rug's current location.
     *
-    * @return Vector3 the current location of the Entity.
+    * @return Vector the current location of the Entity.
     */
-    Vector3 getLocation();
+    Vector getLocation();
+
+    /**
+    * Whether the current can make a trade or not
+    * 
+    * @return bool True the rug can trade, otherwise false
+    */
+    bool canTrade();
 };

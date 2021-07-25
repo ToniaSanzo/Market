@@ -24,7 +24,6 @@ class Subspace;
 class World
 {
 private:
-
     vector<Subspace*> mWorld;
 
     uint32_t mWindowWidth;
@@ -170,4 +169,10 @@ private:
     * @param aIndex2 - Index of the second Entity to be swapped.
     */
     void swap(uint32_t aIndex1, uint32_t aIndex2);
+
+
+    /**
+    * Trade objects when NPC's overlap Rug's in a single subspace.
+    */
+    void trade();
 };

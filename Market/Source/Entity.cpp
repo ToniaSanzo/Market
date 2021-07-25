@@ -19,7 +19,6 @@ Entity::Entity()
 {
     mID = ++sCreatedEntityCount;
     mCurrSubspace = UINT32_MAX;
-    cout << "Abstract Base Class (Entity) constructor called [mID = " << mID << "]!\n";
 }
 
 

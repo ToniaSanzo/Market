@@ -28,8 +28,7 @@ class NPC : public Entity
 {
 private:
     // Represents the current state of the NPC
-    ETradeState mState;
-    mutex mStateMtx;
+    atomic<uint16_t> mState;
 
     // Pointer to the NPCs texture, and SDL_Rect array
     Texture* mTexturePtr;

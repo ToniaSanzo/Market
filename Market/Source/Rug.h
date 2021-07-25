@@ -19,9 +19,8 @@ class Rug : public Entity
 private:
     // Represents the current state of the rug, the state of the rug will be accessed by
     //  multiple threads, so we added a mutex lock
-    ETradeState mState;
-    mutex mStateMtx;
-
+    atomic<uint16_t> mState;
+   
     // Pointer to the rugs Texture, and SDL_Rect array
     Texture* mTexturePtr;
     SDL_Rect* mTextureFrames;
@@ -30,8 +29,7 @@ private:
     Vector mLocation;
 
     // The amount of time before the Rug is able to be traded
-    float mTimeToTrade;
-    mutex mTimeMtx;
+    atomic<float> mTimeToTrade;
 public:
     // Default initialize the rug, the rug will not be properly initialized until it is
     // initialized with init(..)

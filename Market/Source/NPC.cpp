@@ -8,8 +8,7 @@
 NPC::NPC()
 {
     // Set the NPC's member variables to random values
-    lock_guard<mutex> lock(mStateMtx);
-    mState = static_cast<ETradeState>(rand() % 3);
+    mState = rand() % 3;
     mNPCColor = static_cast<EColor>(rand() % 3);
     mCurrStep = rand() % 2;
     mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAME_COLS;
@@ -104,8 +103,10 @@ bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld)
 */
 void NPC::setTradeState(const ETradeState& aState)
 {
-    lock_guard<mutex> lock(mStateMtx);
-    mState = aState;
+    if (mState != static_cast<uint16_t>(aState))
+    {
+        mState = static_cast<uint16_t>(aState);
+    }
 }
 
 
@@ -116,8 +117,20 @@ void NPC::setTradeState(const ETradeState& aState)
 */
 ETradeState NPC::getTradeState()
 {
-    lock_guard<mutex> lock(mStateMtx);
-    return mState;
+    switch (mState)
+    {
+    case 0:
+        return ETradeState::CHICKEN;
+        break;
+    case 1:
+        return ETradeState::LAMB;
+        break;
+    case 2:
+        return ETradeState::BREAD_WINE;
+        break;
+    default:
+        return ETradeState::BREAD_WINE;
+    }
 }
 
 
@@ -168,9 +181,8 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
     
     if (bUpdateFrame)
     {
-        lock_guard<mutex> lock(mStateMtx);
         mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAME_COLS;
-        mCurrFrame += static_cast<uint16_t>(mState) * NPC_TRADE_FRAMES;
+        mCurrFrame += mState * NPC_TRADE_FRAMES;
         mCurrFrame += mCurrStep;
         bUpdateFrame = false;
     }

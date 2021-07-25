@@ -25,6 +25,7 @@ using namespace std;    // This set's the namespace for the entire project
 #include <functional>
 #include <stdexcept>
 #include <chrono>
+#include <atomic>
 
 // The entities trade states
 enum class ETradeState
@@ -195,8 +196,8 @@ constexpr float MAX_FRAME_TIME = .5f;
 // Time needed to pass before a rug can trade with a NPC
 constexpr float RUG_TRADE_TIME = .2f;
 // Radius the Entity's have to be within one another to trade
-constexpr float TRADE_RADIUS_SQUARED = 450.f;
-constexpr Vector RUG_TRADE_OFFSET = Vector{ 25, 37, 0 };
+constexpr float TRADE_RADIUS_SQUARED = 650.f;
+constexpr Vector RUG_OFFSET = Vector{ 3, 14, 0 };
 
 // Number of partitions that make up the world
 constexpr float PARTITION_COUNT = 3.f;

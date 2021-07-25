@@ -15,9 +15,7 @@
 // initialized with init
 Rug::Rug()
 {
-    lock_guard<mutex> lock(mStateMtx);
-
-    mState = static_cast<ETradeState>(rand() % 3);
+    mState = rand() % 3;
 
     // Generate a random location for the rug to spawn
     mLocation.x = 0;
@@ -91,28 +89,26 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
 */
 void Rug::update(const float& dt)
 {
-    lock_guard<mutex> lock(mTimeMtx);
     if (mTimeToTrade <= 0)
     {
         mTimeToTrade = 0;
         return;
     }
-    mTimeToTrade -= dt;
+    mTimeToTrade = mTimeToTrade - dt;
 }
+
 
 // Draw the rug to the screen
 void Rug::render()
 {
-    lock_guard<mutex> lock(mStateMtx);
-    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[static_cast<uint16_t>(mState) + RUG_FRAME_COLS]);
+    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f) - (RUG_OFFSET.x * RUG_SCALE), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f) - (RUG_OFFSET.y * RUG_SCALE), &mTextureFrames[mState + RUG_FRAME_COLS]);
 }
 
 
 // Draw the full rug entity to the screen
 void Rug::renderFull()
 {
-    lock_guard<mutex> lock(mStateMtx);
-    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[static_cast<uint16_t>(mState)]);
+    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f) - RUG_OFFSET.x * RUG_SCALE, mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f) - (RUG_OFFSET.y * RUG_SCALE), &mTextureFrames[mState]);
 }
 
 
@@ -123,13 +119,11 @@ void Rug::renderFull()
 */
 void Rug::setTradeState(const ETradeState& aState)
 {
-    lock_guard<mutex> lock_time(mTimeMtx);
     mTimeToTrade = RUG_TRADE_TIME;
 
-    lock_guard<mutex> lock_state(mStateMtx);
-    if (aState != mState)
+    if (mState != static_cast<uint16_t>(aState))
     {
-        mState = aState;
+        mState = static_cast<uint16_t>(aState);
     }
 }
 
@@ -141,8 +135,20 @@ void Rug::setTradeState(const ETradeState& aState)
 */
 ETradeState Rug::getTradeState()
 {
-    lock_guard<mutex> lock(mStateMtx);
-    return mState;
+    switch (mState)
+    {
+    case 0:
+        return ETradeState::CHICKEN;
+        break;
+    case 1:
+        return ETradeState::LAMB;
+        break;
+    case 2: 
+        return ETradeState::BREAD_WINE;
+        break;
+    default:
+        return ETradeState::BREAD_WINE;
+    }
 }
 
 
@@ -178,7 +184,6 @@ Vector Rug::getLocation()
 */
 bool Rug::canTrade()
 {
-    lock_guard<mutex> lock(mTimeMtx);
     if (mTimeToTrade <= 0)
     {
         return true;

@@ -516,7 +516,7 @@ void Subspace::trade()
                         // this trade check
                         if (pow((*entityBelow)->getLocation().y - ((*currEntity)->getLocation().y), 2.f) > TRADE_RADIUS_SQUARED)
                         {
-                            lookBelow = false;
+                            lookBelow = false; 
                         }
                         else
                         {

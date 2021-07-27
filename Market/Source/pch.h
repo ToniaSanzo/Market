@@ -194,9 +194,9 @@ constexpr uint16_t RUG_COUNT = 3;
 constexpr float MAX_FRAME_TIME = .5f;
 
 // Time needed to pass before a rug can trade with a NPC
-constexpr float RUG_TRADE_TIME = .2f;
+constexpr float RUG_TRADE_TIME = .37f;
 // Radius the Entity's have to be within one another to trade
-constexpr float TRADE_RADIUS_SQUARED = 650.f;
+constexpr float TRADE_RADIUS_SQUARED = 1156.f;
 constexpr Vector RUG_OFFSET = Vector{ 3, 14, 0 };
 
 // Number of partitions that make up the world

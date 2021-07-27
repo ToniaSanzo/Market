@@ -90,7 +90,7 @@ World::World()
     mWindowWidth         = 0;
     mWindowHeight        = 0;
     mRenderTileLength    = 0;
-    mHorizontalTileCount = 12.f;
+    mHorizontalTileCount = 9.f;
     mVerticalTileCount   = 0;
 }
 
@@ -486,8 +486,9 @@ void Subspace::trade()
                         }
                         else
                         {
-                            // Check to see if the entityAbove is in the trade radius of the currEntity
-                            if (((*entityAbove)->getType() == EEntityType::NPC) && MATH::distanceSquared((*currEntity)->getLocation(), (*entityAbove)->getLocation(), TRADE_RADIUS_SQUARED))
+                            // Check to see if the entityAbove is in the trade radius of the currEntity, is an
+                            // NPC and is in a different trade state.
+                            if (((*entityAbove)->getType() == EEntityType::NPC) && ((*entityAbove)->getTradeState() != (*currEntity)->getTradeState()) && MATH::distanceSquared((*currEntity)->getLocation(), (*entityAbove)->getLocation(), TRADE_RADIUS_SQUARED))
                             {
                                 // Have the entity's trade
                                 ETradeState tempTradeState = (*currEntity)->getTradeState();

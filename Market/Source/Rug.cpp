@@ -98,17 +98,21 @@ void Rug::update(const float& dt)
 }
 
 
-// Draw the rug to the screen
+/**
+* Draw just the Rug's trade object to the screen.
+*/ 
 void Rug::render()
 {
-    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f) - (RUG_OFFSET.x * RUG_SCALE), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f) - (RUG_OFFSET.y * RUG_SCALE), &mTextureFrames[mState + RUG_FRAME_COLS]);
+    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[mState + RUG_FRAME_COLS]);
 }
 
 
-// Draw the full rug entity to the screen
+/**
+* Draw the full Rug.
+*/
 void Rug::renderFull()
 {
-    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f) - RUG_OFFSET.x * RUG_SCALE, mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f) - (RUG_OFFSET.y * RUG_SCALE), &mTextureFrames[mState]);
+    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[mState]);
 }
 
 

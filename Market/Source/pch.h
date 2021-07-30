@@ -132,23 +132,83 @@ namespace MATH
 
 
     /**
-    * Determine if two locations are in range of one another using the distance squared formula.
-    * The distance squared formula is the pythagrom theorem withough taking the square root for
-    * performance.
+    * Determine if two points are in range of one another using the distance squared formula.
+    * The distance squared formula is the Pythagorean Theorem but skips the square root step for optimization
+    * taking the square root for performance.
     *
-    * @param aLocationA     - First target location.
-    * @param aLocationB     - Second target location.
-    * @param aRadiusSquared - The squared radius for an overlap to occur squared.
-    * @return bool true if the locations are within the nonsquared radius of one another.
+    * @param aPointA     - First target location.
+    * @param aPointB     - Second target location.
+    * @param aRange      - The distance for an overlap to occur.
+    * @return bool True if the locations are within the range of one another, otherwise false.
     */
-    inline bool distanceSquared(const Vector& aLocationA, const Vector& aLocationB, const float& aRadiusSquared)
+    inline bool pointsInRange(const Vector& aPointA, const Vector& aPointB, const float& aRange)
     {
-        // If the locations are within the radius of one another return true
-        if ((pow(aLocationA.x - aLocationB.x, 2.f) + pow(aLocationA.y - aLocationB.y, 2.f)) <= aRadiusSquared)
+        if ((pow(aPointA.x - aPointB.x, 2.f) + pow(aPointA.y - aPointB.y, 2.f)) <= pow(aRange, 2.f))
         {
             return true;
         }
-        // Otherwise return false
+        else
+        {
+            return false;
+        }
+    }
+
+
+    /**
+    * Takes three vectors, two being the start and end of the line segment and the other being the intersection
+    * point. Returns true if the intersection is between the line segment points, otherwise returns false.
+    *
+    * @param aLineSegmentPointA - Endpoint of the aLineSegmentPoint1.
+    * @param aLineSegmentPointB - Endpoint of the aLineSegmentPoint2.
+    * @return bool True if the intersection point is between the line segment points, otherwise false.
+    */
+    inline bool intersectionBetweenPoints(const Vector& aLineSegmentPointA, const Vector& aLineSegmentPointB, const Vector& aIntersectionPoint)
+    {
+        Vector xValuesMinMax = aLineSegmentPointA.x < aLineSegmentPointB.x ? (Vector{ aLineSegmentPointA.x, aLineSegmentPointB.x, 0 }) : (Vector{ aLineSegmentPointB.x, aLineSegmentPointA.x, 0 });
+        Vector yValuesMinMax = aLineSegmentPointA.y < aLineSegmentPointB.y ? (Vector{ aLineSegmentPointA.y, aLineSegmentPointB.y, 0 }) : (Vector{ aLineSegmentPointB.y, aLineSegmentPointA.y, 0 });
+
+        if ((aIntersectionPoint.x >= xValuesMinMax.x && aIntersectionPoint.x <= xValuesMinMax.y)
+            && (aIntersectionPoint.y >= yValuesMinMax.x && aIntersectionPoint.y <= yValuesMinMax.y))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    /**
+    * Determine if a line segment overlaps a circle.
+    * 
+    * @param aLineSegmentPointA - The first point of the line segment.
+    * @param aLineSegmentPointB - The second point of the line segment.
+    * @param aCircleCenterPoint - The circles center point.
+    * @param aCircleRadius      - The circle's radius.
+    * @return bool True if the circle overlaps the line segment, otherwise false.
+    */
+    inline bool doesLineSegmentOverlapCircle(Vector aLineSegmentPointA, Vector aLineSegmentPointB, Vector aCircleCenterPoint, float aCircleRadius)
+    {
+        if (pointsInRange(aLineSegmentPointA, aCircleCenterPoint, aCircleRadius) || pointsInRange(aLineSegmentPointB, aCircleCenterPoint, aCircleRadius))
+        {
+            return true;
+        }
+
+        float lineSegmentSlope = (aLineSegmentPointB.y - aLineSegmentPointA.y) / (aLineSegmentPointB.x - aLineSegmentPointA.x);
+        float perpendicularLineSegmentSlope = -(((aLineSegmentPointB.x - aLineSegmentPointA.x)) / (aLineSegmentPointB.y - aLineSegmentPointA.y));
+        float lineSegmentYIntercept = aLineSegmentPointA.y - (lineSegmentSlope * aLineSegmentPointA.x);
+        float perpendicularLineSegmentYIntercept = aCircleCenterPoint.y - (perpendicularLineSegmentSlope * aCircleCenterPoint.x);
+
+        Vector intersectionPoint;
+        intersectionPoint.x = (perpendicularLineSegmentYIntercept - lineSegmentYIntercept) / (lineSegmentSlope - perpendicularLineSegmentSlope);
+        intersectionPoint.y = (lineSegmentSlope * intersectionPoint.x) + lineSegmentYIntercept;
+
+
+        if (pointsInRange(aCircleCenterPoint, intersectionPoint, aCircleRadius))
+        {
+            return intersectionBetweenPoints(aLineSegmentPointA, aLineSegmentPointB, intersectionPoint);
+        }
+        // The intersection point is out of range of the circle's overlap, therefore return false 
         else
         {
             return false;

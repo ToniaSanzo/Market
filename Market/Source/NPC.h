@@ -63,8 +63,10 @@ private:
     // Reference to the world
     World* mWorld;
 
-    // The NPC's coordinates
+    // The NPC's current location
     Vector mCurrLocation;
+    // The NPC's previous location
+    Vector mPrevLocation;
 
     // Set NPC's direction
     void setDirection();

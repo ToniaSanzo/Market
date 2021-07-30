@@ -16,8 +16,7 @@ NPC::NPC()
     mCurrFrame += mCurrStep;
 
     // Generate a random location to walk too
-    mCurrLocation.x = static_cast<float>(rand() % SDLManager::mWindowWidth);
-    mCurrLocation.y = static_cast<float>(rand() % SDLManager::mWindowHeight);
+    mCurrLocation = mPrevLocation = Vector{ 0,0,0 };
     setNewWalkLocation(static_cast<float>(rand()) / RAND_MAX, static_cast<float>(rand()) / RAND_MAX);
     mTimeSinceDirectionReset = 0;
 
@@ -87,6 +86,7 @@ bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld)
                 // Generate a random location for the NPC to spawn
                 mCurrLocation.x = static_cast<float>(rand() % (SDLManager::mWindowWidth));
                 mCurrLocation.y = static_cast<float>(rand() % (SDLManager::mWindowHeight));
+                mPrevLocation = mCurrLocation;
                 mWorld->placeEntity(getEntity());
             }
         }
@@ -160,6 +160,7 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
         // Otherwise, move closer to the target location
         else
         {
+            mPrevLocation = mCurrLocation;
             mCurrLocation.x += mDirection.x * (dt * mSpeed);
             mCurrLocation.y += mDirection.y * (dt * mSpeed);
             MATH::clamp(mCurrLocation, Vector{ static_cast<float>(SDLManager::mWindowWidth), static_cast<float>(SDLManager::mWindowHeight), 0 });

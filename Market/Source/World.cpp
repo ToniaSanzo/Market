@@ -9,14 +9,14 @@
 #include "PCH.h"
 #include "World.h"
 #include "Rug.h"
+#include "NPC.h"
 #include "SDLManager.h"
 
 
 /**
 * Removes the Entity from the world, uses the Entity's subspace to determine which subspace
 * to remove from.
-*
-* @param aEntity   - Entity to remove from the world.
+* @param aEntity - Entity to remove from the world.
 */
 void World::removeEntity(Entity* aEntity)
 {
@@ -50,7 +50,6 @@ void World::removeEntity(Entity* aEntity)
 
 /**
 * Adds the Entity to the world, uses the Entity's subspace to determine which subspace to add to.
-*
 * @param aEntity - Entity to add to the world.
 */
 void World::addEntity(Entity* aEntity)
@@ -145,7 +144,6 @@ bool World::init()
 
 /**
 * Add an entity to the world at a certain location.
-*
 * @param Entity* - reference to the entity being added to the world
 */
 void World::placeEntity(Entity* aEntity)
@@ -180,7 +178,6 @@ void World::placeEntity(Entity* aEntity)
 /**
 * Each Subspace's Entity chain in the given partition will be organized based on
 * the Entitiy's y-coordinate.
-* 
 * @param aPartition - The partition to order.
 */
 void World::orderWorld(const EWorldPartition& aPartition)
@@ -231,7 +228,6 @@ void World::orderWorld(const EWorldPartition& aPartition)
 
 /**
 * Renders every entity in a partition of the world, this is designed to be done concurrently
-*
 * @param aPartition - The partition to render
 */
 void World::render(const EWorldPartition& aPartition)
@@ -297,7 +293,6 @@ void World::render(const EWorldPartition& aPartition)
 
 /**
 * Renders the Entity chain for the given subspace
-*
 * @param aIndex - The mWorld index of the subspace to render
 */
 void World::renderLocation(const size_t& aIndex)
@@ -329,7 +324,6 @@ Subspace::~Subspace()
 
 /**
 * Adds an Entity to the subspace.
-*
 * @param aEntity - reference to the entity being added to the subspace.
 */
 void Subspace::addEntity(Entity* aEntity)
@@ -340,7 +334,6 @@ void Subspace::addEntity(Entity* aEntity)
 
 /**
 * Remove target Entity from the subspace, if the Entity is present.
-*
 * @param aEntity - reference to the entity being removed from the subspace.
 */
 void Subspace::removeEntity(Entity* aEntity)
@@ -372,7 +365,6 @@ void Subspace::order()
 
 /**
 * Sorts the entities within the subspace based on the entities locations.
-* 
 * @param low - Starting index.
 * @param high - Ending index.
 */
@@ -391,7 +383,6 @@ void Subspace::quickSort(uint32_t low, uint32_t high)
 * All the values less then the center value are moved lower of the 
 * center value, and the values greater than the center value are moved upper of the 
 * center value.
-*
 * @param low - Starting index.
 * @param high - Ending index.
 * @return uint32_t the index where the left index is equal to or greater then the 
@@ -431,7 +422,6 @@ uint32_t Subspace::partition(uint32_t low, uint32_t high)
 
 /**
 * Swap the Entity's given by the index numbers.
-*
 * @param aIndex1 - Index of the first Entity to be swapped.
 * @param aIndex2 - Index of the second Entity to be swapped.
 */
@@ -464,11 +454,13 @@ void Subspace::trade()
     // Iterate through the subspace
     for (currEntity = begin; currEntity != end; ++currEntity)
     {
-        // Confirm currEntity is a Rug
+        // If currEntity is a Rug, check for overlaps
         if ((*currEntity)->getType() == EEntityType::RUG)
         {
+            Rug* tempRug = static_cast<Rug*>(*currEntity);
+
             // Confirm the currEntity can trade
-            if (static_cast<Rug*>(*currEntity)->canTrade())
+            if (tempRug->canTrade())
             {
                 // look for the next entity that is able to trade with the currEntity
                 entityAbove = entityBelow = currEntity;
@@ -477,27 +469,33 @@ void Subspace::trade()
                 {
                     if (lookAbove)
                     {
-                        // If entityAbove is outside of the trade radius stop looking above, and short circuit
-                        // this trade check
-                        if ( pow((*entityAbove)->getLocation().y - ((*currEntity)->getLocation().y), 2.f) > TRADE_RADIUS_SQUARED)
+                        // Stop looking at entityAbove when entityAbove's location moves out of range of currEntity
+                        if (((*entityAbove)->getLocation().y - tempRug->getLocation().y) > TRADE_RADIUS)
                         {
                             lookAbove = false;
-
                         }
                         else
                         {
-                            // Check to see if the entityAbove is in the trade radius of the currEntity, is an
-                            // NPC and is in a different trade state.
-                            if (((*entityAbove)->getType() == EEntityType::NPC) && ((*entityAbove)->getTradeState() != (*currEntity)->getTradeState()) && MATH::distanceSquared((*currEntity)->getLocation(), (*entityAbove)->getLocation(), TRADE_RADIUS_SQUARED))
+                            // Confirm the entityAbove is a NPC, and in a different trade state
+                            if (((*entityAbove)->getType() == EEntityType::NPC) && ((*entityAbove)->getTradeState() != tempRug->getTradeState()))
                             {
-                                // Have the entity's trade
-                                ETradeState tempTradeState = (*currEntity)->getTradeState();
-                                (*currEntity)->setTradeState((*entityAbove)->getTradeState());
-                                (*entityAbove)->setTradeState(tempTradeState);
-                                
-                                // reset lookAbove and lookBelow
-                                lookAbove = lookBelow = true;
-                                break;
+                                // Cast the entityAbove to a NPC, then check if the tempNPC moved within the trade 
+                                // radius of the Rug
+                                NPC* tempNPC = static_cast<NPC*>(*entityAbove);
+                                if (MATH::doesLineSegmentOverlapCircle(tempNPC->getPrevLocation(), tempNPC->getLocation(), tempRug->getLocation(), TRADE_RADIUS))
+                                {
+                                    if (!tempNPC->getPreviousOverlappingRug())
+                                    {
+                                        // Have the entity's trade
+                                        ETradeState tempTradeState = tempRug->getTradeState();
+                                        tempRug->setTradeState((*entityAbove)->getTradeState());
+                                        (*entityAbove)->setTradeState(tempTradeState);
+                                        lookAbove = lookBelow = true;
+                                    }
+
+                                    tempNPC->setOverlappingRug(true);
+                                    break;
+                                }
                             }
 
                             if (entityAbove == begin)
@@ -513,25 +511,112 @@ void Subspace::trade()
 
                     if (lookBelow)
                     {
-                        // If entityBelow is outside of the trade radius stop looking above, and short circuit
-                        // this trade check
-                        if (pow((*entityBelow)->getLocation().y - ((*currEntity)->getLocation().y), 2.f) > TRADE_RADIUS_SQUARED)
+                        // Stop looking at entityBelow when entityBelow's location moves out of range of currEntity
+                        if (((*currEntity)->getLocation().y - (*entityBelow)->getLocation().y) > TRADE_RADIUS)
                         {
                             lookBelow = false; 
                         }
                         else
                         {
-                            // Check to see if the entityBelow is in the trade radius of the currEntity
-                            if (((*entityBelow)->getType() == EEntityType::NPC) && MATH::distanceSquared((*currEntity)->getLocation(), (*entityBelow)->getLocation(), TRADE_RADIUS_SQUARED))
+                            // Confirm the entityBelow is a NPC, and in a different trade state
+                            if (((*entityBelow)->getType() == EEntityType::NPC) && ((*entityBelow)->getTradeState() != tempRug->getTradeState()))
                             {
-                                // Have the entity's trade
-                                ETradeState tempTradeState = (*currEntity)->getTradeState();
-                                (*currEntity)->setTradeState((*entityBelow)->getTradeState());
-                                (*entityBelow)->setTradeState(tempTradeState);
+                                // Cast the entityBelow to a NPC, then check if the tempNPC moved within the trade 
+                                // radius of the Rug
+                                NPC* tempNPC = static_cast<NPC*>(*entityBelow);
+                                if (MATH::doesLineSegmentOverlapCircle(tempNPC->getPrevLocation(), tempNPC->getLocation(), tempRug->getLocation(), TRADE_RADIUS))
+                                {
+                                    if (!tempNPC->getPreviousOverlappingRug())
+                                    {
+                                        // Have the entity's trade
+                                        ETradeState tempTradeState = tempRug->getTradeState();
+                                        tempRug->setTradeState((*entityBelow)->getTradeState());
+                                        (*entityBelow)->setTradeState(tempTradeState);
+                                        lookAbove = lookBelow = true;
+                                    }
 
-                                // reset lookAbove and lookBelow
-                                lookAbove = lookBelow = true;
-                                break;
+                                    tempNPC->setOverlappingRug(true);
+                                    break;
+                                }
+                            }
+
+                            if (++entityBelow == end)
+                            {
+                                lookBelow = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // If currEntity is an NPC, double check for overlaps
+        if ((*currEntity)->getType() == EEntityType::NPC)
+        {
+            NPC* tempNPC = static_cast<NPC*>(*currEntity);
+
+            // If the currEntity was previously overlapping the rug, and not just set to overlap, confirm if it
+            // is still overlapping or not.
+            if (tempNPC->getPreviousOverlappingRug() && !tempNPC->getCurrentOverlappingRug())
+            {
+                // look for the next entity that is able to trade with the currEntity
+                entityAbove = entityBelow = currEntity;
+
+                while (lookAbove || lookBelow)
+                {
+                    if (lookAbove)
+                    {
+                        // Stop looking at entityAbove when entityAbove's location moves out of range of currEntity
+                        if (((*entityAbove)->getLocation().y - tempNPC->getLocation().y) > TRADE_RADIUS)
+                        {
+                            lookAbove = false;
+                        }
+                        else
+                        {
+                            // Confirm the entityAbove is a Rug, and in a different trade state
+                            if (((*entityAbove)->getType() == EEntityType::RUG) && ((*entityAbove)->getTradeState() != tempNPC->getTradeState()))
+                            {
+                                // Cast the entityAbove to a Rug, then check if the tempNPC overlaps the trade 
+                                // radius of the Rug
+                                Rug* tempRug = static_cast<Rug*>(*entityAbove);
+                                if (MATH::doesLineSegmentOverlapCircle(tempNPC->getPrevLocation(), tempNPC->getLocation(), tempRug->getLocation(), TRADE_RADIUS))
+                                {
+                                   tempNPC->setOverlappingRug(true);
+                                    break;
+                                }
+                            }
+
+                            if (entityAbove == begin)
+                            {
+                                lookAbove = false;
+                            }
+                            else
+                            {
+                                --entityAbove;
+                            }
+                        }
+                    }
+
+                    if (lookBelow)
+                    {
+                        // Stop looking at entityBelow when entityBelow's location moves out of range of currEntity
+                        if (((tempNPC)->getLocation().y - (*entityBelow)->getLocation().y) > TRADE_RADIUS)
+                        {
+                            lookBelow = false;
+                        }
+                        else
+                        {
+                            // Confirm the entityBelow is a Rug, and in a different trade state
+                            if (((*entityBelow)->getType() == EEntityType::RUG) && ((*entityBelow)->getTradeState() != tempNPC->getTradeState()))
+                            {
+                                // Cast the entityBelow to a Rug, then check if the NPC overlaps the trade 
+                                // radius of the Rug
+                                Rug* tempRug = static_cast<Rug*>(*entityBelow);
+                                if (MATH::doesLineSegmentOverlapCircle(tempNPC->getPrevLocation(), tempNPC->getLocation(), tempRug->getLocation(), TRADE_RADIUS))
+                                {
+                                    tempNPC->setOverlappingRug(true);
+                                    break;
+                                }
                             }
 
                             if (++entityBelow == end)

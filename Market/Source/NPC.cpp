@@ -7,32 +7,27 @@
 // Construct a non-initialized NPC
 NPC::NPC()
 {
-    // Set the NPC's member variables to random values
+    // Default values, not deliberately specified
+    mCurrLocation = mPrevLocation = mTargetLocation = Vector{ 0,0,0 };
+    mTimeSinceDirectionReset = 0;
+    mCurrAnimTime = 0;
+    mTexturePtr = nullptr;
+    mTextureFrames = nullptr;
+    mWorld = nullptr;
+    mCurrOverlappingRug = false;
+    mPrevOverlappingRug = false;
+    float speedRange = MAX_SPEED - MIN_SPEED;
+    float currSpeedInRange = mSpeed - MIN_SPEED;
+    float animSpeedRange = MAX_ANIMATION_SPEED - MIN_ANIMATION_SPEED;
+
+    // Randomize the NPC
     mState = rand() % 3;
     mNPCColor = static_cast<EColor>(rand() % 3);
     mCurrStep = rand() % 2;
     mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAME_COLS;
     mCurrFrame += static_cast<uint16_t>(mState) * NPC_TRADE_FRAMES;
     mCurrFrame += mCurrStep;
-
-    // Generate a random location to walk too
-    mCurrLocation = mPrevLocation = Vector{ 0,0,0 };
-    setNewWalkLocation(static_cast<float>(rand()) / RAND_MAX, static_cast<float>(rand()) / RAND_MAX);
-    mTimeSinceDirectionReset = 0;
-
-
-    // Set random movement speed of the NPC
-    float speedRange = MAX_SPEED - MIN_SPEED;
-    float currSpeedInRange = mSpeed - MIN_SPEED;
-    float animSpeedRange = MAX_ANIMATION_SPEED - MIN_ANIMATION_SPEED;
-
     setSpeed(static_cast<float>(rand()) / RAND_MAX);
-    mCurrAnimTime = 0;
-
-    mTexturePtr = nullptr;
-    mTextureFrames = nullptr;
-
-    mWorld = nullptr;
 }
 
 
@@ -87,19 +82,20 @@ bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld)
                 mCurrLocation.x = static_cast<float>(rand() % (SDLManager::mWindowWidth));
                 mCurrLocation.y = static_cast<float>(rand() % (SDLManager::mWindowHeight));
                 mPrevLocation = mCurrLocation;
+
+                mTargetLocation.x = static_cast<float>(rand() % (SDLManager::mWindowWidth));
+                mTargetLocation.y = static_cast<float>(rand() % (SDLManager::mWindowHeight));
                 mWorld->placeEntity(getEntity());
             }
         }
     }
-
     return success;
 }
 
 
 /**
 * Set this Rug's current trade state to the argument trade state.
-*
-* @param aState - The trade state to set the Rug to.
+* @param aState - The new trade state to set the Rug to.
 */
 void NPC::setTradeState(const ETradeState& aState)
 {
@@ -112,8 +108,7 @@ void NPC::setTradeState(const ETradeState& aState)
 
 /**
 * Get this NPC's current trade state.
-*
-* @return ETradeState The trade state of the NPC.
+* @return {ETradeState} The trade state of the NPC.
 */
 ETradeState NPC::getTradeState()
 {
@@ -192,6 +187,8 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
     {
         setDirection();
     }
+
+    setOverlappingRug(false);
 }
 
 
@@ -226,9 +223,8 @@ Entity* NPC::getEntity()
 
 /**
 * Given two values between [0,1) generate a random location within the window for the NPC to walk to
-* 
-* @param aRandomX - Value between [0,1) to set the target x coordinate
-* @param aRandomY - Value between [0,1) to set the target x coordinate
+* @param aRandomX - Value between [0,1) to set the target x coordinate.
+* @param aRandomY - Value between [0,1) to set the target y coordinate.
 */
 void NPC::setNewWalkLocation(const float& aRandomX, const float& aRandomY)
 {
@@ -244,7 +240,9 @@ void NPC::setNewWalkLocation(const float& aRandomX, const float& aRandomY)
 }
 
 
-// Set NPC's direction
+/**
+*  Set NPC's direction.
+*/
 void NPC::setDirection()
 {
     // The vector between current and target location
@@ -259,26 +257,69 @@ void NPC::setDirection()
 }
 
 
-// Set NPC's speed, and animation speed giving a value between 0 and 1, clamped between
-// the (MIN_SPEED | MIN_ANIMATION_SPEED) and (MAX_SPEED | MAX_ANIMATION_SPEED)
-void NPC::setSpeed(const float& ratio)
+/**
+* Set NPC's speed, and animation speed giving a value between 0 and 1, clamped between
+* the (MIN_SPEED | MIN_ANIMATION_SPEED) and (MAX_SPEED | MAX_ANIMATION_SPEED)
+* @param aRatio - Value between [0, 1) to set the NPC's speed.
+*/
+void NPC::setSpeed(const float& aRatio)
 {
     // The range between the max and min of the speeds
     float speedRange = MAX_SPEED - MIN_SPEED;
     float animSpeedRange = MIN_ANIMATION_SPEED - MAX_ANIMATION_SPEED;
 
     // using the ratio, set mSpeed and the mAnimationSpeed
-    mSpeed = (speedRange * ratio) + MIN_SPEED;
-    mAnimationSpeed = (animSpeedRange * (1.f - ratio)) + MAX_ANIMATION_SPEED;
+    mSpeed = (speedRange * aRatio) + MIN_SPEED;
+    mAnimationSpeed = (animSpeedRange * (1.f - aRatio)) + MAX_ANIMATION_SPEED;
 }
 
 
 /**
 * Get the NPC's current location.
-*
-* @return Vector the current location of the Entity.
+* @return {Vector} The current location of the Entity.
 */
 Vector NPC::getLocation()
 {
     return mCurrLocation;
+}
+
+
+/**
+* Get the NPC's previous location.
+* @return {Vector} The previous location of the Entity.
+*/
+Vector NPC::getPrevLocation()
+{
+    return mPrevLocation;
+}
+
+
+/**
+* If the NPC was set to overlap the rug this game tick.
+* @return {bool} Returns the mCurrOverlappingRug value.
+*/
+bool NPC::getCurrentOverlappingRug()
+{
+    return mCurrOverlappingRug;
+}
+
+
+/**
+* The prev Overlapping rug value.
+* @return {bool} Returns the mPrevOverlappingRug value.
+*/
+bool NPC::getPreviousOverlappingRug()
+{
+    return mPrevOverlappingRug;
+}
+
+
+/**
+* Set the NPC's overlapping a Rug state.
+* @param aOverlapping - The NPC's new overlapping Rug value.
+*/
+void NPC::setOverlappingRug(const bool& aOverlappingRug)
+{
+    mPrevOverlappingRug = mCurrOverlappingRug;
+    mCurrOverlappingRug = aOverlappingRug;
 }

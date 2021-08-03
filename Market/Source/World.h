@@ -37,23 +37,19 @@ private:
     uint32_t mHorizontalTileCount;
     uint32_t mVerticalTileCount;
 
-
     /**
     * Removes the Entity from the world, uses the Entity's subspace to determine which subspace
     * to remove from.
-    * 
     * @param aEntity   - Entity to remove from the world.
     */
     void removeEntity(Entity* aEntity);
 
     /**
     * Adds the Entity to the world, uses the Entity's subspace to determine which subspace to add to.
-    * 
     * @param aEntity   - Entity to add to the world.
     */
     void addEntity(Entity* aEntity);
 
-    
 public:
     /**
     * Default Constructor, default iniatialize every member variable
@@ -73,33 +69,26 @@ public:
 
     /**
     * Place an Entity into the game world at a certain location.
-    * 
-    * @param Entity* - reference to the Entity being added to the world
+    * @param mEntity - Pointer to the Entity being added to the world.
     */
     void placeEntity(Entity* mEntity);
-
 
     /**
     * Each Subspace's Entity chain in the given partition will be organized based on
     * the Entitiy's y-coordinate.
-    *
     * @param aPartition - The partition to order.
     */
     void orderWorld(const EWorldPartition& aPartition);
 
-
     /**
-    * Renders every entity in a partition of the world, this is designed to be done concurrently
-    * 
-    * @param aPartition - The partition to render
+    * Renders every entity in a partition of the world, this is designed to be done concurrently.
+    * @param aPartition - The partition to render.
     */
     void render(const EWorldPartition& aPartition);
 
-
     /**
-    * Renders the Entity chain at the given index location
-    * 
-    * @param aIndex - The mWorld vector index of the location
+    * Renders the Entity chain at the given index location.
+    * @param aIndex - The mWorld vector index of the location.
     */
     void renderLocation(const size_t& aIndex);
 };
@@ -116,6 +105,7 @@ private:
 
     // Vector of entites within the subspace
     vector<Entity*> mEntities;
+
     /**
     * Constructor
     */
@@ -128,14 +118,12 @@ private:
 
     /**
     * Adds an Entity to the subspace. (Warning! does not order the subspace based on the entities coordinate)
-    *
     * @param aEntity - reference to the entity being added to the subspace.
     */
     void addEntity(Entity* aEntity);
 
     /**
     * Remove target Entity from the subspace
-    * 
     * @param aEntity - reference to the entity being removed from the subspace
     */
     void removeEntity(Entity* aEntity);
@@ -147,7 +135,6 @@ private:
 
     /**
     * QuickSort algorithm implemented to sort the Subspace based on the Entity's y-coordinate.
-    * 
     * @param low - Starting index.
     * @param high - Ending index.
     */
@@ -155,7 +142,6 @@ private:
 
     /**
     * Moves all the values higher than the pivot to the right of the pivot
-    * 
     * @param low - Starting index.
     * @param high - Ending index
     * @return uint32_t the index of the pivot position.
@@ -164,12 +150,10 @@ private:
 
     /**
     * Swap the Entity's given by the index numbers.
-    * 
     * @param aIndex1 - Index of the first Entity to be swapped.
     * @param aIndex2 - Index of the second Entity to be swapped.
     */
     void swap(uint32_t aIndex1, uint32_t aIndex2);
-
 
     /**
     * Trade objects when NPC's overlap Rug's in a single subspace.

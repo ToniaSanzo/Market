@@ -67,7 +67,6 @@ namespace MATH
     /**
     * Keeps a Vector value clamped in the range specified by the argument. The aValue range is updated by
     reference.
-    *
     * @param aValue - The given value will be kept between 0, and the corresponding {x,y,z} range specified by
     *                 aRange
     * @param aRange - The max values for eacch {x,y,z} value of aValue
@@ -106,7 +105,6 @@ namespace MATH
     /**
     * Keeps a float value clamped in the range specified by the argument. The aValue range is updated by
     * reference.
-    *
     * @param aValue - The given value will be kept between 0, and the corresponding range specified by
     *                 aRange
     * @param aRange - The max values for each {x,y,z} value of aValue
@@ -135,7 +133,6 @@ namespace MATH
     * Determine if two points are in range of one another using the distance squared formula.
     * The distance squared formula is the Pythagorean Theorem but skips the square root step for optimization
     * taking the square root for performance.
-    *
     * @param aPointA     - First target location.
     * @param aPointB     - Second target location.
     * @param aRange      - The distance for an overlap to occur.
@@ -157,7 +154,6 @@ namespace MATH
     /**
     * Takes three vectors, two being the start and end of the line segment and the other being the intersection
     * point. Returns true if the intersection is between the line segment points, otherwise returns false.
-    *
     * @param aLineSegmentPointA - Endpoint of the aLineSegmentPoint1.
     * @param aLineSegmentPointB - Endpoint of the aLineSegmentPoint2.
     * @return bool True if the intersection point is between the line segment points, otherwise false.
@@ -180,7 +176,6 @@ namespace MATH
 
     /**
     * Determine if a line segment overlaps a circle.
-    * 
     * @param aLineSegmentPointA - The first point of the line segment.
     * @param aLineSegmentPointB - The second point of the line segment.
     * @param aCircleCenterPoint - The circles center point.
@@ -217,23 +212,23 @@ namespace MATH
 }
 
 // Number of each entity types in game world (rugs, npcs)
-constexpr uint16_t ENTITY_COUNT = 90;
+constexpr uint16_t ENTITY_COUNT              = 40;
 
 // Metadata about rug.png spritesheet
-constexpr uint16_t RUG_FRAME_COLS   = 3;
-constexpr uint16_t RUG_FRAME_ROWS   = 2;
-constexpr uint16_t RUG_FRAME_WIDTH  = 49;
-constexpr uint16_t RUG_FRAME_HEIGHT = 49;
-constexpr uint16_t RUG_SCALE        = 3;
+constexpr uint16_t RUG_FRAME_COLS            = 3;
+constexpr uint16_t RUG_FRAME_ROWS            = 2;
+constexpr uint16_t RUG_FRAME_WIDTH           = 49;
+constexpr uint16_t RUG_FRAME_HEIGHT          = 49;
+constexpr uint16_t RUG_SCALE                 = 3;
 
 // Metadata about npc.png spritesheet
-constexpr uint16_t NPC_FRAME_COLS        = 6;
-constexpr uint16_t NPC_FRAME_ROWS        = 3;
-constexpr uint16_t NPC_FRAME_WIDTH       = 18;
-constexpr uint16_t NPC_FRAME_HEIGHT      = 28;
-constexpr uint16_t NPC_TRADE_FRAMES      = 2;
-constexpr uint16_t NPC_SCALE             = 3;
-constexpr float NPC_RESET_DIRECTION_TIME = 1.32f;
+constexpr uint16_t NPC_FRAME_COLS            = 6;
+constexpr uint16_t NPC_FRAME_ROWS            = 3;
+constexpr uint16_t NPC_FRAME_WIDTH           = 18;
+constexpr uint16_t NPC_FRAME_HEIGHT          = 28;
+constexpr uint16_t NPC_TRADE_FRAMES          = 2;
+constexpr uint16_t NPC_SCALE                 = 3;
+constexpr float NPC_RESET_DIRECTION_TIME     = 1.32f;
 
 // Metadata about the behavior of the NPC
 constexpr float MIN_SPEED                    = 125.f;
@@ -243,24 +238,23 @@ constexpr float MIN_ANIMATION_SPEED          = .55f;
 constexpr uint16_t NPC_TARGET_LOCATION_RANGE = 18;
 
 // Metadata about the dimensions of the background
-constexpr uint16_t BACKGROUND_WIDTH  = 640;
-constexpr uint16_t BACKGROUND_HEIGHT = 380;
+constexpr uint16_t BACKGROUND_WIDTH          = 640;
+constexpr uint16_t BACKGROUND_HEIGHT         = 380;
 
 // Number of NPCs and rugs to generate
-constexpr uint16_t NPC_COUNT = 5;
-constexpr uint16_t RUG_COUNT = 3;
+constexpr uint16_t NPC_COUNT                 = 5;
+constexpr uint16_t RUG_COUNT                 = 3;
 
 // Max amount of in game time that can pass for a single game loop
-constexpr float MAX_FRAME_TIME = .5f;
+constexpr float MAX_FRAME_TIME               = .5f;
 
 // Time needed to pass before a rug can trade with a NPC
-constexpr float RUG_TRADE_TIME = .37f;
+constexpr float RUG_TRADE_TIME = .5f;
 // Radius the Entity's have to be within one another to trade
-constexpr float TRADE_RADIUS_SQUARED = 1156.f;
-constexpr Vector RUG_OFFSET = Vector{ 3, 14, 0 };
+constexpr float TRADE_RADIUS                 = 50.f;
 
 // Number of partitions that make up the world
-constexpr float PARTITION_COUNT = 3.f;
+constexpr float PARTITION_COUNT              = 3.f;
 
 // Absolute value function
 #define ABS(N) ((N < 0) ? (-N) : (N))

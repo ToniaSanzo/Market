@@ -68,6 +68,10 @@ private:
     // The NPC's previous location
     Vector mPrevLocation;
 
+    // The NPC is currently overlapping a Rug, or overlapped a Rug at the last game tick
+    bool mCurrOverlappingRug;
+    bool mPrevOverlappingRug;
+
     // Set NPC's direction
     void setDirection();
 
@@ -87,15 +91,13 @@ public:
 
     /**
     * Set this Rug's current trade state to the argument trade state.
-    *
     * @param aState - The trade state to set the Rug to.
     */
     void setTradeState(const ETradeState& aState);
 
     /**
     * Get this NPC's current trade state.
-    *
-    * @return ETradeState The trade state of the NPC.
+    * @return {ETradeState} The trade state of the NPC.
     */
     ETradeState getTradeState();
 
@@ -118,8 +120,31 @@ public:
 
     /**
     * Get the NPC's current location.
-    *
-    * @return Vector the current location of the Entity.
+    * @return {Vector} The current location of the Entity.
     */
     Vector getLocation();
+
+    /**
+    * Get the NPC's previous location.
+    * @return {Vector} The previous location of the Entity.
+    */
+    Vector getPrevLocation();
+
+    /**
+    * If the NPC was set to overlap the rug this game tick.
+    * @return {bool} Returns the mCurrOverlappingRug value.
+    */
+    bool getCurrentOverlappingRug();
+
+    /**
+    * The prev Overlapping rug value.
+    * @return {bool} Returns the mPrevOverlappingRug value.
+    */
+    bool getPreviousOverlappingRug();
+
+    /**
+    * Set the NPC's overlapping a Rug state.
+    * @param aOverlapping - The new overlap state of the rug
+    */
+    void setOverlappingRug(const bool& aOverlapping);
 };

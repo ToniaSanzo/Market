@@ -24,6 +24,15 @@
     <Image Include="assets\rug.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\load_blood_bckgrnd.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\load_glass_heart_bckgrnd.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Assets\loading_bckgrnd.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDLManager.cpp">

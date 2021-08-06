@@ -38,95 +38,150 @@ bool Game::init(SDLManager* aSDL)
     }
     else
     {
+        // Determine the scale of the background to fit the screen
+        float wRatio = static_cast<float>(SDLManager::mWindowWidth) / static_cast<float>(BACKGROUND_WIDTH);
+        float hRatio = static_cast<float>(SDLManager::mWindowHeight) / static_cast<float>(BACKGROUND_HEIGHT);
 
-        if (!mWorld.init())
+        float backgroundScale = (wRatio > hRatio) ? (wRatio) : (hRatio);
+
+        // Load the loading screen background and scale it to fit the screen
+        mLoadingBackgroundTexture.initTexture(sdl->getRenderer());
+        if (!mLoadingBackgroundTexture.loadFromFile("assets/loading_bckgrnd.png"))
         {
-            cout << "Failed to initialize the World!\n";
+            cout << "Failed to load the loading screen background texture!\n";
             success = false;
         }
         else
         {
-            // Load the rugs shared resources
-            mRugTexture.initTexture(sdl->getRenderer());
-            if (!mRugTexture.loadFromFile("assets/rug.png"))
+            mLoadingBackgroundTexture.updateScale(backgroundScale);
+
+            // Load the loading glass heart screen background and scale it to fit the screen
+            mLoadingGlassHeartTexture.initTexture(sdl->getRenderer());
+            if (!mLoadingGlassHeartTexture.loadFromFile("assets/load_glass_heart_bckgrnd.png"))
             {
-                cout << "Failed to load rug sprite sheet!\n";
+                cout << "Failed to load the glass heart screen background texture!\n";
                 success = false;
             }
             else
             {
-                mRugTexture.updateScale(RUG_SCALE);
+                mLoadingGlassHeartTexture.updateScale(backgroundScale);
 
-                // Set the rug's frames dimensions
-                for (uint16_t row = 0; row < RUG_FRAME_ROWS; ++row)
+                // Load the loading blood screen background and scale it to fit the screen
+                mLoadingBloodTexture.initTexture(sdl->getRenderer());
+                if (!mLoadingBloodTexture.loadFromFile("assets/load_glass_heart_bckgrnd.png"))
                 {
-                    for (uint16_t col = 0; col < RUG_FRAME_COLS; ++col)
-                    {
-                        mRugFrames[(row * RUG_FRAME_COLS) + col].x = col * RUG_FRAME_WIDTH;
-                        mRugFrames[(row * RUG_FRAME_COLS) + col].y = row * RUG_FRAME_HEIGHT;
-                        mRugFrames[(row * RUG_FRAME_COLS) + col].w = RUG_FRAME_WIDTH;
-                        mRugFrames[(row * RUG_FRAME_COLS) + col].h = RUG_FRAME_HEIGHT;
-                    }
-                }
-
-                // Create 1 unique rugs
-                for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
-                {
-                    rugs.push_back(new Rug());
-                    rugs[i]->init(&mRugTexture, mRugFrames, mWorld);
-                }
-
-                // Load the NPCs shared resources
-                mNPCTexture.initTexture(sdl->getRenderer());
-                if (!mNPCTexture.loadFromFile("assets/npc.png"))
-                {
-                    cout << "Failed to load rug sprite sheet!\n";
+                    cout << "Failed to load the loading screen background texture!\n";
                     success = false;
                 }
                 else
                 {
-                    mNPCTexture.updateScale(NPC_SCALE);
-
-                    // Set the npc's frames dimensions
-                    for (uint16_t row = 0; row < NPC_FRAME_ROWS; ++row)
+                    mLoadingBloodTexture.updateScale(backgroundScale);
+                    // Set the loading blood screen's frame dimensions
+                    for (uint16_t row = 0; row < LOAD_BLOOD_FRAME_ROWS; ++row)
                     {
-                        for (uint16_t col = 0; col < NPC_FRAME_COLS; ++col)
+                        for (uint16_t col = 0; col < LOAD_BLOOD_FRAME_COLS; ++col)
                         {
-                            mNPCFrames[(row * NPC_FRAME_COLS) + col].x = col * NPC_FRAME_WIDTH;
-                            mNPCFrames[(row * NPC_FRAME_COLS) + col].y = row * NPC_FRAME_HEIGHT;
-                            mNPCFrames[(row * NPC_FRAME_COLS) + col].w = NPC_FRAME_WIDTH;
-                            mNPCFrames[(row * NPC_FRAME_COLS) + col].h = NPC_FRAME_HEIGHT;
+                            mRugFrames[(row * LOAD_BLOOD_FRAME_COLS) + col].x = col * BACKGROUND_WIDTH;
+                            mRugFrames[(row * LOAD_BLOOD_FRAME_COLS) + col].y = row * BACKGROUND_HEIGHT;
+                            mRugFrames[(row * LOAD_BLOOD_FRAME_COLS) + col].w = BACKGROUND_WIDTH;
+                            mRugFrames[(row * LOAD_BLOOD_FRAME_COLS) + col].h = BACKGROUND_HEIGHT;
                         }
                     }
 
-                    // Create 1 unique NPCs
-                    for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
-                    {
-                        npcs.push_back(new NPC());
-                        npcs[i]->init(&mNPCTexture, mNPCFrames, &mWorld);
-                    }
 
-                    // Load the background and scale it to fit the screen
-                    mBackgroundTexture.initTexture(sdl->getRenderer());
-                    if (!mBackgroundTexture.loadFromFile("assets/bckgrnd.png"))
+                    Implement the loading screen while the game initializes
+
+                    if (!mWorld.init())
                     {
-                        cout << "Failed to load the background texture!\n";
+                        cout << "Failed to initialize the World!\n";
                         success = false;
                     }
                     else
                     {
-                        // Determine the scale of the background to fit the screen
-                        float wRatio = static_cast<float>(SDLManager::mWindowWidth) / static_cast<float>(BACKGROUND_WIDTH);
-                        float hRatio = static_cast<float>(SDLManager::mWindowHeight) / static_cast<float>(BACKGROUND_HEIGHT);
+                        // Load the rugs shared resources
+                        mRugTexture.initTexture(sdl->getRenderer());
+                        if (!mRugTexture.loadFromFile("assets/rug.png"))
+                        {
+                            cout << "Failed to load rug sprite sheet!\n";
+                            success = false;
+                        }
+                        else
+                        {
+                            mRugTexture.updateScale(RUG_SCALE);
 
-                        float backgroundScale = (wRatio > hRatio) ? (wRatio) : (hRatio);
+                            // Set the rug's frames dimensions
+                            for (uint16_t row = 0; row < RUG_FRAME_ROWS; ++row)
+                            {
+                                for (uint16_t col = 0; col < RUG_FRAME_COLS; ++col)
+                                {
+                                    mRugFrames[(row * RUG_FRAME_COLS) + col].x = col * RUG_FRAME_WIDTH;
+                                    mRugFrames[(row * RUG_FRAME_COLS) + col].y = row * RUG_FRAME_HEIGHT;
+                                    mRugFrames[(row * RUG_FRAME_COLS) + col].w = RUG_FRAME_WIDTH;
+                                    mRugFrames[(row * RUG_FRAME_COLS) + col].h = RUG_FRAME_HEIGHT;
+                                }
+                            }
 
-                        cout << "Background Texture Scale is " << backgroundScale << "\n";
-                        mBackgroundTexture.updateScale(backgroundScale);
-                    
-                        // Seed the thread safe random number with a random number
-                        srand(static_cast<unsigned>(time(nullptr)));
-                        Seed(rand() % 333);
+                            // Create 1 unique rugs
+                            for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
+                            {
+                                rugs.push_back(new Rug());
+                                rugs[i]->init(&mRugTexture, mRugFrames, mWorld);
+                            }
+
+                            // Load the NPCs shared resources
+                            mNPCTexture.initTexture(sdl->getRenderer());
+                            if (!mNPCTexture.loadFromFile("assets/npc.png"))
+                            {
+                                cout << "Failed to load rug sprite sheet!\n";
+                                success = false;
+                            }
+                            else
+                            {
+                                mNPCTexture.updateScale(NPC_SCALE);
+
+                                // Set the npc's frames dimensions
+                                for (uint16_t row = 0; row < NPC_FRAME_ROWS; ++row)
+                                {
+                                    for (uint16_t col = 0; col < NPC_FRAME_COLS; ++col)
+                                    {
+                                        mNPCFrames[(row * NPC_FRAME_COLS) + col].x = col * NPC_FRAME_WIDTH;
+                                        mNPCFrames[(row * NPC_FRAME_COLS) + col].y = row * NPC_FRAME_HEIGHT;
+                                        mNPCFrames[(row * NPC_FRAME_COLS) + col].w = NPC_FRAME_WIDTH;
+                                        mNPCFrames[(row * NPC_FRAME_COLS) + col].h = NPC_FRAME_HEIGHT;
+                                    }
+                                }
+
+                                // Create 1 unique NPCs
+                                for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
+                                {
+                                    npcs.push_back(new NPC());
+                                    npcs[i]->init(&mNPCTexture, mNPCFrames, &mWorld);
+                                }
+
+                                // Load the background and scale it to fit the screen
+                                mBackgroundTexture.initTexture(sdl->getRenderer());
+                                if (!mBackgroundTexture.loadFromFile("assets/bckgrnd.png"))
+                                {
+                                    cout << "Failed to load the background texture!\n";
+                                    success = false;
+                                }
+                                else
+                                {
+                                    // Determine the scale of the background to fit the screen
+                                    float wRatio = static_cast<float>(SDLManager::mWindowWidth) / static_cast<float>(BACKGROUND_WIDTH);
+                                    float hRatio = static_cast<float>(SDLManager::mWindowHeight) / static_cast<float>(BACKGROUND_HEIGHT);
+
+                                    float backgroundScale = (wRatio > hRatio) ? (wRatio) : (hRatio);
+
+                                    cout << "Background Texture Scale is " << backgroundScale << "\n";
+                                    mBackgroundTexture.updateScale(backgroundScale);
+
+                                    // Seed the thread safe random number with a random number
+                                    srand(static_cast<unsigned>(time(nullptr)));
+                                    Seed(rand() % 333);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -222,7 +277,6 @@ bool Game::handleEvent(SDL_Event& e)
 // Update the game world
 void Game::update(const float& dt)
 {
-
     for (uint16_t i = 0; i < ENTITY_COUNT; ++i)
     {
         threads.push_back(thread(&NPC::update, npcs[i], dt, RANDOM(), RANDOM()));

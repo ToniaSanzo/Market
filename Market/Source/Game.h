@@ -35,6 +35,12 @@ private:
     // The background texture
     Texture mBackgroundTexture;
 
+    // The loading screen textures
+    Texture mLoadingBackgroundTexture;
+    Texture mLoadingGlassHeartTexture;
+    Texture mLoadingBloodTexture;
+    SDL_Rect mBloodFrames[LOAD_BLOOD_FRAME_COLS * LOAD_BLOOD_FRAME_ROWS];
+
     // Our collection of threads
     vector<thread> threads;
 

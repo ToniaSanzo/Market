@@ -37,7 +37,7 @@ public:
     void setAlpha(Uint8 alpha);
 
     // Renders texture at given point
-    void render(int16_t x, int16_t y, SDL_Rect* clip = nullptr, double angle = 0.0, SDL_Point* center = nullptr, SDL_RendererFlip = SDL_FLIP_NONE);
+    void render(int16_t x = 0, int16_t y = 0, SDL_Rect* clip = nullptr, double angle = 0.0, SDL_Point* center = nullptr, SDL_RendererFlip = SDL_FLIP_NONE);
 
     // Initialize UTexture
     bool initTexture(SDL_Renderer* rend);

@@ -131,10 +131,7 @@ ETradeState NPC::getTradeState()
 
 // NPC's have different speeds
 void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
-{
-    // Whether the trade state changed and we need to update the current frame
-    bool bUpdateFrame = false;
-    
+{   
     mTimeSinceDirectionReset += dt;
     // Generate a new target location to walk to based on if the target location was reached
     if (bNewWalkLocation)
@@ -172,15 +169,9 @@ void NPC::update(const float& dt, const float& aRandomX, const float& aRandomY)
     {
         mCurrStep = ++mCurrStep % NPC_TRADE_FRAMES;
         mCurrAnimTime = 0;
-        bUpdateFrame = true;
-    }
-    
-    if (bUpdateFrame)
-    {
         mCurrFrame = static_cast<uint16_t>(mNPCColor) * NPC_FRAME_COLS;
         mCurrFrame += mState * NPC_TRADE_FRAMES;
         mCurrFrame += mCurrStep;
-        bUpdateFrame = false;
     }
 
     if (mTimeSinceDirectionReset > NPC_RESET_DIRECTION_TIME)

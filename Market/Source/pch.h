@@ -241,9 +241,11 @@ constexpr uint16_t NPC_TARGET_LOCATION_RANGE = 18;
 constexpr uint16_t BACKGROUND_WIDTH          = 640;
 constexpr uint16_t BACKGROUND_HEIGHT         = 380;
 
-// Metadata about the blood load screen loading spritesheet
-constexpr uint16_t LOAD_BLOOD_FRAME_COLS     = 3;
-constexpr uint16_t LOAD_BLOOD_FRAME_ROWS     = 9;
+// Metadata about the loading screen
+constexpr uint8_t LOAD_BLOOD_FRAME_COLS      = 3;
+constexpr uint8_t LOAD_BLOOD_FRAME_ROWS      = 9;
+constexpr uint8_t TOTAL_LOAD_BLOOD_FRAMES    = (LOAD_BLOOD_FRAME_COLS * LOAD_BLOOD_FRAME_ROWS) - 2;
+constexpr float LOAD_ANIMATION_SPEED         = .08;
 
 // Number of NPCs and rugs to generate
 constexpr uint16_t NPC_COUNT                 = 5;

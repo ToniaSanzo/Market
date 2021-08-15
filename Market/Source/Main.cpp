@@ -30,7 +30,7 @@ int main(int argc, char* args[])
     {
         // Game
         Game game;
-        game.init(&sdl);
+        game.start(&sdl);
 
         // Game running flag
         bool quit = false;

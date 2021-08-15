@@ -15,7 +15,7 @@ std::mutex my_rng_mutex; // a mutex to guard my_rng
 
 
 // This is the function to call if you want a random number in the interval [0,1)
-float RANDOM() {
+float Rand_ThreadSafeRNG() {
     std::lock_guard<std::mutex> lock(my_rng_mutex);
     return my_unif_real_dist(my_rng);
     // mutex is released when lock goes out of scope
@@ -26,8 +26,7 @@ float RANDOM() {
  * This function again locks the mutex for when a thread decides
  * to re-seed the RNG.
  */
-void Seed(uint16_t seed) {
+void Seed_ThreadSafeRNG(uint16_t seed) {
     std::lock_guard<std::mutex> lock(my_rng_mutex);
     my_rng.seed(seed);
-    // mutex is released when lock goes out of scope
 }

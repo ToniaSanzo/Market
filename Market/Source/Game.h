@@ -18,9 +18,12 @@ class Game
 private:
     // Pointer to the SDL system
     SDLManager* sdl;
+    mutex mSDLLock;
+    atomic<bool> mLoading;
+    atomic<bool> mInitSuccess;
 
     // Mutex to prevent the renderer from being used by more than one thread at a time
-    mutex mTextureMutex;
+    mutex mRendererMutex;
 
     // Collection of rugs, and shared resources used by the rug
     Texture mRugTexture;
@@ -39,7 +42,9 @@ private:
     Texture mLoadingBackgroundTexture;
     Texture mLoadingGlassHeartTexture;
     Texture mLoadingBloodTexture;
-    SDL_Rect mBloodFrames[LOAD_BLOOD_FRAME_COLS * LOAD_BLOOD_FRAME_ROWS];
+    SDL_Rect mBloodFrames[TOTAL_LOAD_BLOOD_FRAMES];
+    uint16_t mCurrLoadingBloodFrame;
+    float mBloodLoadAnimationTime;
 
     // Our collection of threads
     vector<thread> threads;
@@ -51,8 +56,8 @@ public:
     // Initializes game entities
     Game();
 
-    // Initialize the game objects
-    bool init(SDLManager*);
+    // Loads the game objects and renders the loading screen while they are initializing
+    bool start(SDLManager*);
 
     // Handle's user events events
     bool handleEvent(SDL_Event&);
@@ -65,4 +70,11 @@ public:
 
     // Free the resources
     void close();
+
+private: 
+    // Loads the objects used while the game is running
+    void init(const float&);
+
+    // Loads only the loading screen assets
+    bool initLoadingScreen(const float&);
 };

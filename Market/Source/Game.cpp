@@ -222,21 +222,21 @@ void Game::init(const float& aBackgroundScale)
 
                     // warm up the game so it starts smoothly
                     {
-                        update(.3);
+                        update(.3f);
                         this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
+                        update(.3f);
                         this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
+                        update(.3f);
                         this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
+                        update(.3f);
                         this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
+                        update(.3f);
                         this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
+                        update(.3f);
                         this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
+                        update(.3f);
+                        this_thread::sleep_for(std::chrono::milliseconds(300));
+                        update(.3f);
                     }
                 }
             }

@@ -89,7 +89,7 @@ World::World()
     mWindowWidth         = 0;
     mWindowHeight        = 0;
     mRenderTileLength    = 0;
-    mHorizontalTileCount = 9.f;
+    mHorizontalTileCount = 9;
     mVerticalTileCount   = 0;
 }
 
@@ -128,7 +128,7 @@ bool World::init()
         // Because the world is made up of square render tiles, determine the dimensions
         // and number of tiles needed
         mRenderTileLength = mWindowWidth / static_cast<float>(mHorizontalTileCount);
-        mVerticalTileCount = (mWindowHeight / mRenderTileLength) + 1;
+        mVerticalTileCount = static_cast<uint32_t>((mWindowHeight / mRenderTileLength) + 1);
 
         // mWorld is a "1D" array that represents a "2D" world
         for(uint32_t i = 0; i < static_cast<size_t>(mHorizontalTileCount) * static_cast<size_t>(mVerticalTileCount); ++i)
@@ -149,8 +149,8 @@ bool World::init()
 void World::placeEntity(Entity* aEntity)
 {
     // the vector index of the given location
-    uint32_t newRow      = aEntity->getLocation().y / mRenderTileLength;
-    uint32_t newCol      = aEntity->getLocation().x / mRenderTileLength;
+    uint32_t newRow      = static_cast<uint32_t>(aEntity->getLocation().y / mRenderTileLength);
+    uint32_t newCol      = static_cast<uint32_t>(aEntity->getLocation().x / mRenderTileLength);
     uint32_t newSubspace = (newRow * mHorizontalTileCount) + newCol;
 
     // Update the subspaces only if the entity moved to a different subspace
@@ -199,7 +199,7 @@ void World::orderWorld(const EWorldPartition& aPartition)
 
     // Order the center partition
     case EWorldPartition::CENTER:
-        for (uint32_t col = mHorizontalTileCount / 3.f; col < (2 * mHorizontalTileCount) / PARTITION_COUNT; ++col)
+        for (uint32_t col = static_cast<uint32_t>(mHorizontalTileCount / 3.f); col < (2 * mHorizontalTileCount) / PARTITION_COUNT; ++col)
         {
             for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
@@ -212,7 +212,7 @@ void World::orderWorld(const EWorldPartition& aPartition)
 
     // Order the rightmost partition
     case EWorldPartition::RIGHT:
-        for (uint32_t col = ((2 * mHorizontalTileCount) / 3.f); col < mHorizontalTileCount; ++col)
+        for (uint32_t col = static_cast<uint32_t>((2 * mHorizontalTileCount) / 3.f); col < mHorizontalTileCount; ++col)
         {
             for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
@@ -254,7 +254,7 @@ void World::render(const EWorldPartition& aPartition)
 
     // Render the center partition
     case EWorldPartition::CENTER:
-        for (uint32_t col = mHorizontalTileCount / 3.f; col < ((2 * mHorizontalTileCount) / 3.f); ++col)
+        for (uint32_t col = static_cast<uint32_t>(mHorizontalTileCount / 3.f); col < ((2 * mHorizontalTileCount) / 3.f); ++col)
         {
             for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
@@ -272,7 +272,7 @@ void World::render(const EWorldPartition& aPartition)
 
     // Render the rightmost partition
     case EWorldPartition::RIGHT:
-        for (uint32_t col = ((2 * mHorizontalTileCount) / 3.f); col < mHorizontalTileCount; ++col)
+        for (uint32_t col = static_cast<uint32_t>((2 * mHorizontalTileCount) / 3.f); col < mHorizontalTileCount; ++col)
         {
             for (uint32_t row = 0; row < mVerticalTileCount; ++row)
             {
@@ -358,7 +358,7 @@ void Subspace::order()
     // Only sort Subspaces with more than one Entity
     if (mEntities.size() > 1)
     {
-        quickSort(0, mEntities.size() - 1);
+        quickSort(0, static_cast<uint32_t>(mEntities.size()) - 1);
     }
 }
 

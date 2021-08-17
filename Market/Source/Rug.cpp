@@ -70,8 +70,8 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
             mTextureFrames = aTxtrFrames;
         
             // Generate a random location for the rug to spawn
-            mLocation.x = rand() % SDLManager::mWindowWidth;
-            mLocation.y = rand() % SDLManager::mWindowHeight;
+            mLocation.x = static_cast<float>(rand() % SDLManager::mWindowWidth);
+            mLocation.y = static_cast<float>(rand() % SDLManager::mWindowHeight);
 
             mWorld.placeEntity(this);
         }
@@ -103,7 +103,7 @@ void Rug::update(const float& dt)
 */ 
 void Rug::render()
 {
-    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[mState + RUG_FRAME_COLS]);
+    mTexturePtr->render(static_cast<int16_t>(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f)), static_cast<int16_t>(mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f)), &mTextureFrames[mState + RUG_FRAME_COLS]);
 }
 
 
@@ -112,7 +112,7 @@ void Rug::render()
 */
 void Rug::renderFull()
 {
-    mTexturePtr->render(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f), &mTextureFrames[mState]);
+    mTexturePtr->render(static_cast<int16_t>(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f)), static_cast<int16_t>(mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f)), &mTextureFrames[mState]);
 }
 
 

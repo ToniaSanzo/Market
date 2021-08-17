@@ -245,7 +245,7 @@ constexpr uint16_t BACKGROUND_HEIGHT         = 380;
 constexpr uint8_t LOAD_BLOOD_FRAME_COLS      = 3;
 constexpr uint8_t LOAD_BLOOD_FRAME_ROWS      = 9;
 constexpr uint8_t TOTAL_LOAD_BLOOD_FRAMES    = (LOAD_BLOOD_FRAME_COLS * LOAD_BLOOD_FRAME_ROWS) - 2;
-constexpr float LOAD_ANIMATION_SPEED         = .08;
+constexpr float LOAD_ANIMATION_SPEED         = .07f;
 
 // Number of NPCs and rugs to generate
 constexpr uint16_t NPC_COUNT                 = 5;

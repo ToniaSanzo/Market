@@ -33,7 +33,7 @@ bool Game::start(SDLManager* aSDL)
 
     if (!sdl)
     {
-        cout << "Game::start(SDLManager* aSDL) was passed a nullptr argument.\n";
+        // cout << "Game::start(SDLManager* aSDL) was passed a nullptr argument.\n";
         success = false;
     }
     else
@@ -45,7 +45,7 @@ bool Game::start(SDLManager* aSDL)
         
         if (!initLoadingScreen(backgroundScale))
         {
-            cout << "Game::start(SDLManager* aSDL) call to initLoadingScreen(..) failed.\n";
+            // cout << "Game::start(SDLManager* aSDL) call to initLoadingScreen(..) failed.\n";
             success = false;
         }
         else
@@ -138,7 +138,7 @@ void Game::init(const float& aBackgroundScale)
 {
     if (!mWorld.init())
     {
-        cout << "Failed to initialize the World!\n";
+        // cout << "Failed to initialize the World!\n";
         mInitSuccess = false;
     }
     else
@@ -147,7 +147,7 @@ void Game::init(const float& aBackgroundScale)
         mRugTexture.initTexture(sdl->getRenderer());
         if (!mRugTexture.loadFromFile("assets/rug.png"))
         {
-            cout << "Failed to load rug sprite sheet!\n";
+            // cout << "Failed to load rug sprite sheet!\n";
             mInitSuccess = false;
         }
         else
@@ -177,7 +177,7 @@ void Game::init(const float& aBackgroundScale)
             mNPCTexture.initTexture(sdl->getRenderer());
             if (!mNPCTexture.loadFromFile("assets/npc.png"))
             {
-                cout << "Failed to load rug sprite sheet!\n";
+                // cout << "Failed to load rug sprite sheet!\n";
                 mInitSuccess = false;
             }
             else
@@ -207,7 +207,7 @@ void Game::init(const float& aBackgroundScale)
                 mBackgroundTexture.initTexture(sdl->getRenderer());
                 if (!mBackgroundTexture.loadFromFile("assets/bckgrnd.png"))
                 {
-                    cout << "Failed to load the background texture!\n";
+                    // cout << "Failed to load the background texture!\n";
                     mInitSuccess = false;
                 }
                 else
@@ -264,7 +264,7 @@ bool Game::initLoadingScreen(const float& aBackgroundScale)
     mLoadingBackgroundTexture.initTexture(sdl->getRenderer());
     if (!mLoadingBackgroundTexture.loadFromFile("assets/loading_bckgrnd.png"))
     {
-        cout << "Failed to load the loading screen background texture!\n";
+        // cout << "Failed to load the loading screen background texture!\n";
         success = false;
     }
     else
@@ -275,7 +275,7 @@ bool Game::initLoadingScreen(const float& aBackgroundScale)
         mLoadingGlassHeartTexture.initTexture(sdl->getRenderer());
         if (!mLoadingGlassHeartTexture.loadFromFile("assets/load_glass_heart_bckgrnd.png"))
         {
-            cout << "Failed to load the glass heart screen background texture!\n";
+            // cout << "Failed to load the glass heart screen background texture!\n";
             success = false;
         }
         else
@@ -286,7 +286,7 @@ bool Game::initLoadingScreen(const float& aBackgroundScale)
             mLoadingBloodTexture.initTexture(sdl->getRenderer());
             if (!mLoadingBloodTexture.loadFromFile("assets/load_BLOOD_bckgrnd.png"))
             {
-                cout << "Failed to load the loading screen background texture!\n";
+                // cout << "Failed to load the loading screen background texture!\n";
                 success = false;
             }
             else
@@ -337,7 +337,7 @@ bool Game::handleEvent(SDL_Event& e)
             return true;
             break;
         default:
-            cout << "Unhandled Key!\n";
+            // cout << "Unhandled Key!\n";
             break;
         }
     }

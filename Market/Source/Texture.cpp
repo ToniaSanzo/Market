@@ -44,7 +44,7 @@ bool Texture::loadFromFile(std::string path)
 
     // Exit prematuraly if Texture has not been properly initialized
     if (!mRenderer) {
-        cout << "Attempted to render a texture without initializing a renderer!\n";
+        // cout << "Attempted to render a texture without initializing a renderer!\n";
         return false;
     }
 
@@ -54,7 +54,7 @@ bool Texture::loadFromFile(std::string path)
     // Load image at specified path
     SDL_Surface* loadedSurface = IMG_Load(path.c_str());
     if (!loadedSurface) {
-        cout << "unable to load image " << path.c_str() << "! SDL_image Error: " << IMG_GetError() << "\n";
+        // cout << "unable to load image " << path.c_str() << "! SDL_image Error: " << IMG_GetError() << "\n";
         success = false;
     }
     else {
@@ -65,7 +65,7 @@ bool Texture::loadFromFile(std::string path)
         lock_guard<mutex> lock(mRenderingMtx);
         newTexture = SDL_CreateTextureFromSurface(mRenderer, loadedSurface);
         if (!newTexture) {
-            cout << "Unable to create texture from " << path.c_str() << "! SDL Error: " << SDL_GetError() << "\n";
+            // cout << "Unable to create texture from " << path.c_str() << "! SDL Error: " << SDL_GetError() << "\n";
             success = false;
         }
         else {

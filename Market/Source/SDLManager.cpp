@@ -67,7 +67,7 @@ bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 128
     // Initialize SDL subsystems
     if (SDL_Init(SDL_INIT_VIDEO) < 0)
     {
-        cout << "SDL could not initialize! SDL Error: " << SDL_GetError() << "\n";
+        // cout << "SDL could not initialize! SDL Error: " << SDL_GetError() << "\n";
         success = false;
     }
     else
@@ -85,7 +85,7 @@ bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 128
         }
         else
         {
-            cout << "Failed to create the SDL window!\n";
+            // cout << "Failed to create the SDL window!\n";
             success = false;
         }
 
@@ -96,7 +96,7 @@ bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 128
             mWindowIcon = IMG_Load(aIconPath.c_str());
             if (!mWindowIcon)
             {
-                cout << "Unable to load image \"" << aIconPath.c_str() << "\"! SDL_image Error: " << IMG_GetError() << "\n";
+                // cout << "Unable to load image \"" << aIconPath.c_str() << "\"! SDL_image Error: " << IMG_GetError() << "\n";
                 success = false;
             }
             else
@@ -114,7 +114,7 @@ bool SDLManager::init(string aTitle /*= "Balogna Engine"*/, float aWidth /*= 128
             uint16_t imgFlags = IMG_INIT_PNG;
             if (!(IMG_Init(imgFlags) & imgFlags))
             {
-                cout << "SDL_image could not initialzie! SDL_image Error: " << IMG_GetError() << "\n";
+                // cout << "SDL_image could not initialzie! SDL_image Error: " << IMG_GetError() << "\n";
                 success = false;
             }
         }

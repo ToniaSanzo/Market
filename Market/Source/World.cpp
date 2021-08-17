@@ -120,7 +120,7 @@ bool World::init()
     // Confirm the SDLManager window is initialized
     if ((mWindowHeight * mWindowWidth) == 0)
     {
-        cout << "Failed to initialize the World!\n";
+        // cout << "Failed to initialize the World!\n";
         success = false;
     }
     else
@@ -158,7 +158,7 @@ void World::placeEntity(Entity* aEntity)
     {
         if (newSubspace > mWorld.size())
         {
-            cout << "[Tonia Sanzo] INDEX OUT OF RANGE EXCEPTION!\n";
+            // cout << "[Tonia Sanzo] INDEX OUT OF RANGE EXCEPTION!\n";
             exit(1);
         }
 
@@ -392,7 +392,7 @@ uint32_t Subspace::partition(uint32_t low, uint32_t high)
 {
     if (((high + low) / 2) == mEntities.size())
     {
-        cout << "w!\n";
+        // cout << "w!\n";
     }
     Entity* pivot = mEntities[(high + low) / 2];
     

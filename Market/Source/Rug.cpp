@@ -53,7 +53,7 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
 
     if (!aTxtrPtr)
     {
-        cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+        // cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
         success = false;
     }
     else
@@ -62,7 +62,7 @@ bool Rug::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World& mWorld)
         
         if (!aTxtrFrames)
         {
-            cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+            // cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
             success = false;
         }
         else

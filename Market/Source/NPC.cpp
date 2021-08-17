@@ -55,14 +55,14 @@ bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld)
     mWorld = aWorld;
     if (mWorld == nullptr)
     {
-        cout << "Cannot initilaize NPC without a reference to a World object.\n";
+        // cout << "Cannot initilaize NPC without a reference to a World object.\n";
         success = false;
     }
     else
     {
         if (!aTxtrPtr)
         {
-            cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+            // cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
             success = false;
         }
         else
@@ -71,7 +71,7 @@ bool NPC::init(Texture* aTxtrPtr, SDL_Rect aTxtrFrames[], World* aWorld)
 
             if (!aTxtrFrames)
             {
-                cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
+                // cout << "Failed, valid Texture pointer is required in Rug::init(Texture*, SDL_Rect*)\n";
                 success = false;
             }
             else

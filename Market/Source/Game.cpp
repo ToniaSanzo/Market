@@ -336,62 +336,6 @@ bool Game::handleEvent(SDL_Event& e)
         case SDLK_ESCAPE:
             return true;
             break;
-
-        case SDLK_1:
-            cout << "SLOW ALL NPCS!\n";
-            for (NPC* npc : npcs)
-            {
-                npc->setSpeed(0);
-            }
-            break;
-        case SDLK_2:
-            cout << "RANDOMIZE THE SPEED OF ALL NPCS!\n";
-            for (NPC* npc : npcs)
-            {
-                npc->setSpeed(static_cast<float>(rand()) / RAND_MAX);
-            }
-            break;
-
-        case SDLK_3:
-            cout << "SPEED UP ALL NPCS!\n";
-            for (NPC* npc : npcs)
-            {
-                npc->setSpeed(1);
-            }
-            break;
-
-        case SDLK_i:
-            cout << "NPCS MOVE TO TOP LEFT!";
-            for (NPC* npc : npcs)
-            {
-                npc->setNewWalkLocation(0, 0);
-            }
-            break;
-
-        case SDLK_o:
-            cout << "NPCS MOVE TO TOP RIGHT!";
-            for (NPC* npc : npcs)
-            {
-                npc->setNewWalkLocation(1, 0);
-            }
-            break;
-
-        case SDLK_k:
-            cout << "NPCS MOVE TO BOTTOM LEFT!";
-            for (NPC* npc : npcs)
-            {
-                npc->setNewWalkLocation(0, 1);
-            }
-            break;
-
-        case SDLK_l:
-            cout << "NPCS MOVE TO BOTTOM RIGHT!";
-            for (NPC* npc : npcs)
-            {
-                npc->setNewWalkLocation(1, 1);
-            }
-            break;
-
         default:
             cout << "Unhandled Key!\n";
             break;

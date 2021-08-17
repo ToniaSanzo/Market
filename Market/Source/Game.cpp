@@ -237,10 +237,6 @@ void Game::init(const float& aBackgroundScale)
                         update(.3);
                         this_thread::sleep_for(std::chrono::milliseconds(333));
                         update(.3);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3);
                     }
                 }
             }

@@ -232,7 +232,7 @@ constexpr float NPC_RESET_DIRECTION_TIME     = 1.32f;
 
 // Metadata about the behavior of the NPC
 constexpr float MIN_SPEED                    = 125.f;
-constexpr float MAX_SPEED                    = 330.f;
+constexpr float MAX_SPEED                    = 300.f;
 constexpr float MAX_ANIMATION_SPEED          = .15f;
 constexpr float MIN_ANIMATION_SPEED          = .55f;
 constexpr uint16_t NPC_TARGET_LOCATION_RANGE = 18;

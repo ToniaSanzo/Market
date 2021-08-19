@@ -40,11 +40,8 @@ private:
 
     // The loading screen textures
     Texture mLoadingBackgroundTexture;
-    Texture mLoadingGlassHeartTexture;
-    Texture mLoadingBloodTexture;
-    SDL_Rect mBloodFrames[TOTAL_LOAD_BLOOD_FRAMES];
-    uint16_t mCurrLoadingBloodFrame;
-    float mBloodLoadAnimationTime;
+    SDL_Rect mLoadingFrames[TOTAL_LOAD_FRAMES];
+    atomic<uint8_t> mCurrLoadingFrame;
 
     // Our collection of threads
     vector<thread> threads;

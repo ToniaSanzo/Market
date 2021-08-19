@@ -153,8 +153,6 @@
   <ItemGroup>
     <Image Include="assets\bckgrnd.png" />
     <Image Include="Assets\loading_bckgrnd.png" />
-    <Image Include="Assets\load_blood_bckgrnd.png" />
-    <Image Include="Assets\load_glass_heart_bckgrnd.png" />
     <Image Include="assets\npc.png" />
     <Image Include="assets\rug.png" />
   </ItemGroup>

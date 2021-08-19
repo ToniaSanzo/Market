@@ -16,7 +16,7 @@ Game::Game()
     sdl = nullptr;
     mLoading = true;
     mInitSuccess = true;
-    mCurrLoadingBloodFrame = 0;
+    mCurrLoadingFrame = 0;
 }
 
 
@@ -66,9 +66,6 @@ bool Game::start(SDLManager* aSDL)
             Uint32 pTime = SDL_GetTicks();
             Uint32 cTime = pTime;
 
-            // dt(delta time) - time in seconds since the last update function was called
-            float dt = 0.0;
-
             while (mLoading && !quit)
             {
                 fStart = SDL_GetTicks();
@@ -85,28 +82,15 @@ bool Game::start(SDLManager* aSDL)
 
                 // Determine the amount of time in seconds since the last time update was called
                 cTime = SDL_GetTicks();
-                dt = static_cast<float>(cTime - pTime) / 1000.f;
 
                 pTime = cTime;
-
-                if (mCurrLoadingBloodFrame < TOTAL_LOAD_BLOOD_FRAMES - 1)
-                {
-                    mBloodLoadAnimationTime += dt;
-                }
-                if (mBloodLoadAnimationTime > LOAD_ANIMATION_SPEED)
-                {     
-                    mCurrLoadingBloodFrame = (mCurrLoadingBloodFrame + 1);
-                    mBloodLoadAnimationTime = 0;
-                }
 
                 // Draw the game world to the screen
                 mRendererMutex.lock();
                 SDL_SetRenderDrawColor(sdl->getRenderer(), 0xD3, 0xD3, 0xD3, 0xFF);
                 SDL_RenderClear(sdl->getRenderer());
 
-                mLoadingBackgroundTexture.render();
-                mLoadingBloodTexture.render(0, 0, &mBloodFrames[mCurrLoadingBloodFrame]);
-                mLoadingGlassHeartTexture.render();
+                mLoadingBackgroundTexture.render(0, 0, &mLoadingFrames[mCurrLoadingFrame]);
                 
                 SDL_RenderPresent(sdl->getRenderer());
                 mRendererMutex.unlock();
@@ -222,21 +206,51 @@ void Game::init(const float& aBackgroundScale)
 
                     // warm up the game so it starts smoothly
                     {
-                        update(.3f);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3f);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3f);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3f);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3f);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3f);
-                        this_thread::sleep_for(std::chrono::milliseconds(333));
-                        update(.3f);
-                        this_thread::sleep_for(std::chrono::milliseconds(300));
-                        update(.3f);
+                        update(1.f);
+                        update(1.f);
+                        this_thread::sleep_for(std::chrono::milliseconds(350));
+                        ++mCurrLoadingFrame; 
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame; 
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame; 
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame; 
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        mCurrLoadingFrame = 0;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        mCurrLoadingFrame = 0;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        mCurrLoadingFrame = 0;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(180));
+                        ++mCurrLoadingFrame;
+                        this_thread::sleep_for(std::chrono::milliseconds(400));
                     }
                 }
             }
@@ -267,48 +281,15 @@ bool Game::initLoadingScreen(const float& aBackgroundScale)
     {
         mLoadingBackgroundTexture.updateScale(aBackgroundScale);
 
-        // Load the loading glass heart screen background and scale it to fit the screen
-        mLoadingGlassHeartTexture.initTexture(sdl->getRenderer());
-        if (!mLoadingGlassHeartTexture.loadFromFile("assets/load_glass_heart_bckgrnd.png"))
+        // Set the blood frame dimensions
+        for (uint16_t row = 0; row < LOAD_FRAME_ROWS; ++row)
         {
-            // cout << "Failed to load the glass heart screen background texture!\n";
-            success = false;
-        }
-        else
-        {
-            mLoadingGlassHeartTexture.updateScale(aBackgroundScale);
-
-            // Load the loading blood screen background and scale it to fit the screen
-            mLoadingBloodTexture.initTexture(sdl->getRenderer());
-            if (!mLoadingBloodTexture.loadFromFile("assets/load_BLOOD_bckgrnd.png"))
+            for (uint16_t col = 0; col < LOAD_FRAME_COLS; ++col)
             {
-                // cout << "Failed to load the loading screen background texture!\n";
-                success = false;
-            }
-            else
-            {
-                mLoadingBloodTexture.updateScale(aBackgroundScale);
-                // Set the blood frame dimensions
-                for (uint16_t row = 0; row < LOAD_BLOOD_FRAME_ROWS; ++row)
-                {
-                    // Exit after loading the first column in the last row
-                    if (row + 1 == LOAD_BLOOD_FRAME_ROWS)
-                    {
-                        mBloodFrames[(row * LOAD_BLOOD_FRAME_COLS)].x = 0;
-                        mBloodFrames[(row * LOAD_BLOOD_FRAME_COLS)].y = row * BACKGROUND_HEIGHT;
-                        mBloodFrames[(row * LOAD_BLOOD_FRAME_COLS)].w = BACKGROUND_WIDTH;
-                        mBloodFrames[(row * LOAD_BLOOD_FRAME_COLS)].h = BACKGROUND_HEIGHT;
-                        break;
-                    }
-
-                    for (uint16_t col = 0; col < LOAD_BLOOD_FRAME_COLS; ++col)
-                    {
-                        mBloodFrames[(row * LOAD_BLOOD_FRAME_COLS) + col].x = col * BACKGROUND_WIDTH;
-                        mBloodFrames[(row * LOAD_BLOOD_FRAME_COLS) + col].y = row * BACKGROUND_HEIGHT;
-                        mBloodFrames[(row * LOAD_BLOOD_FRAME_COLS) + col].w = BACKGROUND_WIDTH;
-                        mBloodFrames[(row * LOAD_BLOOD_FRAME_COLS) + col].h = BACKGROUND_HEIGHT;
-                    }
-                }
+                mLoadingFrames[(row * LOAD_FRAME_COLS) + col].x = col * BACKGROUND_WIDTH;
+                mLoadingFrames[(row * LOAD_FRAME_COLS) + col].y = row * BACKGROUND_HEIGHT;
+                mLoadingFrames[(row * LOAD_FRAME_COLS) + col].w = BACKGROUND_WIDTH;
+                mLoadingFrames[(row * LOAD_FRAME_COLS) + col].h = BACKGROUND_HEIGHT;
             }
         }
     }

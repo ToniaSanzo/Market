@@ -231,8 +231,8 @@ constexpr uint16_t NPC_SCALE                 = 3;
 constexpr float NPC_RESET_DIRECTION_TIME     = 1.32f;
 
 // Metadata about the behavior of the NPC
-constexpr float MIN_SPEED                    = 125.f;
-constexpr float MAX_SPEED                    = 300.f;
+constexpr float MIN_SPEED                    = 120.f;
+constexpr float MAX_SPEED                    = 275.f;
 constexpr float MAX_ANIMATION_SPEED          = .15f;
 constexpr float MIN_ANIMATION_SPEED          = .55f;
 constexpr uint16_t NPC_TARGET_LOCATION_RANGE = 18;
@@ -242,10 +242,9 @@ constexpr uint16_t BACKGROUND_WIDTH          = 640;
 constexpr uint16_t BACKGROUND_HEIGHT         = 380;
 
 // Metadata about the loading screen
-constexpr uint8_t LOAD_BLOOD_FRAME_COLS      = 3;
-constexpr uint8_t LOAD_BLOOD_FRAME_ROWS      = 9;
-constexpr uint8_t TOTAL_LOAD_BLOOD_FRAMES    = (LOAD_BLOOD_FRAME_COLS * LOAD_BLOOD_FRAME_ROWS) - 2;
-constexpr float LOAD_ANIMATION_SPEED         = .07f;
+constexpr uint8_t LOAD_FRAME_COLS            = 3;
+constexpr uint8_t LOAD_FRAME_ROWS            = 2;
+constexpr uint8_t TOTAL_LOAD_FRAMES          = LOAD_FRAME_COLS * LOAD_FRAME_ROWS;
 
 // Number of NPCs and rugs to generate
 constexpr uint16_t NPC_COUNT                 = 5;
@@ -255,7 +254,7 @@ constexpr uint16_t RUG_COUNT                 = 3;
 constexpr float MAX_FRAME_TIME               = .5f;
 
 // Time needed to pass before a rug can trade with a NPC
-constexpr float RUG_TRADE_TIME               = .5f;
+constexpr float RUG_TRADE_TIME               = .9f;
 // Radius the Entity's have to be within one another to trade
 constexpr float TRADE_RADIUS                 = 50.f;
 

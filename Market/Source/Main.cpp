@@ -27,7 +27,7 @@ int main(int argc, char* args[])
     SDLManager sdl;
 
     // Initialize SDL subsystem
-    if (!sdl.init("Market"))
+    if (!sdl.init("Market", 1280, 760, "Assets/icon.png"))
     {
         // cout << "Failed to initialize SDL!\n";
     }

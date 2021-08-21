@@ -212,14 +212,14 @@ namespace MATH
 }
 
 // Number of each entity types in game world (rugs, npcs)
-constexpr uint16_t ENTITY_COUNT              = 40;
+constexpr uint16_t ENTITY_COUNT              = 45;
 
 // Metadata about rug.png spritesheet
 constexpr uint16_t RUG_FRAME_COLS            = 3;
 constexpr uint16_t RUG_FRAME_ROWS            = 2;
 constexpr uint16_t RUG_FRAME_WIDTH           = 49;
 constexpr uint16_t RUG_FRAME_HEIGHT          = 49;
-constexpr uint16_t RUG_SCALE                 = 3;
+constexpr uint16_t RUG_SCALE                 = 2;
 
 // Metadata about npc.png spritesheet
 constexpr uint16_t NPC_FRAME_COLS            = 6;
@@ -227,7 +227,7 @@ constexpr uint16_t NPC_FRAME_ROWS            = 3;
 constexpr uint16_t NPC_FRAME_WIDTH           = 18;
 constexpr uint16_t NPC_FRAME_HEIGHT          = 28;
 constexpr uint16_t NPC_TRADE_FRAMES          = 2;
-constexpr uint16_t NPC_SCALE                 = 3;
+constexpr uint16_t NPC_SCALE                 = 2;
 constexpr float NPC_RESET_DIRECTION_TIME     = 1.32f;
 
 // Metadata about the behavior of the NPC
@@ -256,7 +256,7 @@ constexpr float MAX_FRAME_TIME               = .5f;
 // Time needed to pass before a rug can trade with a NPC
 constexpr float RUG_TRADE_TIME               = .9f;
 // Radius the Entity's have to be within one another to trade
-constexpr float TRADE_RADIUS                 = 50.f;
+constexpr float TRADE_RADIUS                 = 35.f;
 
 // Number of partitions that make up the world
 constexpr float PARTITION_COUNT              = 3.f;

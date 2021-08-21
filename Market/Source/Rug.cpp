@@ -103,7 +103,7 @@ void Rug::update(const float& dt)
 */ 
 void Rug::render()
 {
-    mTexturePtr->render(static_cast<int16_t>(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f)), static_cast<int16_t>(mLocation.y - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f)), &mTextureFrames[mState + RUG_FRAME_COLS]);
+    mTexturePtr->render(static_cast<int16_t>(mLocation.x - ((RUG_FRAME_WIDTH * RUG_SCALE) / 2.f)), static_cast<int16_t>(mLocation.y - ((RUG_FRAME_HEIGHT * RUG_SCALE) / 2.f)), &mTextureFrames[mState + RUG_FRAME_COLS]);
 }
 
 

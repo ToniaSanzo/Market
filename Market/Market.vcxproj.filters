@@ -27,6 +27,9 @@
     <Image Include="Assets\loading_bckgrnd.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="Assets\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\SDLManager.cpp">

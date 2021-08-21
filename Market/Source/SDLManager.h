@@ -36,7 +36,7 @@ public:
     // Initialize SDL subsystem and create a window, with the given name, dimensions, and path to the window icon
     //
     // Returns false on failure
-    bool init(string = "Balogna Engine", float = 1280.f, float = 760.f, string = "", Uint32 = SDL_WINDOW_FULLSCREEN_DESKTOP);
+    bool init(string = "Balogna Engine", float = 1280.f, float = 760.f, string = "", Uint32 = SDL_WINDOW_SHOWN);
 
     // Creates renderer from internal window
     SDL_Renderer* createRenderer();

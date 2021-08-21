@@ -76,7 +76,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\C++Lib\SDL2_image-2.0.5\include;D:\C++Lib\SDL2-devel-2.0.12-VC\SDL2-2.0.12\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependencies\SDL2\include;$(SolutionDir)Dependencies\SDL2_image\include</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependencies\SDL2_image\lib\x86;$(SolutionDir)Dependencies\SDL2\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -85,8 +86,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\sanzo\OneDrive\Desktop\C++Libs\SDL2_image-2.0.5\include;C:\Users\sanzo\OneDrive\Desktop\C++Libs\SDL2-2.0.14\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\sanzo\OneDrive\Desktop\C++Libs\SDL2_image-2.0.5\lib\x64;C:\Users\sanzo\OneDrive\Desktop\C++Libs\SDL2-2.0.14\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependencies\SDL2\include;$(SolutionDir)Dependencies\SDL2_image\include</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependencies\SDL2\lib\x64;$(SolutionDir)Dependencies\SDL2_image\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -124,6 +125,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -141,6 +143,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>PCH.h</PrecompiledHeaderFile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Image Include="assets\bckgrnd.png" />
+    <Image Include="Assets\icon.png" />
     <Image Include="Assets\loading_bckgrnd.png" />
     <Image Include="assets\npc.png" />
     <Image Include="assets\rug.png" />
